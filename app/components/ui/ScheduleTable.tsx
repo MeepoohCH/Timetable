@@ -1,0 +1,95 @@
+type ClassItem = {
+  day: string;
+  starttime: string;
+  endtime: string;
+  subject: string;
+  subjectid: string;
+};
+
+type Props = {
+  classes: ClassItem[];
+};
+
+export default function ScheduleTable({ classes }: Props) {
+  const days = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
+  const startHour = 8;
+  const endHour = 22;
+  const totalSlots = (endHour - startHour) * 4;
+
+  const parseTimeToFloat = (t: string) => {
+    const [h, m] = t.split(':').map(Number);
+    return h + m / 60;
+  };
+
+  const timeToSlot = (time: number) => Math.round((time - startHour) * 4);
+
+  return (
+    <div className="w-full overflow-x-auto">
+      <div className="inline-block min-w-[1200px] bg-[#F7F7F7] rounded-xl p-2 shadow">
+        <div className="grid grid-rows-[40px_repeat(7,1fr)]">
+          <div className="grid grid-cols-[90px_repeat(56,19px)]">
+            <div className="flex items-center justify-center sticky left-0 z-10 border-r bg-[#F7F7F7]">
+              วัน / เวลา
+            </div>
+            {Array.from({ length: totalSlots }).map((_, i) => {
+              const hour = startHour + Math.floor(i / 4);
+              const min = (i % 4) * 15;
+              const label = min === 0 ? `${hour}:00` : '';
+              return (
+                <div
+                  key={i}
+                  className="flex items-center justify-end ml-3 text-xs"
+                  style={{ width: 19 }}
+                >
+                  {label}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Day rows */}
+          {days.map((day) => (
+            <div
+              key={day}
+              className="grid grid-cols-[90px_repeat(56,19px)] border-t relative bg-[#F7F7F7]"
+            >
+              <div className="flex items-center justify-center sticky left-0 z-40 border-r bg-[#F7F7F7]">
+                {day}
+              </div>
+              <div className="relative col-span-[56] flex">
+                {Array.from({ length: totalSlots }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="relative border-r border-b border-[#F7F7F7] bg-[#F7F7F7]"
+                    style={{ width: 19, height: 48, zIndex: 0 }}
+                  />
+                ))}
+
+                {classes
+                  .filter((c) => c.day === day)
+                  .map((c, i) => {
+                    const start = parseTimeToFloat(c.starttime);
+                    const end = parseTimeToFloat(c.endtime);
+                    const left = timeToSlot(start) * 19;
+                    const width = (end - start) * 4 * 19;
+
+                    return (
+                      <div
+                        key={i}
+                        className="absolute top-1 bottom-1 bg-[#FEDDC1] ml-3 rounded p-1 shadow text-xs overflow-hidden text-center z-10"
+                        style={{ left, width }}
+                        title={`${c.subject} (${c.subjectid}) ${c.starttime} - ${c.endtime}`}
+                      >
+                        <span className="font-medium">{c.subject}</span>
+                        <div style={{ fontSize: '10px' }}>{c.subjectid}</div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
