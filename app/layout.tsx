@@ -33,15 +33,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${kanit.variable} antialiased bg-[#EFEFEF] min-h-screen flex`}
+        className={`${kanit.variable} antialiased bg-[#EFEFEF] flex min-h-screen`}
       >
-        {/* Sidebar */}
-        <aside className="w-full md:w-[200px] shrink-0 h-auto md:h-screen">
+
+        <aside className=" md:w-[200px] shrink-0 h-auto md:h-screen">
           <SideNavbar />
         </aside>
 
-        {/* Main content area */}
-        <main className="flex-1 min-w-0 h-auto overflow-auto">
+
+        <main className="flex-1 min-w-0 overflow-auto">
           {children}
         </main>
       </body>

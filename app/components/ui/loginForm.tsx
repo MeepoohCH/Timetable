@@ -5,10 +5,8 @@ import { useRouter } from "next/navigation"
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Input } from '@/app/components/ui/input'
-import { Label } from '@/app/components/ui/label'
-import { Button } from '@/app/components/ui/button'
 import Image from "next/image";
-import { PasswordInput } from '@/app/components/ui/password-input'
+import { PasswordInput } from '@/app/components/ui/passwordInput'
 
 export function LoginForm({ action }: { action: (formData: FormData) => void }) {
   const [error, setError] = useState("");

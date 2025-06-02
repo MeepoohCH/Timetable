@@ -25,7 +25,7 @@ export default function ScheduleTable({ classes }: Props) {
 
   return (
     <div className="w-full overflow-x-auto">
-      <div className="inline-block min-w-[1200px] bg-[#F7F7F7] rounded-xl p-2 shadow">
+      <div className="inline-block min-w-[600px] bg-[#F7F7F7] rounded-xl p-2 shadow">
         <div className="grid grid-rows-[40px_repeat(7,1fr)]">
           <div className="grid grid-cols-[90px_repeat(56,19px)]">
             <div className="flex items-center justify-center sticky left-0 z-10 border-r bg-[#F7F7F7]">

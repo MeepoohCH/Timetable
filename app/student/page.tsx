@@ -1,5 +1,5 @@
 import ScheduleTable from '@/app/components/ui/ScheduleTable'
-import SideNavbar from '@/app/components/ui/SideNavbar'
+import StudentDropdown from '../components/ui/studentDropdown';
 
 const mockClasses = [
   {
@@ -24,7 +24,10 @@ export default function SchedulePage() {
   return (
     <>
       <div className="px-4 sm:px-6 py-4 sm:py-6 overflow-x-auto bg-[#EFEFEF] w-full">
-        <h1 className="text-xl font-bold mb-4">ตารางเรียน</h1>
+        <h1 className="text-2xl font-medium mb-4">ตารางเรียน - นักศึกษา</h1>
+        <div className="mb-6">
+          <StudentDropdown />
+        </div>
         <ScheduleTable classes={mockClasses} />
       </div>
     </>
