@@ -1,3 +1,5 @@
+
+import { loginAction } from '@/actions/login.action';
 import { LoginForm } from '@/app/components/ui/loginForm'
 
 export default function LoginPage() {
@@ -20,7 +22,7 @@ export default function LoginPage() {
           }}>
         </div> 
         <div className="min-h-screen flex items-center justify-center bg-[#EEEEEE]">
-          <LoginForm />
+          <LoginForm action={loginAction}/>
         </div>
       </div>
      
