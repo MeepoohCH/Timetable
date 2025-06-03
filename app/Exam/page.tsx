@@ -11,11 +11,19 @@ export default function Student() {
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [events, setEvents] = useState<any[]>([]);
 
-  const handleAddEvent = (event: any) => setEvents((prev) => [...prev, event]);
-  const handleDeleteEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
-  const handleEditEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
+  type Event = {
+  id: string;
+  title: string;
+  date: Date;
+  description?: string;
+};
+
+  const [events, setEvents] = useState<Event[]>([]);
+
+  const handleAddEvent = (event: Event) => setEvents((prev) => [...prev, event]);
+  const handleDeleteEvent = (updatedEvents: Event[]) => setEvents(updatedEvents);
+  const handleEditEvent = (updatedEvents: Event[]) => setEvents(updatedEvents);
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
 
   return (
