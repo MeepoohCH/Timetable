@@ -7,8 +7,6 @@ import Edit from "../components/Edit";
 
 export default function Student() {
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<any[]>([]);
 
   const handleAddEvent = (event: any) => setEvents((prev) => [...prev, event]);

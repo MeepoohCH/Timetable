@@ -11,18 +11,27 @@ export default function Student() {
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const [events, setEvents] = useState<any[]>([]);
 
   const handleAddEvent = (event: any) => setEvents((prev) => [...prev, event]);
   const handleDeleteEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
-  const handleEditEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
+  const handleEditEvent = (updatedEvent: any) => {
+    setEvents((prev) =>
+      prev.map((ev) =>
+        ev.subjectCode === updatedEvent.subjectCode ? updatedEvent : ev
+      )
+    );
+    setSelectedEvent(null); // reset event ที่เลือกหลังแก้ไข
+  };
+
   const isActive = (tab: "edit" | "delete" | "add") => currentComponent === tab;
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
 
   return (
     <div className="bg-[#F3F4F6] min-h-screen font-kanit">
-      <div className=" pt-6 bg-[#F3F4F6]">
-        <div className="flex justify-start gap-2 px-10 pt-4 bg-[#F3F4F6] font-kanit ">
+      <div className="pt-6 bg-[#F3F4F6]">
+        <div className="flex justify-start gap-2 px-10 pt-4 bg-[#F3F4F6]">
           {(["add", "edit", "delete"] as const).map((tab) => (
             <button
               key={tab}
@@ -40,13 +49,9 @@ export default function Student() {
         </div>
       </div>
 
-      <div className="flex-1 p-4 mx-8 shadow bg-[#F3F4F6] border-4 border-white font-kanit rounded-2xl">
+      <div className="flex-1 p-4 mx-8 shadow bg-[#F3F4F6] border-4 border-white rounded-2xl">
         {currentComponent === "add" && (
-          <Add
-            onSwitch={switchComponent}
-            currentComponent="add"
-            onAddEvent={handleAddEvent}
-          />
+          <Add onSwitch={switchComponent} currentComponent="add" onAddEvent={handleAddEvent} />
         )}
         {currentComponent === "edit" && (
           <Edit
@@ -54,26 +59,33 @@ export default function Student() {
             currentComponent="edit"
             onEditEvent={handleEditEvent}
             events={events}
+            selectedEvent={selectedEvent}
           />
         )}
         {currentComponent === "delete" && (
-          <Delete
-            onSwitch={switchComponent}
-            currentComponent="delete"
-            onDeleteEvent={handleDeleteEvent}
-            events={events}
-          />
-        )}
+  <Delete
+    onSwitch={switchComponent}
+    currentComponent="delete"
+    onDeleteEvent={handleDeleteEvent}
+    events={events}
+    selectedEvent={selectedEvent} // ✅ เพิ่มตรงนี้
+  />
+)}
+
       </div>
+
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-8 mx-8">
         <Calendar
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
+          selectedEvent={selectedEvent}
+          setSelectedEvent={(event) => {
+            setSelectedEvent(event);
+            setCurrentComponent("edit"); // เปลี่ยนเป็นหน้า edit อัตโนมัติ
+          }}
           currentMonth={currentMonth}
           setCurrentMonth={setCurrentMonth}
           events={events}
         />
-        <DetailPanel selectedDate={selectedDate} events={events} />
+        <DetailPanel selectedEvent={selectedEvent} />
       </div>
     </div>
   );
