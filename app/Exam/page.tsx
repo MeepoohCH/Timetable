@@ -12,9 +12,15 @@ export default function Student() { const [currentComponent, setCurrentComponent
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const [events, setEvents] = useState<any[]>([]);
-
+  
   const handleAddEvent = (event: any) => setEvents((prev) => [...prev, event]);
-  const handleDeleteEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
+  const handleDeleteEvent = (eventToDelete: any) => {
+    setEvents((prev) =>
+      prev.filter((ev) => ev.subjectCode !== eventToDelete.subjectCode)
+    );
+    setSelectedEvent(null); // reset หลังลบ
+  };
+  
   const handleEditEvent = (updatedEvent: any) => {
     setEvents((prev) =>
       prev.map((ev) =>
@@ -83,7 +89,7 @@ export default function Student() { const [currentComponent, setCurrentComponent
           selectedEvent={selectedEvent}
           setSelectedEvent={(event) => {
             setSelectedEvent(event);
-            setCurrentComponent("edit"); // เปลี่ยนเป็นหน้า edit อัตโนมัติ
+            // setCurrentComponent("edit"); // เปลี่ยนเป็นหน้า edit อัตโนมัติ
           }}
           currentMonth={currentMonth}
           setCurrentMonth={setCurrentMonth}

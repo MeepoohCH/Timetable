@@ -189,7 +189,7 @@ export default function Delete({
             )}
           </div>
 
-          {/* <div className="col-span-1">
+          <div className="col-span-1">
             <label>เวลาเริ่ม</label>
             <DatePicker
               selected={timeStart}
@@ -203,7 +203,7 @@ export default function Delete({
               readOnly
               disabled
             />
-          </div> */}
+          </div>
 
           <div className="col-span-1">
             <label>เวลาจบ</label>
