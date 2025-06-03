@@ -5,7 +5,10 @@
 
 
 @layer base {
+
   :root {
+
+    --font-sans: 'Kanit', sans-serif;
 
     --background: #EEEEEE;
 
@@ -107,18 +110,15 @@
 
     --chart-5: 340 75% 55%
   }
-}
-
-
-
-@layer base {
-  * {
-    @apply border-border;
-  }
+  
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply font-sans;
+    font-family: var(--font-sans);
   }
+  
 }
+
+
 
 input::-ms-reveal {
   display: none;
