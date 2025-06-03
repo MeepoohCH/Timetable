@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Kanit } from "next/font/google";
+import { Kanit } from "next/font/google";
 import "./globals.css";
+import SideNavbar from "./components/ui/SideNavbar";
 
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const kanit = Kanit({
+  subsets: ["thai", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-kanit", // ใช้ร่วมกับ Tailwind ได้
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,18 +23,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${kanit.variable} antialiased bg-[#EFEFEF] flex min-h-screen`}
       >
-        {children}
+
+        <aside className=" md:w-[200px] shrink-0 h-auto md:h-screen">
+          <SideNavbar />
+        </aside>
+
+
+        <main className="flex-1 min-w-0 overflow-auto">
+          {children}
+        </main>
       </body>
     </html>
-  );
+  )
 }
-
-const kanit = Kanit({
-  subsets: ['thai'],
-  weight: ['400', '700'], // เลือกน้ำหนักที่ต้องการ
-  display: 'swap',
-})
-
-
