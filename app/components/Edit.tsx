@@ -101,10 +101,7 @@ export default function Edit({
     formData.timeStart,
     formData.timeEnd,
   ];
-  if (requiredFields.some((field) => field.trim() === "") || teachers.length === 0) {
-    alert("กรุณากรอกข้อมูลให้ครบทุกช่อง รวมถึงอาจารย์อย่างน้อย 1 คน");
-    return;
-  }
+
 
   return (
     <div>
@@ -155,7 +152,8 @@ export default function Edit({
                   handleChange(e);
                   setNewTeacher(e.target.value);
                 }}
-                className="boxT"
+                className="boxT
+                required"
               />
               <button type="button" onClick={handleAddTeacher} className="px-3 py-1">
                 <svg
