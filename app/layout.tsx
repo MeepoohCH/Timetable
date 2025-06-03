@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Kanit } from "next/font/google";
 import "./globals.css";
 import SideNavbar from "./components/ui/SideNavbar";
 
