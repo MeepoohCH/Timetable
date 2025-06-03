@@ -16,7 +16,6 @@ export default function Student() {
   const handleAddEvent = (event: any) => setEvents((prev) => [...prev, event]);
   const handleDeleteEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
   const handleEditEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
-  const isActive = (tab: "edit" | "delete" | "add") => currentComponent === tab;
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
 
   return (
