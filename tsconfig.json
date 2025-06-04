@@ -13,7 +13,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "types": ["node", "estree"], 
+    "types": ["node", "estree"],
+    
     "plugins": [
       {
         "name": "next"

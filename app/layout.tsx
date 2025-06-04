@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { Kanit } from "next/font/google";
+import { Geist, Geist_Mono, Kanit } from "next/font/google";
 import "./globals.css";
+import AppLayoutClient from "./components/ui/AppLayoutClient";
 import SideNavbar from "./components/ui/SideNavbar";
+
 
 const kanit = Kanit({
   subsets: ["thai", "latin"],
@@ -9,6 +11,22 @@ const kanit = Kanit({
   variable: "--font-kanit", // ใช้ร่วมกับ Tailwind ได้
 });
 
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+
+});
+
+
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// });
+
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,20 +39,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    
     <html lang="en">
       <body
         className={`${kanit.variable} antialiased bg-[#EFEFEF] flex min-h-screen`}
       >
 
-        <aside className=" md:w-[200px] shrink-0 h-auto md:h-screen">
+        {/* <aside className=" md:w-[200px] shrink-0 h-auto md:h-screen">
           <SideNavbar />
         </aside>
 
 
         <main className="flex-1 min-w-0 overflow-auto">
           {children}
-        </main>
+        </main> */}
+
+        <AppLayoutClient>{children}</AppLayoutClient>
       </body>
     </html>
   )
 }
+
