@@ -12,11 +12,11 @@ export default function DetailPanel({
         <ul className="grid grid-cols-[100px_1fr] gap-y-2 text-sm font-kanit text-[#616161] m-4 leading-relaxed">
           <li className="contents">
             <span>รหัสวิชา</span>
-            <span>{selectedEvent.subjectCode}</span>
+            <span>{selectedEvent.subjectid}</span>
           </li>
           <li className="contents">
             <span>ชื่อวิชา</span>
-            <span>{selectedEvent.subjectName}</span>
+            <span>{selectedEvent.subject}</span>
           </li>
           <li className="contents">
             <span>กลุ่ม</span>
@@ -27,7 +27,7 @@ export default function DetailPanel({
             <span className="flex flex-col">
               {Array.isArray(selectedEvent.teacher)
                 ? selectedEvent.teacher.map((t: string, i: number) => (
-                    <span key={i}>• {t}</span>
+                    <span key={i}> {t}</span>
                   ))
                 : selectedEvent.teacher}
             </span>

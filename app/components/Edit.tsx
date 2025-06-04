@@ -37,8 +37,8 @@ export default function Edit({
   const [weekday, setWeekday] = useState<string>("");
 
   const [formData, setFormData] = useState({
-    subjectCode: "",
-    subjectName: "",
+    subjectid: "",
+    subject: "",
     group: "",
     teacher: "",
     date: "",
@@ -49,6 +49,7 @@ export default function Edit({
 
   const [teachers, setTeachers] = useState<string[]>([]);
   const [newTeacher, setNewTeacher] = useState<string>("");
+  const [subject, setSubject] = useState<string>("");
 
   const handleAddTeacher = () => {
     if (newTeacher.trim() !== "") {
@@ -73,8 +74,8 @@ export default function Edit({
     onEditEvent({ ...formData, teacher: teachers });
     // reset ฟอร์ม
     setFormData({
-      subjectCode: "",
-      subjectName: "test",
+      subjectid: "",
+      subject: "",
       group: "",
       teacher: "",
       date: "",
@@ -86,6 +87,7 @@ export default function Edit({
     setDay(null);
     setTimeStart(null);
     setTimeEnd(null);
+    setSubject("");
   };
 
   function formatDateToTimeString(date: Date): string {
@@ -97,19 +99,19 @@ export default function Edit({
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className="edit-form gridcol">
-          <div className="col-span-1">
-            <label>รหัสวิชา</label>
+        <div className="edit-form flex flex-col gap-4 text-sm sm:flex-row sm:flex-wrap sm:gap-10 text-sm">
+          <div className="">
+            <label className="block mb-1">รหัสวิชา</label>
             <input
               type="text"
-              name="subjectCode"
-              value={formData.subjectCode}
+              name="subjectid"
+              value={formData.subjectid}
               onChange={handleChange}
               className="box"
             />
           </div>
-          <div className="col-span-1">
-            <label>กลุ่ม</label>
+          <div className="">
+            <label className="block mb-1">กลุ่ม</label>
             <input
               type="text"
               name="group"
@@ -118,8 +120,8 @@ export default function Edit({
               className="box"
             />
           </div>
-          <div className="col-span-1">
-            <label>สถานที่</label>
+          <div className="">
+            <label className="block mb-1">สถานที่</label>
             <input
               type="text"
               name="location"

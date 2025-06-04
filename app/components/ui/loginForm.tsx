@@ -8,7 +8,7 @@ import { Input } from '@/app/components/ui/input'
 import Image from "next/image";
 import { PasswordInput } from '@/app/components/ui/passwordInput'
 
-export function LoginForm({ action }: { action: (formData: FormData) => void }) {
+export function LoginForm({ action }: { action?: (formData: FormData) => void }) {
   const [error, setError] = useState("");
   const router = useRouter();
 
