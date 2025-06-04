@@ -95,6 +95,18 @@ export default function Edit({
     const minutes = date.getMinutes().toString().padStart(2, "0");
     return `${hours}:${minutes}`;
   }
+  const requiredFields = [
+    formData.subjectCode,
+    formData.group,
+    formData.location,
+    isstudyPage ? weekday : formData.date,
+    formData.timeStart,
+    formData.timeEnd,
+  ];
+  if (requiredFields.some((field) => field.trim() === "") || teachers.length === 0) {
+    alert("กรุณากรอกข้อมูลให้ครบทุกช่อง รวมถึงอาจารย์อย่างน้อย 1 คน");
+    return;
+  }
 
   return (
     <div>
@@ -108,6 +120,7 @@ export default function Edit({
               value={formData.subjectid}
               onChange={handleChange}
               className="box"
+              required
             />
           </div>
           <div className="">
@@ -118,6 +131,7 @@ export default function Edit({
               value={formData.group}
               onChange={handleChange}
               className="box"
+              required
             />
           </div>
           <div className="">
@@ -128,6 +142,7 @@ export default function Edit({
               value={formData.location}
               onChange={handleChange}
               className="box"
+              required
             />
           </div>
 
@@ -203,6 +218,7 @@ export default function Edit({
                   handleChange(e);
                 }}
                 className="box"
+                required
               >
                 <option value="">-- เลือกวัน --</option>
                 <option value="monday">จันทร์</option>
@@ -226,6 +242,7 @@ export default function Edit({
                   }}
                   dateFormat="dd/MM/yyyy"
                   className="boxDate"
+                  required
                 />
                 <div
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
@@ -275,6 +292,7 @@ export default function Edit({
               timeCaption="เวลา"
               dateFormat="HH:mm"
               className="box pl-4"
+              required
             />
           </div>
 
@@ -295,6 +313,7 @@ export default function Edit({
               timeCaption="เวลา"
               dateFormat="HH:mm"
               className="box pl-4"
+              required
             />
           </div>
 
