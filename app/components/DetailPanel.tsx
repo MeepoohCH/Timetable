@@ -12,15 +12,15 @@ export default function DetailPanel({
         <ul className="grid grid-cols-[100px_1fr] gap-y-2 text-sm font-kanit text-[#616161] m-4 leading-relaxed">
           <li className="contents">
             <span>รหัสวิชา</span>
-            <span>{selectedEvent.subjectid}</span>
+            <span>{selectedEvent.subject_id}</span>
           </li>
           <li className="contents">
             <span>ชื่อวิชา</span>
-            <span>{selectedEvent.subject}</span>
+            <span>{selectedEvent.subjectName}</span>
           </li>
           <li className="contents">
             <span>กลุ่ม</span>
-            <span>{selectedEvent.group}</span>
+            <span>{selectedEvent.sec}</span>
           </li>
           <li className="contents">
             <span>อาจารย์</span>

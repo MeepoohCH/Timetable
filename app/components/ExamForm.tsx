@@ -19,7 +19,7 @@ export default function ExamForm() {
   const handleEditEvent = (updatedEvent: any) => {
     setEvents((prev) =>
       prev.map((ev) =>
-        ev.subjectCode === updatedEvent.subjectCode ? updatedEvent : ev
+        ev.subject_id === updatedEvent.subject_id ? updatedEvent : ev
       )
     );
     setSelectedEvent(null); // reset event ที่เลือกหลังแก้ไข
@@ -57,16 +57,16 @@ export default function ExamForm() {
 
         {currentComponent === "add" && (
           <Add
-            onSwitch={switchComponent}
+            onSwitchAction={switchComponent}
             currentComponent="add"
-            onAddEvent={handleAddEvent}
+            onAddEventAction={handleAddEvent}
           />
         )}
         {currentComponent === "edit" && (
          <Edit
-         onSwitch={switchComponent}
+         onSwitchAction={switchComponent}
          currentComponent="edit"
-         onEditEvent={handleEditEvent}
+         onEditEventAction={handleEditEvent}
          events={events}
          selectedEvent={selectedEvent}
        />
@@ -74,9 +74,9 @@ export default function ExamForm() {
         )}
         {currentComponent === "delete" && (
           <Delete
-          onSwitch={switchComponent}
+          onSwitchAction={switchComponent}
           currentComponent="delete"
-          onDeleteEvent={handleDeleteEvent}
+          onDeleteEventAction={handleDeleteEvent}
           events={events}
           selectedEvent={selectedEvent} // ✅ เพิ่มตรงนี้
         />

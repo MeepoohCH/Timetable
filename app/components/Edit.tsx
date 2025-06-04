@@ -7,9 +7,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 
 type EditProps = {
-  onSwitch: (view: "edit" | "delete" | "add") => void;
+  onSwitchAction: (view: "edit" | "delete" | "add") => void;
   currentComponent: "edit" | "delete" | "add";
-  onEditEvent: (event: any) => void;
+  onEditEventAction: (event: any) => void;
   events: any[];
   selectedEvent: any | null; // 👈 เพิ่ม
 };
@@ -24,9 +24,9 @@ function formatDateLocal(date: Date): string {
 }
 
 export default function Edit({
-  onSwitch,
+  onSwitchAction,
   currentComponent,
-  onEditEvent,
+  onEditEventAction,
 }: EditProps) {
   const pathname = usePathname();
   const isstudyPage = pathname.toLowerCase().includes("/study");
@@ -37,9 +37,9 @@ export default function Edit({
   const [weekday, setWeekday] = useState<string>("");
 
   const [formData, setFormData] = useState({
-    subjectid: "",
-    subject: "",
-    group: "",
+    subject_id: "",
+    subjectName: "",
+    sec: "",
     teacher: "",
     date: "",
     timeStart: "",
@@ -49,7 +49,6 @@ export default function Edit({
 
   const [teachers, setTeachers] = useState<string[]>([]);
   const [newTeacher, setNewTeacher] = useState<string>("");
-  const [subject, setSubject] = useState<string>("");
 
   const handleAddTeacher = () => {
     if (newTeacher.trim() !== "") {
@@ -71,12 +70,12 @@ export default function Edit({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onEditEvent({ ...formData, teacher: teachers });
+    onEditEventAction({ ...formData, teacher: teachers });
     // reset ฟอร์ม
     setFormData({
-      subjectid: "",
-      subject: "",
-      group: "",
+      subject_id: "",
+      subjectName: "test",
+      sec: "",
       teacher: "",
       date: "",
       timeStart: "",
@@ -87,7 +86,6 @@ export default function Edit({
     setDay(null);
     setTimeStart(null);
     setTimeEnd(null);
-    setSubject("");
   };
 
   function formatDateToTimeString(date: Date): string {
@@ -96,17 +94,14 @@ export default function Edit({
     return `${hours}:${minutes}`;
   }
   const requiredFields = [
-    formData.subjectCode,
-    formData.group,
+    formData.subject_id,
+    formData.sec,
     formData.location,
     isstudyPage ? weekday : formData.date,
     formData.timeStart,
     formData.timeEnd,
   ];
-  if (requiredFields.some((field) => field.trim() === "") || teachers.length === 0) {
-    alert("กรุณากรอกข้อมูลให้ครบทุกช่อง รวมถึงอาจารย์อย่างน้อย 1 คน");
-    return;
-  }
+
 
   return (
     <div>
@@ -116,8 +111,8 @@ export default function Edit({
             <label className="block mb-1">รหัสวิชา</label>
             <input
               type="text"
-              name="subjectid"
-              value={formData.subjectid}
+              name="subject_id"
+              value={formData.subject_id}
               onChange={handleChange}
               className="box"
               required
@@ -127,13 +122,56 @@ export default function Edit({
             <label className="block mb-1">กลุ่ม</label>
             <input
               type="text"
-              name="group"
-              value={formData.group}
+              name="sec"
+              value={formData.sec}
               onChange={handleChange}
               className="box"
               required
             />
           </div>
+
+          <div className="">
+            <label className="block mb-1">เวลาเริ่ม</label>
+            <DatePicker
+              selected={timeStart}
+              onChange={(date: Date | null) => {
+                setTimeStart(date);
+                setFormData((prev) => ({
+                  ...prev,
+                  timeStart: date ? formatDateToTimeString(date) : "",
+                }));
+              }}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="เวลา"
+              dateFormat="HH:mm"
+              className="box pl-4"
+              required
+            />
+          </div>
+
+          <div className="">
+            <label className="block mb-1">เวลาจบ</label>
+            <DatePicker
+              selected={timeEnd}
+              onChange={(date: Date | null) => {
+                setTimeEnd(date);
+                setFormData((prev) => ({
+                  ...prev,
+                  timeEnd: date ? formatDateToTimeString(date) : "",
+                }));
+              }}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="เวลา"
+              dateFormat="HH:mm"
+              className="box pl-4"
+              required
+            />
+          </div>
+
           <div className="">
             <label className="block mb-1">สถานที่</label>
             <input
@@ -146,9 +184,79 @@ export default function Edit({
             />
           </div>
 
+          <div className="">
+            <label className="block mb-1">วัน</label>
+            {isstudyPage ? (
+              <select
+                name="weekday"
+                value={weekday}
+                onChange={(e) => {
+                  setWeekday(e.target.value);
+                  handleChange(e);
+                }}
+                className="box"
+                required
+              >
+                <option value="">-- เลือกวัน --</option>
+                <option value="monday">จันทร์</option>
+                <option value="tuesday">อังคาร</option>
+                <option value="wednesday">พุธ</option>
+                <option value="thursday">พฤหัส</option>
+                <option value="friday">ศุกร์</option>
+                <option value="saturday">เสาร์</option>
+                <option value="sunday">อาทิตย์</option>
+              </select>
+            ) : (
+              <div className="flex items-center">
+                <div className="boxT">
+                  <DatePicker
+                    selected={day}
+                    onChange={(date: Date | null) => {
+                      setDay(date);
+                      setFormData((prev) => ({
+                        ...prev,
+                        date: date ? formatDateLocal(date) : "",
+                      }));
+                    }}
+                    dateFormat="dd/MM/yyyy"
+                    className="outline-none w-full bg-transparent"
+                    required
+                  />
+                </div>
+                <div
+                  className="ml-2 text-gray-500 hover:text-gray-700"
+                  onClick={() =>
+                    document
+                      .querySelector<HTMLInputElement>(
+                        ".react-datepicker__input-container input"
+                      )
+                      ?.focus()
+                  }
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    viewBox="0 0 24 24"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="col-span-2 row-span-2">
             <label className="block mb-1">อาจารย์</label>
-            <div className="flex gap-2">
+            <div className="flex items-center">
               <input
                 type="text"
                 name="teacher"
@@ -157,9 +265,10 @@ export default function Edit({
                   handleChange(e);
                   setNewTeacher(e.target.value);
                 }}
-                className="boxT"
+                className="boxT
+                required"
               />
-              <button type="button" onClick={handleAddTeacher} className="px-3 py-1">
+              <button type="button" onClick={handleAddTeacher} className="px-2 rounded hover:bg-gray-100">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
@@ -196,7 +305,7 @@ export default function Edit({
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-gray-600 hover:text-gray-800 cursor-pointer"
+                      className="text-gray-500 hover:text-gray-800 cursor-pointer"
                     >
                       <circle cx="12" cy="12" r="10" />
                       <line x1="8" y1="12" x2="16" y2="12" />
@@ -207,117 +316,7 @@ export default function Edit({
             </div>
           </div>
 
-          <div className="col-span-1">
-            <label className="block mb-1">วัน</label>
-            {isstudyPage ? (
-              <select
-                name="weekday"
-                value={weekday}
-                onChange={(e) => {
-                  setWeekday(e.target.value);
-                  handleChange(e);
-                }}
-                className="box"
-                required
-              >
-                <option value="">-- เลือกวัน --</option>
-                <option value="monday">จันทร์</option>
-                <option value="tuesday">อังคาร</option>
-                <option value="wednesday">พุธ</option>
-                <option value="thursday">พฤหัส</option>
-                <option value="friday">ศุกร์</option>
-                <option value="saturday">เสาร์</option>
-                <option value="sunday">อาทิตย์</option>
-              </select>
-            ) : (
-              <div className="relative w-full">
-                <DatePicker
-                  selected={day}
-                  onChange={(date: Date | null) => {
-                    setDay(date);
-                    setFormData((prev) => ({
-                      ...prev,
-                      date: date ? formatDateLocal(date) : "",
-                    }));
-                  }}
-                  dateFormat="dd/MM/yyyy"
-                  className="boxDate"
-                  required
-                />
-                <div
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
-                  onClick={() =>
-                    document
-                      .querySelector<HTMLInputElement>(
-                        ".react-datepicker__input-container input"
-                      )
-                      ?.focus()
-                  }
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    viewBox="0 0 24 24"
-                  >
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="col-span-1">
-            <label>เวลาเริ่ม</label>
-            <DatePicker
-              selected={timeStart}
-              onChange={(date: Date | null) => {
-                setTimeStart(date);
-                setFormData((prev) => ({
-                  ...prev,
-                  timeStart: date ? formatDateToTimeString(date) : "",
-                }));
-              }}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={15}
-              timeCaption="เวลา"
-              dateFormat="HH:mm"
-              className="box pl-4"
-              required
-            />
-          </div>
-
-          <div className="col-span-1">
-            <label>เวลาจบ</label>
-            <DatePicker
-              selected={timeEnd}
-              onChange={(date: Date | null) => {
-                setTimeEnd(date);
-                setFormData((prev) => ({
-                  ...prev,
-                  timeEnd: date ? formatDateToTimeString(date) : "",
-                }));
-              }}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={15}
-              timeCaption="เวลา"
-              dateFormat="HH:mm"
-              className="box pl-4"
-              required
-            />
-          </div>
-
-          <button type="submit" className="buttonSub mt-4">
+          <button type="submit" className="buttonSub">
             แก้ไข
           </button>
         </div>

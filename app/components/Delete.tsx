@@ -7,9 +7,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 
 type DeleteProps = {
-  onSwitch: (view: "edit" | "delete" | "add") => void;
+  onSwitchAction: (view: "edit" | "delete" | "add") => void;
   currentComponent: "edit" | "delete" | "add";
-  onDeleteEvent: (event: any) => void;
+  onDeleteEventAction: (event: any) => void;
   selectedEvent: any | null;
   events: any[];
 };
@@ -29,9 +29,9 @@ function formatDateToTimeString(date: Date): string {
 }
 
 export default function Delete({
-  onSwitch,
+  onSwitchAction,
   currentComponent,
-  onDeleteEvent,
+  onDeleteEventAction,
   selectedEvent,
 }: DeleteProps) {
   const pathname = usePathname();
@@ -39,9 +39,9 @@ export default function Delete({
 
   // สร้าง state เก็บข้อมูลฟอร์ม เพื่อแสดงข้อมูลของ selectedEvent
   const [formData, setFormData] = useState({
-    subjectCode: "",
+    subject_id: "",
     subjectName: "",
-    group: "",
+    sec: "",
     location: "",
     date: "",
     weekday: "",
@@ -61,9 +61,9 @@ export default function Delete({
   useEffect(() => {
     if (selectedEvent) {
       setFormData({
-        subjectCode: selectedEvent.subjectCode || "",
+        subject_id: selectedEvent.subject_id || "",
         subjectName: selectedEvent.subjectName || "",
-        group: selectedEvent.group || "",
+        sec: selectedEvent.sec || "",
         location: selectedEvent.location || "",
         date: selectedEvent.date || "",
         weekday: selectedEvent.weekday || "",
@@ -106,9 +106,9 @@ export default function Delete({
     } else {
       // เคลียร์ฟอร์มหากไม่มี event ที่เลือก
       setFormData({
-        subjectCode: "",
+        subject_id: "",
         subjectName: "",
-        group: "",
+        sec: "",
         location: "",
         date: "",
         weekday: "",
@@ -127,7 +127,7 @@ export default function Delete({
   // กดลบ event
   const handleDelete = () => {
     if (selectedEvent) {
-      onDeleteEvent(selectedEvent);
+      onDeleteEventAction(selectedEvent);
     }
   };
 
@@ -139,36 +139,54 @@ export default function Delete({
           handleDelete();
         }}
       >
-        <div className="edit-form gridcol">
-          <div className="col-span-1">
-            <label>รหัสวิชา</label>
-            <input type="text" value={formData.subjectCode} readOnly className="box" />
+        <div className="edit-form flex flex-col gap-4 text-sm sm:flex-row sm:flex-wrap sm:gap-10 text-sm">
+          <div className="">
+            <label className="block mb-1">รหัสวิชา</label>
+            <input type="text" value={formData.subject_id} readOnly className="box" />
           </div>
-          <div className="col-span-1">
-            <label>กลุ่ม</label>
-            <input type="text" value={formData.group} readOnly className="box" />
+          <div className="">
+            <label className="block mb-1">กลุ่ม</label>
+            <input type="text" value={formData.sec} readOnly className="box" />
           </div>
-          <div className="col-span-1">
-            <label>สถานที่</label>
+
+          <div className="">
+            <label className="block mb-1">เวลาเริ่ม</label>
+            <DatePicker
+              selected={timeStart}
+              onChange={() => {}}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="เวลา"
+              dateFormat="HH:mm"
+              className="box pl-4"
+              readOnly
+              disabled
+            />
+          </div>
+
+          <div className="">
+            <label className="block mb-1">เวลาจบ</label>
+            <DatePicker
+              selected={timeEnd}
+              onChange={() => {}}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="เวลา"
+              dateFormat="HH:mm"
+              className="box pl-4"
+              readOnly
+              disabled
+            />
+          </div>
+
+          <div className="">
+            <label className="block mb-1">สถานที่</label>
             <input type="text" value={formData.location} readOnly className="box" />
           </div>
 
-          <div className="col-span-2 row-span-2">
-            <label className="block mb-1">อาจารย์</label>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {teachers.length === 0 && <p className="text-gray-500">ไม่มีข้อมูลอาจารย์</p>}
-              {teachers.map((teacher, index) => (
-                <div
-                  key={index}
-                  className="flex items-center bg-[#FFE5CC] text-sm px-2 py-1 rounded"
-                >
-                  <span>{teacher}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="col-span-1">
+          <div className="">
             <label className="block mb-1">วัน</label>
             {isstudyPage ? (
               <input
@@ -189,36 +207,19 @@ export default function Delete({
             )}
           </div>
 
-          <div className="col-span-1">
-            <label>เวลาเริ่ม</label>
-            <DatePicker
-              selected={timeStart}
-              onChange={() => {}}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={15}
-              timeCaption="เวลา"
-              dateFormat="HH:mm"
-              className="box pl-4"
-              readOnly
-              disabled
-            />
-          </div>
-
-          <div className="col-span-1">
-            <label>เวลาจบ</label>
-            <DatePicker
-              selected={timeEnd}
-              onChange={() => {}}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={15}
-              timeCaption="เวลา"
-              dateFormat="HH:mm"
-              className="box pl-4"
-              readOnly
-              disabled
-            />
+          <div className="">
+            <label className="block mb-1">อาจารย์</label>
+            <div className="flex flex-wrap gap-2 mt-2 w-36">
+              {teachers.length === 0 && <p className="text-gray-500">ไม่มีข้อมูลอาจารย์</p>}
+              {teachers.map((teacher, index) => (
+                <div
+                  key={index}
+                  className="flex items-center bg-[#FFE5CC] text-sm px-2 py-1 rounded"
+                >
+                  <span>{teacher}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
           <button type="submit" className="buttonSub mt-4 bg-red-600 hover:bg-red-700 text-white">
