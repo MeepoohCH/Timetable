@@ -56,6 +56,7 @@ export default function Delete({
   const [day, setDay] = useState<Date | null>(null);
   const [startTime, setstartTime] = useState<Date | null>(null);
   const [endTime, setendTime] = useState<Date | null>(null);
+  const [weekday, setWeekday] = useState<string>("");
 
   // เมื่อ selectedEvent เปลี่ยน ให้โหลดข้อมูลลงฟอร์ม
   useEffect(() => {
@@ -107,7 +108,7 @@ export default function Delete({
       // เคลียร์ฟอร์มหากไม่มี event ที่เลือก
       setFormData({
         subject_id: "",
-        subjectName: "",
+        subjectName: "test",
         sec: "",
         location: "",
         date: "",
@@ -119,6 +120,7 @@ export default function Delete({
       setDay(null);
       setstartTime(null);
       setendTime(null);
+      setWeekday("");
     }
   }, [selectedEvent]);
 
@@ -222,7 +224,10 @@ export default function Delete({
             </div>
           </div>
 
-          <button type="submit" className="buttonSub mt-4 bg-red-600 hover:bg-red-700 text-white">
+          <button 
+            type="submit" 
+            className="buttonSub mt-4 bg-red-600 hover:bg-red-700 text-white"
+          >
             ลบ
           </button>
         </div>

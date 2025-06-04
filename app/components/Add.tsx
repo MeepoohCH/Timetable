@@ -10,6 +10,7 @@ type AddProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
   currentComponent: "edit" | "delete" | "add";
   onAddEventAction: (event: any) => void;
+  
 };
 
 // ✅ ฟังก์ชันแปลงวันที่แบบ local (แก้ปัญหาวันเลื่อน)
@@ -49,6 +50,8 @@ export default function Add({
     startTime: "",
     endTime: "",
     location: "",
+    subjectType:"",
+    academicYear:"",
   });
 
   const [teachers, setTeachers] = useState<string[]>([]);
@@ -75,6 +78,12 @@ export default function Add({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const allTeachers =
+    newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())
+      ? [...teachers, newTeacher.trim()]
+      : teachers;
+
+
     const requiredFields = [
       formData.subject_id,
       formData.sec,
@@ -83,7 +92,7 @@ export default function Add({
       formData.startTime,
       formData.endTime,
     ];
-    if (requiredFields.some((field) => field.trim() === "") || teachers.length === 0) {
+    if (requiredFields.some((field) => field.trim() === "") || allTeachers.length === 0) {
       alert("กรุณากรอกข้อมูลให้ครบทุกช่อง รวมถึงอาจารย์อย่างน้อย 1 คน");
       return;
     }
@@ -92,10 +101,15 @@ export default function Add({
 
 
     onAddEventAction({ 
-      ...formData, 
+      ...formData,
       teacher: teachers,
-      weekday: isstudyPage ? weekday : "", 
+      weekday: isstudyPage ? weekday : "",
+      // ใส่ฟิกค่าเข้าไปเพื่อให้ได้เห็นใน ui แต่จริงๆต้องไปดึงเอาจาก DB
+      subjectName: "subjectName",
+      subjectType: "ท/ป",
+      academicYear: "2xxx"
     });
+
 
     // reset ฟอร์ม
     setFormData({
@@ -107,9 +121,13 @@ export default function Add({
       startTime: "",
       endTime: "",
       location: "",
+      subjectType:"ท/ป",
+      academicYear:"2xxx",
     });
     setTeachers([]);
+    setNewTeacher("");
     setDay(null);
+    setNewTeacher("");
     setstartTime(null);
     setendTime(null);
     setWeekday("");
@@ -275,7 +293,7 @@ export default function Add({
               <input
                 type="text"
                 name="teacher"
-                value={formData.teacher}
+                value={newTeacher}
                 onChange={(e) => {
                   handleChange(e);
                   setNewTeacher(e.target.value);
@@ -332,7 +350,7 @@ export default function Add({
           </div>
 
 
-          <button type="submit" className="buttonSub">
+          <button type="submit" className="buttonSub" onClick={handleAddTeacher}>
             เพิ่ม
           </button>
         </div>

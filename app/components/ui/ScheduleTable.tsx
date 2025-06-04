@@ -1,19 +1,16 @@
-type ClassItem = {
-    subject_id: string,
-    subjectName: string,
-    sec: string,
-    teacher: string[],
-    weekday: string,
-    startTime: string,
-    endTime: string,
-    location: string,
-};
+import { ClassItem } from "../ClassItem";
 
 type Props = {
   classes: ClassItem[];
+  selectedEvent: ClassItem | null;
+  setSelectedEvent: (event: ClassItem) => void;
 };
 
-export default function ScheduleTable({ classes }: Props) {
+export default function ScheduleTable({ 
+  classes, 
+  selectedEvent, 
+  setSelectedEvent 
+}: Props) {
   const weekdays = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
   const startHour = 8;
   const endHour = 22;
@@ -75,16 +72,23 @@ export default function ScheduleTable({ classes }: Props) {
                     const end = parseTimeToFloat(c.endTime);
                     const left = timeToSlot(start) * 19;
                     const width = (end - start) * 4 * 19;
+                    const isSelected =
+                      selectedEvent?.subject_id === c.subject_id &&
+                      selectedEvent?.sec === c.sec;
 
                     return (
                       <div
                         key={i}
-                        className="absolute top-1 bottom-1 bg-[#FEDDC1] ml-3 rounded p-1 shadow text-xs overflow-hidden text-center z-10"
+                        onClick={() => setSelectedEvent(c)}
+                        
+                        className={`absolute top-1 bottom-1 ml-3 rounded p-1 shadow text-xs overflow-hidden text-center z-10 cursor-pointer
++                         ${isSelected ? "bg-orange-300 ring-2 ring-orange-500" : "bg-[#FEDDC1]"}
+                        `}
                         style={{ left, width }}
                         title={`${c.subjectName} (${c.subject_id}) ${c.startTime} - ${c.endTime}`}
                       >
                         <span className="font-medium">{c.subjectName}</span>
-                        <div style={{ fontSize: '10px' }}>{c.subject_id}</div>
+                        <div style={{ fontSize: '10px' }}>{c.subject_id} ({c.subjectType}) ปี {c.academicYear} กลุ่ม {c.sec}</div>
                       </div>
                     );
                   })}

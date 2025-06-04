@@ -7,30 +7,35 @@ import Delete from "../components/Delete";
 import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
 import ScheduleTable from "./ui/ScheduleTable";
-
-type ClassItem = {
-    subject_id: string,
-    subjectName: string,
-    sec: string,
-    teacher: string[],
-    weekday: string,
-    startTime: string,
-    endTime: string,
-    location: string,
-};
+import { ClassItem } from "./ClassItem";
 
 export default function StudyForm() { 
 
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
-  const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
   const [events, setEvents] = useState<ClassItem[]>([]);
 
-  const handleAddEvent = (event: ClassItem) => setEvents((prev) => [...prev, event]);
-  const handleDeleteEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
+  const handleAddEvent = (event: ClassItem) =>  setEvents((prev) => [...prev, event]);
+  const handleDeleteEvent = () => {
+    if (!selectedEvent) return;
+
+    setEvents((prev) =>
+      prev.filter((ev) =>
+        !(
+          ev.subject_id === selectedEvent.subject_id &&
+          ev.sec === selectedEvent.sec
+        )
+      )
+    );
+
+    setSelectedEvent(null); // clear class ที่ถูกเลือกหลังลบ
+  };
   const handleEditEvent = (updatedEvent: any) => {
     setEvents((prev) =>
       prev.map((ev) =>
-        ev.subject_id === updatedEvent.subject_id ? updatedEvent : ev
+      ev.subject_id === updatedEvent.subject_id && ev.sec === updatedEvent.sec
+        ? updatedEvent
+        : ev
       )
     );
     setSelectedEvent(null); // reset event ที่เลือกหลังแก้ไข
@@ -94,7 +99,14 @@ export default function StudyForm() {
         )}
       </div>
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-8 mx-2">
-      <ScheduleTable classes={events}/>
+      <ScheduleTable 
+        classes={Array.isArray(events) ? events : []}
+        selectedEvent={selectedEvent}
+        setSelectedEvent={(event) => {
+          setSelectedEvent(event);
+          setCurrentComponent("edit"); // เปลี่ยนเป็นหน้า edit อัตโนมัติ
+        }}
+      />
 
       </div>
     </div>

@@ -44,16 +44,6 @@ export default function RootLayout({
       <body
         className={`${kanit.variable} antialiased bg-[#EFEFEF] flex min-h-screen`}
       >
-
-        {/* <aside className=" md:w-[200px] shrink-0 h-auto md:h-screen">
-          <SideNavbar />
-        </aside>
-
-
-        <main className="flex-1 min-w-0 overflow-auto">
-          {children}
-        </main> */}
-
         <AppLayoutClient>{children}</AppLayoutClient>
       </body>
     </html>

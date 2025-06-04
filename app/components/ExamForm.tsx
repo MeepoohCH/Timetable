@@ -6,6 +6,7 @@ import Calendar from "../components/Calendar";
 import Delete from "../components/Delete";
 import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
+import { ClassItem } from "./ClassItem";
 
 export default function ExamForm() { 
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
@@ -15,7 +16,10 @@ export default function ExamForm() {
   const [events, setEvents] = useState<any[]>([]);
 
   const handleAddEvent = (event: any) => setEvents((prev) => [...prev, event]);
-  const handleDeleteEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
+  const handleDeleteEvent = (updatedEvents: any[]) => {
+     setEvents(updatedEvents);
+     setSelectedEvent(null);
+  }
   const handleEditEvent = (updatedEvent: any) => {
     setEvents((prev) =>
       prev.map((ev) =>

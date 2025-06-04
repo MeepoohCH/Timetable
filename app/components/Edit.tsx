@@ -1,47 +1,49 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 
+type ClassItem = {
+  subject_id: string;
+  subjectName: string;
+  sec: string;
+  teacher: string[];
+  weekday: string;
+  startTime: string;
+  endTime: string;
+  location: string;
+};
+
 type EditProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
   currentComponent: "edit" | "delete" | "add";
-  onEditEventAction: (event: any) => void;
-  events: any[];
-  selectedEvent: any | null; // 👈 เพิ่ม
+  onEditEventAction: (updatedEvent: ClassItem) => void;
+  selectedEvent: ClassItem | null;
+  events: ClassItem[];
 };
 
-
-// ✅ ฟังก์ชันแปลงวันที่แบบ local (แก้ปัญหาวันเลื่อน)
-function formatDateLocal(date: Date): string {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
-  return `${year}-${month}-${day}`;
+// ฟังก์ชันแปลงเวลา Date เป็น HH:mm string
+function formatDateToTimeString(date: Date): string {
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
 }
 
 export default function Edit({
   onSwitchAction,
   currentComponent,
   onEditEventAction,
+  selectedEvent,
+  events,
 }: EditProps) {
-  const pathname = usePathname();
-  const isstudyPage = pathname.includes("/studentStudy") || pathname.includes("/teacherStudy")
-
-  const [day, setDay] = useState<Date | null>(null);
-  const [startTime, setstartTime] = useState<Date | null>(null);
-  const [endTime, setendTime] = useState<Date | null>(null);
-  const [weekday, setWeekday] = useState<string>("");
-
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ClassItem>({
     subject_id: "",
     subjectName: "",
     sec: "",
-    teacher: "",
-    date: "",
+    teacher: [],
+    weekday: "",
     startTime: "",
     endTime: "",
     location: "",
@@ -49,17 +51,44 @@ export default function Edit({
 
   const [teachers, setTeachers] = useState<string[]>([]);
   const [newTeacher, setNewTeacher] = useState<string>("");
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<Date | null>(null);
 
-  const handleAddTeacher = () => {
-    if (newTeacher.trim() !== "") {
-      setTeachers([...teachers, newTeacher.trim()]);
-      setNewTeacher("");
+  useEffect(() => {
+    if (selectedEvent) {
+      setFormData(selectedEvent);
+      setTeachers(selectedEvent.teacher || []);
+
+      // แปลงเวลา string เป็น Date
+      if (selectedEvent.startTime) {
+        const [h, m] = selectedEvent.startTime.split(":");
+        const d = new Date();
+        d.setHours(Number(h), Number(m), 0, 0);
+        setStartTime(d);
+      } else setStartTime(null);
+
+      if (selectedEvent.endTime) {
+        const [h, m] = selectedEvent.endTime.split(":");
+        const d = new Date();
+        d.setHours(Number(h), Number(m), 0, 0);
+        setEndTime(d);
+      } else setEndTime(null);
+    } else {
+      setFormData({
+        subject_id: "",
+        subjectName: "",
+        sec: "",
+        teacher: [],
+        weekday: "",
+        startTime: "",
+        endTime: "",
+        location: "",
+      });
+      setTeachers([]);
+      setStartTime(null);
+      setEndTime(null);
     }
-  };
-
-  const handleRemoveTeacher = (index: number) => {
-    setTeachers(teachers.filter((_, i) => i !== index));
-  };
+  }, [selectedEvent]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -68,46 +97,70 @@ export default function Edit({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onEditEventAction({ ...formData, teacher: teachers });
-    // reset ฟอร์ม
-    setFormData({
-      subject_id: "",
-      subjectName: "test",
-      sec: "",
-      teacher: "",
-      date: "",
-      startTime: "",
-      endTime: "",
-      location: "",
-    });
-    setTeachers([]);
-    setDay(null);
-    setstartTime(null);
-    setendTime(null);
+  const handleAddTeacher = () => {
+    if (newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())) {
+      const updated = [...teachers, newTeacher.trim()];
+      setTeachers(updated);
+      setFormData((prev) => ({ ...prev, teacher: updated }));
+      setNewTeacher("");
+    }
   };
 
-  function formatDateToTimeString(date: Date): string {
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  }
-  const requiredFields = [
-    formData.subject_id,
-    formData.sec,
-    formData.location,
-    isstudyPage ? weekday : formData.date,
-    formData.startTime,
-    formData.endTime,
-  ];
+  const handleRemoveTeacher = (index: number) => {
+    const updated = teachers.filter((_, i) => i !== index);
+    setTeachers(updated);
+    setFormData((prev) => ({ ...prev, teacher: updated }));
+  };
 
+  const handleStartTimeChange = (date: Date | null) => {
+    setStartTime(date);
+    setFormData((prev) => ({
+      ...prev,
+      startTime: date ? formatDateToTimeString(date) : "",
+    }));
+  };
+
+  const handleEndTimeChange = (date: Date | null) => {
+    setEndTime(date);
+    setFormData((prev) => ({
+      ...prev,
+      endTime: date ? formatDateToTimeString(date) : "",
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const allTeachers =
+    newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())
+      ? [...teachers, newTeacher.trim()]
+      : teachers;
+
+
+    const requiredFields = [
+      formData.subject_id,
+      formData.sec,
+      formData.location,
+      formData.weekday,
+      formData.startTime,
+      formData.endTime,
+    ];
+    if (
+      requiredFields.some((field) => field.trim() === "") ||
+      teachers.length === 0
+    ) {
+      alert("กรุณากรอกข้อมูลให้ครบทุกช่อง รวมถึงอาจารย์อย่างน้อย 1 คน");
+      return;
+    }
+
+    onEditEventAction({ ...formData, teacher: teachers });
+  };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div className="edit-form flex flex-col gap-4 text-sm sm:flex-row sm:flex-wrap sm:gap-10 text-sm">
-          <div className="">
+          <div>
             <label className="block mb-1">รหัสวิชา</label>
             <input
               type="text"
@@ -118,7 +171,19 @@ export default function Edit({
               required
             />
           </div>
-          <div className="">
+
+          {/* <div>
+            <label className="block mb-1">ชื่อวิชา</label>
+            <input
+              type="text"
+              name="subjectName"
+              value={formData.subjectName}
+              onChange={handleChange}
+              className="box"
+            />
+          </div> */}
+
+          <div>
             <label className="block mb-1">กลุ่ม</label>
             <input
               type="text"
@@ -130,17 +195,11 @@ export default function Edit({
             />
           </div>
 
-          <div className="">
+          <div>
             <label className="block mb-1">เวลาเริ่ม</label>
             <DatePicker
               selected={startTime}
-              onChange={(date: Date | null) => {
-                setstartTime(date);
-                setFormData((prev) => ({
-                  ...prev,
-                  startTime: date ? formatDateToTimeString(date) : "",
-                }));
-              }}
+              onChange={handleStartTimeChange}
               showTimeSelect
               showTimeSelectOnly
               timeIntervals={15}
@@ -151,17 +210,11 @@ export default function Edit({
             />
           </div>
 
-          <div className="">
+          <div>
             <label className="block mb-1">เวลาจบ</label>
             <DatePicker
               selected={endTime}
-              onChange={(date: Date | null) => {
-                setendTime(date);
-                setFormData((prev) => ({
-                  ...prev,
-                  endTime: date ? formatDateToTimeString(date) : "",
-                }));
-              }}
+              onChange={handleEndTimeChange}
               showTimeSelect
               showTimeSelectOnly
               timeIntervals={15}
@@ -172,7 +225,7 @@ export default function Edit({
             />
           </div>
 
-          <div className="">
+          <div>
             <label className="block mb-1">สถานที่</label>
             <input
               type="text"
@@ -184,91 +237,42 @@ export default function Edit({
             />
           </div>
 
-          <div className="">
+          <div>
             <label className="block mb-1">วัน</label>
-            {isstudyPage ? (
-              <select
-                name="weekday"
-                value={weekday}
-                onChange={(e) => {
-                  setWeekday(e.target.value);
-                  handleChange(e);
-                }}
-                className="box"
-                required
-              >
-                <option value="">-- เลือกวัน --</option>
-                <option value="monday">จันทร์</option>
-                <option value="tuesday">อังคาร</option>
-                <option value="wednesday">พุธ</option>
-                <option value="thursday">พฤหัส</option>
-                <option value="friday">ศุกร์</option>
-                <option value="saturday">เสาร์</option>
-                <option value="sunday">อาทิตย์</option>
-              </select>
-            ) : (
-              <div className="flex items-center">
-                <div className="boxT">
-                  <DatePicker
-                    selected={day}
-                    onChange={(date: Date | null) => {
-                      setDay(date);
-                      setFormData((prev) => ({
-                        ...prev,
-                        date: date ? formatDateLocal(date) : "",
-                      }));
-                    }}
-                    dateFormat="dd/MM/yyyy"
-                    className="outline-none w-full bg-transparent"
-                    required
-                  />
-                </div>
-                <div
-                  className="ml-2 text-gray-500 hover:text-gray-700"
-                  onClick={() =>
-                    document
-                      .querySelector<HTMLInputElement>(
-                        ".react-datepicker__input-container input"
-                      )
-                      ?.focus()
-                  }
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    viewBox="0 0 24 24"
-                  >
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                </div>
-              </div>
-            )}
+            <select
+              name="weekday"
+              value={formData.weekday}
+              onChange={handleChange}
+              className="box"
+              required
+            >
+              <option value="">-- เลือกวัน --</option>
+              <option value="จันทร์">จันทร์</option>
+              <option value="อังคาร">อังคาร</option>
+              <option value="พุธ">พุธ</option>
+              <option value="พฤหัส">พฤหัส</option>
+              <option value="ศุกร์">ศุกร์</option>
+              <option value="เสาร์">เสาร์</option>
+              <option value="อาทิตย์">อาทิตย์</option>
+            </select>
           </div>
 
-          <div className="col-span-2 row-span-2">
+          <div>
             <label className="block mb-1">อาจารย์</label>
             <div className="flex items-center">
               <input
                 type="text"
                 name="teacher"
-                value={formData.teacher}
-                onChange={(e) => {
-                  handleChange(e);
-                  setNewTeacher(e.target.value);
-                }}
-                className="boxT
-                required"
+                value={newTeacher}
+                onChange={(e) => setNewTeacher(e.target.value)}
+                className="boxT"
               />
-              <button type="button" onClick={handleAddTeacher} className="px-2 rounded hover:bg-gray-100">
+              <button
+                type="button"
+                onClick={handleAddTeacher}
+                className="px-2 rounded hover:bg-gray-100"
+                title="เพิ่มอาจารย์"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
@@ -289,11 +293,15 @@ export default function Edit({
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
               {teachers.map((teacher, index) => (
-                <div key={index} className="flex items-center bg-[#FFE5CC] text-sm px-2 py-1 rounded">
+                <div
+                  key={index}
+                  className="flex items-center bg-[#FFE5CC] text-sm px-2 py-1 rounded"
+                >
                   <span>{teacher}</span>
                   <button
                     onClick={() => handleRemoveTeacher(index)}
                     className="ml-2 text-gray-700 hover:text-red-500"
+                    title="ลบอาจารย์"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -316,8 +324,8 @@ export default function Edit({
             </div>
           </div>
 
-          <button type="submit" className="buttonSub">
-            แก้ไข
+          <button type="submit" className="buttonSub bg-green-600 hover:bg-green-700 text-white px-3 rounded">
+            บันทึก
           </button>
         </div>
       </form>

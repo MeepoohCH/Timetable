@@ -47,7 +47,7 @@ export default function Calendar({
   setSelectedEvent: (event: any | null) => void;
   currentMonth: Date;
   setCurrentMonth: (date: Date) => void;
-  events: any[] | undefined; // รับ undefined ได้ เผื่อกรณียังไม่โหลดข้อมูล
+  events: any[] | undefined;
 }) {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
@@ -66,7 +66,6 @@ export default function Calendar({
       for (let i = 0; i < 7; i++) {
         const formattedDate = format(day, "d");
 
-        // ป้องกัน error ถ้า events ไม่ใช่ array หรือ undefined
         const dayEvents = Array.isArray(events)
           ? events.filter((e) => {
               if (!e.date) return false;
@@ -87,12 +86,17 @@ export default function Calendar({
             <span className="text-sm self-end">{formattedDate}</span>
 
             {visibleEvents.map((event, idx) => {
+              const isSelected = selectedEvent === event;
               const bgColor = getColorFromString(event.title || `${event.id || idx}`);
               return (
                 <div
                   key={idx}
-                  className="w-full mt-1 rounded px-1 text-xs truncate cursor-pointer text-white"
-                  style={{ backgroundColor: bgColor }}
+                  className={`w-full mt-1 rounded px-1 text-xs truncate cursor-pointer text-white
+                    ${isSelected ? "ring-2 ring-orange-500" : ""}`}
+                  style={{
+                    backgroundColor: bgColor,
+                    filter: isSelected ? "none" : "none",
+                  }}
                   onClick={() => setSelectedEvent(event)}
                 >
                   {event.title || "ไม่มีชื่อกิจกรรม"}
