@@ -32,11 +32,12 @@ export default function Add({
   onAddEventAction,
 }: AddProps) {
   const pathname = usePathname();
-  const isstudyPage = pathname.toLowerCase().includes("/study");
+  const isstudyPage = pathname.includes("/studentStudy") || pathname.includes("/teacherStudy")
+
 
   const [day, setDay] = useState<Date | null>(null);
-  const [timeStart, setTimeStart] = useState<Date | null>(null);
-  const [timeEnd, setTimeEnd] = useState<Date | null>(null);
+  const [startTime, setstartTime] = useState<Date | null>(null);
+  const [endTime, setendTime] = useState<Date | null>(null);
   const [weekday, setWeekday] = useState<string>("");
 
   const [formData, setFormData] = useState({
@@ -45,8 +46,8 @@ export default function Add({
     sec: "",
     teacher: "",
     date: "",
-    timeStart: "",
-    timeEnd: "",
+    startTime: "",
+    endTime: "",
     location: "",
   });
 
@@ -79,15 +80,23 @@ export default function Add({
       formData.sec,
       formData.location,
       isstudyPage ? weekday : formData.date,
-      formData.timeStart,
-      formData.timeEnd,
+      formData.startTime,
+      formData.endTime,
     ];
     if (requiredFields.some((field) => field.trim() === "") || teachers.length === 0) {
       alert("กรุณากรอกข้อมูลให้ครบทุกช่อง รวมถึงอาจารย์อย่างน้อย 1 คน");
       return;
     }
 
-    onAddEventAction({ ...formData, teacher: teachers });
+
+
+
+    onAddEventAction({ 
+      ...formData, 
+      teacher: teachers,
+      weekday: isstudyPage ? weekday : "", 
+    });
+
     // reset ฟอร์ม
     setFormData({
       subject_id: "",
@@ -95,14 +104,15 @@ export default function Add({
       sec: "",
       teacher: "",
       date: "",
-      timeStart: "",
-      timeEnd: "",
+      startTime: "",
+      endTime: "",
       location: "",
     });
     setTeachers([]);
     setDay(null);
-    setTimeStart(null);
-    setTimeEnd(null);
+    setstartTime(null);
+    setendTime(null);
+    setWeekday("");
   };
   
 
@@ -139,12 +149,12 @@ export default function Add({
           <div className="">
             <label className="block mb-1">เวลาเริ่ม</label>
             <DatePicker
-              selected={timeStart}
+              selected={startTime}
               onChange={(date: Date | null) => {
-                setTimeStart(date);
+                setstartTime(date);
                 setFormData((prev) => ({
                   ...prev,
-                  timeStart: date ? formatDateToTimeString(date) : "",
+                  startTime: date ? formatDateToTimeString(date) : "",
                 }));
               }}
               showTimeSelect
@@ -160,12 +170,12 @@ export default function Add({
         <div className="col-span-1 text-sm">
           <label className="block mb-1">เวลาจบ</label>
           <DatePicker
-            selected={timeEnd}
+            selected={endTime}
             onChange={(date: Date | null) => {
-              setTimeEnd(date);
+              setendTime(date);
               setFormData((prev) => ({
                 ...prev,
-                timeEnd: date ? formatDateToTimeString(date) : "",
+                endTime: date ? formatDateToTimeString(date) : "",
               }));
             }}
             showTimeSelect
@@ -202,13 +212,13 @@ export default function Add({
                 required
               >
                 <option value="">-- เลือกวัน --</option>
-                <option value="monday">จันทร์</option>
-                <option value="tuesday">อังคาร</option>
-                <option value="wednesday">พุธ</option>
-                <option value="thursday">พฤหัส</option>
-                <option value="friday">ศุกร์</option>
-                <option value="saturday">เสาร์</option>
-                <option value="sunday">อาทิตย์</option>
+                <option value="จันทร์">จันทร์</option>
+                <option value="อังคาร">อังคาร</option>
+                <option value="พุธ">พุธ</option>
+                <option value="พฤหัส">พฤหัส</option>
+                <option value="ศุกร์">ศุกร์</option>
+                <option value="เสาร์">เสาร์</option>
+                <option value="อาทิตย์">อาทิตย์</option>
               </select>
             ) : (
               <div className="flex items-center">

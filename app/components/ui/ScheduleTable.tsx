@@ -1,9 +1,12 @@
 type ClassItem = {
-  day: string;
-  starttime: string;
-  endtime: string;
-  subject: string;
-  subjectid: string;
+    subject_id: string,
+    subjectName: string,
+    sec: string,
+    teacher: string[],
+    weekday: string,
+    startTime: string,
+    endTime: string,
+    location: string,
 };
 
 type Props = {
@@ -11,7 +14,7 @@ type Props = {
 };
 
 export default function ScheduleTable({ classes }: Props) {
-  const days = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
+  const weekdays = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
   const startHour = 8;
   const endHour = 22;
   const totalSlots = (endHour - startHour) * 4;
@@ -47,14 +50,14 @@ export default function ScheduleTable({ classes }: Props) {
             })}
           </div>
 
-          {/* Day rows */}
-          {days.map((day) => (
+          {/* weekday rows */}
+          {weekdays.map((weekday) => (
             <div
-              key={day}
+              key={weekday}
               className="grid grid-cols-[90px_repeat(56,19px)] border-t relative bg-[#F7F7F7]"
             >
               <div className="flex items-center justify-center sticky left-0 z-40 border-r bg-[#F7F7F7]">
-                {day}
+                {weekday}
               </div>
               <div className="relative col-span-[56] flex">
                 {Array.from({ length: totalSlots }).map((_, i) => (
@@ -66,10 +69,10 @@ export default function ScheduleTable({ classes }: Props) {
                 ))}
 
                 {classes
-                  .filter((c) => c.day === day)
+                  .filter((c) => c.weekday === weekday)
                   .map((c, i) => {
-                    const start = parseTimeToFloat(c.starttime);
-                    const end = parseTimeToFloat(c.endtime);
+                    const start = parseTimeToFloat(c.startTime);
+                    const end = parseTimeToFloat(c.endTime);
                     const left = timeToSlot(start) * 19;
                     const width = (end - start) * 4 * 19;
 
@@ -78,10 +81,10 @@ export default function ScheduleTable({ classes }: Props) {
                         key={i}
                         className="absolute top-1 bottom-1 bg-[#FEDDC1] ml-3 rounded p-1 shadow text-xs overflow-hidden text-center z-10"
                         style={{ left, width }}
-                        title={`${c.subject} (${c.subjectid}) ${c.starttime} - ${c.endtime}`}
+                        title={`${c.subjectName} (${c.subject_id}) ${c.startTime} - ${c.endTime}`}
                       >
-                        <span className="font-medium">{c.subject}</span>
-                        <div style={{ fontSize: '10px' }}>{c.subjectid}</div>
+                        <span className="font-medium">{c.subjectName}</span>
+                        <div style={{ fontSize: '10px' }}>{c.subject_id}</div>
                       </div>
                     );
                   })}

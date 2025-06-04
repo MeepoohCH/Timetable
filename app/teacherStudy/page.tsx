@@ -32,7 +32,7 @@ export default function SchedulePage() {
     </div>
   
     <div className="">
-      <ScheduleTable classes={mockClasses} />
+
     </div>
 </div>
 

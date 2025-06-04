@@ -1,6 +1,6 @@
 import ScheduleTable from '@/app/components/ui/ScheduleTable'
 import StudentDropdown from '../components/ui/studentDropdown';
-import StudyForm from '../components/ExamForm';
+import StudyForm from '../components/StudyForm';
 
 const mockClasses = [
   {
@@ -30,7 +30,6 @@ export default function SchedulePage() {
           <StudentDropdown />
           <StudyForm/>
         </div>
-        <ScheduleTable classes={mockClasses} />
       </div>
     </>
   );

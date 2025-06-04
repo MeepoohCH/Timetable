@@ -29,11 +29,11 @@ export default function Edit({
   onEditEventAction,
 }: EditProps) {
   const pathname = usePathname();
-  const isstudyPage = pathname.toLowerCase().includes("/study");
+  const isstudyPage = pathname.includes("/studentStudy") || pathname.includes("/teacherStudy")
 
   const [day, setDay] = useState<Date | null>(null);
-  const [timeStart, setTimeStart] = useState<Date | null>(null);
-  const [timeEnd, setTimeEnd] = useState<Date | null>(null);
+  const [startTime, setstartTime] = useState<Date | null>(null);
+  const [endTime, setendTime] = useState<Date | null>(null);
   const [weekday, setWeekday] = useState<string>("");
 
   const [formData, setFormData] = useState({
@@ -42,8 +42,8 @@ export default function Edit({
     sec: "",
     teacher: "",
     date: "",
-    timeStart: "",
-    timeEnd: "",
+    startTime: "",
+    endTime: "",
     location: "",
   });
 
@@ -78,14 +78,14 @@ export default function Edit({
       sec: "",
       teacher: "",
       date: "",
-      timeStart: "",
-      timeEnd: "",
+      startTime: "",
+      endTime: "",
       location: "",
     });
     setTeachers([]);
     setDay(null);
-    setTimeStart(null);
-    setTimeEnd(null);
+    setstartTime(null);
+    setendTime(null);
   };
 
   function formatDateToTimeString(date: Date): string {
@@ -98,8 +98,8 @@ export default function Edit({
     formData.sec,
     formData.location,
     isstudyPage ? weekday : formData.date,
-    formData.timeStart,
-    formData.timeEnd,
+    formData.startTime,
+    formData.endTime,
   ];
 
 
@@ -133,12 +133,12 @@ export default function Edit({
           <div className="">
             <label className="block mb-1">เวลาเริ่ม</label>
             <DatePicker
-              selected={timeStart}
+              selected={startTime}
               onChange={(date: Date | null) => {
-                setTimeStart(date);
+                setstartTime(date);
                 setFormData((prev) => ({
                   ...prev,
-                  timeStart: date ? formatDateToTimeString(date) : "",
+                  startTime: date ? formatDateToTimeString(date) : "",
                 }));
               }}
               showTimeSelect
@@ -154,12 +154,12 @@ export default function Edit({
           <div className="">
             <label className="block mb-1">เวลาจบ</label>
             <DatePicker
-              selected={timeEnd}
+              selected={endTime}
               onChange={(date: Date | null) => {
-                setTimeEnd(date);
+                setendTime(date);
                 setFormData((prev) => ({
                   ...prev,
-                  timeEnd: date ? formatDateToTimeString(date) : "",
+                  endTime: date ? formatDateToTimeString(date) : "",
                 }));
               }}
               showTimeSelect

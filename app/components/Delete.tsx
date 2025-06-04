@@ -35,7 +35,7 @@ export default function Delete({
   selectedEvent,
 }: DeleteProps) {
   const pathname = usePathname();
-  const isstudyPage = pathname.toLowerCase().includes("/study");
+   const isstudyPage = pathname.includes("/studentStudy") || pathname.includes("/teacherStudy")
 
   // สร้าง state เก็บข้อมูลฟอร์ม เพื่อแสดงข้อมูลของ selectedEvent
   const [formData, setFormData] = useState({
@@ -45,8 +45,8 @@ export default function Delete({
     location: "",
     date: "",
     weekday: "",
-    timeStart: "",
-    timeEnd: "",
+    startTime: "",
+    endTime: "",
   });
 
   // สร้าง state รายชื่ออาจารย์แบบ array
@@ -54,8 +54,8 @@ export default function Delete({
 
   // เก็บวันที่และเวลาที่แปลงเป็น Date object เพื่อแสดงใน DatePicker
   const [day, setDay] = useState<Date | null>(null);
-  const [timeStart, setTimeStart] = useState<Date | null>(null);
-  const [timeEnd, setTimeEnd] = useState<Date | null>(null);
+  const [startTime, setstartTime] = useState<Date | null>(null);
+  const [endTime, setendTime] = useState<Date | null>(null);
 
   // เมื่อ selectedEvent เปลี่ยน ให้โหลดข้อมูลลงฟอร์ม
   useEffect(() => {
@@ -67,8 +67,8 @@ export default function Delete({
         location: selectedEvent.location || "",
         date: selectedEvent.date || "",
         weekday: selectedEvent.weekday || "",
-        timeStart: selectedEvent.timeStart || "",
-        timeEnd: selectedEvent.timeEnd || "",
+        startTime: selectedEvent.startTime || "",
+        endTime: selectedEvent.endTime || "",
       });
 
       setTeachers(Array.isArray(selectedEvent.teacher) ? selectedEvent.teacher : []);
@@ -85,23 +85,23 @@ export default function Delete({
       }
 
       // แปลงเวลาเริ่มต้นเป็น Date object
-      if (selectedEvent.timeStart) {
-        const [h, m] = selectedEvent.timeStart.split(":");
+      if (selectedEvent.startTime) {
+        const [h, m] = selectedEvent.startTime.split(":");
         const ts = new Date();
         ts.setHours(Number(h), Number(m), 0, 0);
-        setTimeStart(ts);
+        setstartTime(ts);
       } else {
-        setTimeStart(null);
+        setstartTime(null);
       }
 
       // แปลงเวลาจบเป็น Date object
-      if (selectedEvent.timeEnd) {
-        const [h, m] = selectedEvent.timeEnd.split(":");
+      if (selectedEvent.endTime) {
+        const [h, m] = selectedEvent.endTime.split(":");
         const te = new Date();
         te.setHours(Number(h), Number(m), 0, 0);
-        setTimeEnd(te);
+        setendTime(te);
       } else {
-        setTimeEnd(null);
+        setendTime(null);
       }
     } else {
       // เคลียร์ฟอร์มหากไม่มี event ที่เลือก
@@ -112,13 +112,13 @@ export default function Delete({
         location: "",
         date: "",
         weekday: "",
-        timeStart: "",
-        timeEnd: "",
+        startTime: "",
+        endTime: "",
       });
       setTeachers([]);
       setDay(null);
-      setTimeStart(null);
-      setTimeEnd(null);
+      setstartTime(null);
+      setendTime(null);
     }
   }, [selectedEvent]);
 
@@ -152,7 +152,7 @@ export default function Delete({
           <div className="">
             <label className="block mb-1">เวลาเริ่ม</label>
             <DatePicker
-              selected={timeStart}
+              selected={startTime}
               onChange={() => {}}
               showTimeSelect
               showTimeSelectOnly
@@ -168,7 +168,7 @@ export default function Delete({
           <div className="">
             <label className="block mb-1">เวลาจบ</label>
             <DatePicker
-              selected={timeEnd}
+              selected={endTime}
               onChange={() => {}}
               showTimeSelect
               showTimeSelectOnly

@@ -90,13 +90,13 @@ export default function SideNavbar() {
             <NavItem
               icon="ph:student"
               label="นักศึกษา"
-              href="/student"
+              href="/studentStudy"
               onClick={() => setIsOpen(false)}
             />
             <NavItem
               icon="hugeicons:teacher"
               label="อาจารย์"
-              href="/teacher"
+              href="/teacherStudy"
               onClick={() => setIsOpen(false)}
             />
           </div>
