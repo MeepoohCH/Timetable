@@ -21,6 +21,7 @@
 } */
 
 .add-form .box,
+<<<<<<< Updated upstream
 .add-form .boxT ,
 .add-form .boxDate {
   @apply flex items-center justify-between border border-gray-300 rounded-[10px] w-36 bg-white text-sm px-2 py-1;
@@ -33,6 +34,23 @@
 .edit-form .boxDate {
    @apply flex items-center justify-between border border-gray-300 rounded-[10px] w-32 bg-[#FEF1E7] text-sm px-2 py-1;
 }
+=======
+.edit-form .box,
+.delete-form .box,
+.add-form .boxT,
+.edit-form .boxT,
+.delete-form .boxT,
+.add-form .boxDate,
+.edit-form .boxDate
+ {
+  @apply flex items-center justify-between border border-gray-300 rounded-[10px] w-32 bg-white text-sm px-2 py-1;
+}
+
+/* .edit-form .box,
+.delete-form .box {
+  @apply bg-[#FEF1E7] border-4 rounded-2xl w-full p-2;
+} */
+>>>>>>> Stashed changes
 
 /* คุณสามารถแยก .boxT, .buttonSub, .boxDate แบบนี้ด้วย */
 /* .add-form .boxT {
@@ -50,9 +68,17 @@
 }
 
 /* .add-form .boxDate{
+<<<<<<< Updated upstream
   @apply w-3/4 px-4 py-2 pr-10 border-4 bg-white rounded-2xl  text-gray-700 outline-none;
 } */
 
 /* .edit-form .boxDate{
   @apply w-3/4 px-4 py-2 pr-10 border-4 bg-[#FEF1E7] rounded-2xl  text-gray-700 outline-none;
+=======
+  @apply w-3/4 px-4 py-2 pr-10 border-4 bg-white rounded-2xl  text-gray-700 outline-none
+}
+
+.edit-form .boxDate{
+  @apply w-3/4 px-4 py-2 pr-10 border-4 bg-[#FEF1E7] rounded-2xl  text-gray-700 outline-none
+>>>>>>> Stashed changes
 } */

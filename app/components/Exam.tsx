@@ -1,19 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import Add from "../components/Add";
-import Calendar from "../components/Calendar";
-import Delete from "../components/Delete";
-import DetailPanel from "../components/DetailPanel";
-import Edit from "../components/Edit";
+import Add from "./Add";
+import Calendar from "./Calendar";
+import Delete from "./Delete";
+import DetailPanel from "./DetailPanel";
+import Edit from "./Edit";
 
+<<<<<<< Updated upstream:app/Exam/page.tsx
 export default function Student() { const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
+=======
+export default function ExamForm() {
+  const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
+>>>>>>> Stashed changes:app/components/Exam.tsx
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const [events, setEvents] = useState<any[]>([]);
   
   const handleAddEvent = (event: any) => setEvents((prev) => [...prev, event]);
+<<<<<<< Updated upstream:app/Exam/page.tsx
   const handleDeleteEvent = (eventToDelete: any) => {
     setEvents((prev) =>
       prev.filter((ev) => ev.subjectCode !== eventToDelete.subjectCode)
@@ -30,15 +36,19 @@ export default function Student() { const [currentComponent, setCurrentComponent
     setSelectedEvent(null); // reset event ที่เลือกหลังแก้ไข
   };
 
+=======
+  const handleDeleteEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
+  const handleEditEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
+>>>>>>> Stashed changes:app/components/Exam.tsx
   const isActive = (tab: "edit" | "delete" | "add") => currentComponent === tab;
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
 
 
 
   return (
-    <div className="bg-[#F3F4F6] min-h-screen font-kanit">
-      <div className=" pt-6 bg-[#F3F4F6]">
-        <div className="flex justify-start gap-2 px-10 pt-4 bg-[#F3F4F6] font-kanit ">
+    <div className=" min-h-screen">
+      <div className=" pt-6">
+        <div className="flex justify-start gap-2 pt-4 px-4">
           {(["add", "edit", "delete"] as const).map((tab) => (
             <button
               key={tab}
@@ -56,7 +66,7 @@ export default function Student() { const [currentComponent, setCurrentComponent
         </div>
       </div>
 
-      <div className="flex-1 p-4 mx-8 shadow bg-[#F3F4F6] border-4 border-white font-kanit rounded-2xl">
+      <div className="flex-1 p-4 shadow bg-[#F3F4F6] border-4 border-white rounded-2xl">
         {currentComponent === "add" && (
           <Add
             onSwitch={switchComponent}
@@ -84,6 +94,7 @@ export default function Student() { const [currentComponent, setCurrentComponent
         />
         )}
       </div>
+<<<<<<< Updated upstream:app/Exam/page.tsx
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-8 mx-8">
       <Calendar
           selectedEvent={selectedEvent}
@@ -91,6 +102,13 @@ export default function Student() { const [currentComponent, setCurrentComponent
             setSelectedEvent(event);
             // setCurrentComponent("edit"); // เปลี่ยนเป็นหน้า edit อัตโนมัติ
           }}
+=======
+      
+      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-8">
+        <Calendar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+>>>>>>> Stashed changes:app/components/Exam.tsx
           currentMonth={currentMonth}
           setCurrentMonth={setCurrentMonth}
           events={events}
