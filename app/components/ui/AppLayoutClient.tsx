@@ -12,7 +12,7 @@ export default function AppLayoutClient({ children }: { children: React.ReactNod
   return (
     <>
       {showNavbar && (
-        <aside className="md:w-[200px] shrink-0 h-auto md:h-screen">
+        <aside className="md:w-[200px] sticky top-0 shrink-0 h-auto md:h-screen">
           <SideNavbar />
         </aside>
       )}
