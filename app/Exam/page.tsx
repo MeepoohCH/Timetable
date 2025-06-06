@@ -25,7 +25,7 @@ export default function ExamForm() {
     setSelectedEvent(null); // reset event ที่เลือกหลังแก้ไข
   };
 
-  const isActive = (tab: "edit" | "delete" | "add") => currentComponent === tab;
+ 
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
 
 

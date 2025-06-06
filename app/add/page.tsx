@@ -4,7 +4,6 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 
 type ScheduleFormInputs = {
-  id: number;
   subject_id: number;
   subjectType: string;
   yearLevel: number;
@@ -22,15 +21,29 @@ type ScheduleFormInputs = {
 export default function ScheduleFormPage() {
   const { register, handleSubmit, formState: { errors } } = useForm<ScheduleFormInputs>();
 
-  const onSubmit = (data: ScheduleFormInputs) => {
-    console.log('Form Submitted:', data);
-    // ตัวอย่างการส่งไป API:
-    // fetch('/api/schedule', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(data),
-    // });
-  };
+const onSubmit = async (data: ScheduleFormInputs) => {
+  try {
+    const response = await fetch('/api/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to submit schedule');
+    }
+
+    const result = await response.json();
+    console.log('✅ Schedule saved:', result);
+    alert('Schedule saved successfully!');
+  } catch (error) {
+    console.error('❌ Error saving schedule:', error);
+    alert('Failed to save schedule');
+  }
+};
+
 
   return (
     <div className="max-w-2xl mx-auto p-6">
@@ -39,7 +52,6 @@ export default function ScheduleFormPage() {
 
         {/* สร้าง input fields แบบ dynamic */}
         {[
-          { label: 'ID', name: 'id' },
           { label: 'Subject ID', name: 'subject_id' },
           { label: 'Subject Type', name: 'subjectType', type: 'text' },
           { label: 'Year Level', name: 'yearLevel' },
