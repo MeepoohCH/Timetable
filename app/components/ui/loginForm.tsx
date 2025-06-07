@@ -24,11 +24,11 @@ export function LoginForm({ action }: { action?: (formData: FormData) => void })
     }
 
     if (uname === "admin" && password === "1234") {
-      window.location.href = "/student";
+      window.location.href = "/studentStudy";
     } else {
       setError("Username หรือ Password ไม่ถูกต้อง");
     }
-  };
+  }; 
 
   return (
     <Card className="bg-white/70 backdrop-blur-md shadow-md rounded-xl p-8 w-355 h-512 max-w-sm">

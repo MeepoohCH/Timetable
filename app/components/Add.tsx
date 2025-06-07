@@ -41,6 +41,7 @@ export default function Add({
   const [weekday, setWeekday] = useState<string>("");
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
+  const [subjectType, setSubjectType] = useState<string>("");
 
 
   const [formData, setFormData] = useState({
@@ -49,8 +50,11 @@ export default function Add({
     sec: "",
     teacher: "",
     weekday: "",
+<<<<<<< Updated upstream
     startTime: "",
     endTime: "",
+=======
+>>>>>>> Stashed changes
     subjectType:"",
     academicYear:"",
     study: {
@@ -217,9 +221,13 @@ export default function Add({
     sec: "",
     teacher: "",
     weekday: "",
+<<<<<<< Updated upstream
     startTime: "",
     endTime: "",
     subjectType:"ท/ป",
+=======
+    subjectType:"",
+>>>>>>> Stashed changes
     academicYear:"2xxx",
     study: {
       location: "",
@@ -256,7 +264,7 @@ export default function Add({
   return (
     <div className="">
       <form onSubmit={handleSubmit}>
-        <div className="add-form  flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
+        <div className="add-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
           <label className=" text-sm py-1">ตารางเรียน</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
             <div className="">
@@ -270,6 +278,26 @@ export default function Add({
                 required
               />
             </div>
+
+            <div className=" ">
+              <label className="block mb-1">ประเภทวิชา</label>
+                <select
+                  name="subjectType"
+                  value={formData.subjectType}
+                  onChange={(e) => {
+                    setSubjectType(e.target.value);
+                    handleChange(e);
+                  }}
+                  className="box"
+                  required
+                >
+                  <option value="">-- เลือกประเภท --</option>
+                  <option value="ท">ท</option>
+                  <option value="ป">ป</option>
+                </select>
+            </div>
+
+
 
             <div className="">
               <label className="block mb-1">กลุ่ม</label>
@@ -427,10 +455,12 @@ export default function Add({
               </div>
             </div>
           </div>
+        
 
           <hr className="border-t-3 border-gray-200 w-full" />
           <label className=" text-sm py-1">สอบกลางภาค</label>
 
+<<<<<<< Updated upstream
             {/* <div className="flex items-center">
               <input
                 type="text"
@@ -468,6 +498,9 @@ export default function Add({
                   <span>{teacher}</span>
           <div className="flex flex-col mb-2 gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm"> */}
             
+=======
+          <div className="flex flex-col mb-2 gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
+>>>>>>> Stashed changes
             <div className="">
               <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
@@ -482,7 +515,7 @@ export default function Add({
                             ...prev.exam,
                             midterm: {
                               ...prev.exam.midterm,
-                              date: date ? formatDateLocal(date) : "",
+                              date: date ? date.toISOString().split("T")[0] : "",
                             },
                           },
                         }));
@@ -615,7 +648,7 @@ export default function Add({
                             ...prev.exam,
                             final: {
                               ...prev.exam.final,
-                              date: date ? formatDateLocal(date) : "",
+                              date: date ? date.toISOString().split("T")[0] : "",
                             },
                           },
                         }));
@@ -733,7 +766,12 @@ export default function Add({
           <button type="submit" className="buttonSub" onClick={handleAddTeacher}>
             เพิ่ม
           </button>
+<<<<<<< Updated upstream
         
+=======
+          
+        </div>
+>>>>>>> Stashed changes
       </form>
     </div>
   );

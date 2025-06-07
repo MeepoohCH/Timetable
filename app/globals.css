@@ -118,6 +118,9 @@
   
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
 
 
