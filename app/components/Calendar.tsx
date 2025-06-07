@@ -50,10 +50,7 @@ export default function Calendar({
   currentMonth: Date;
   setCurrentMonth: (date: Date) => void;
   events: any[] | undefined;
-<<<<<<< Updated upstream
-=======
   examType?: "final" | "midterm"
->>>>>>> Stashed changes
 }) {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);

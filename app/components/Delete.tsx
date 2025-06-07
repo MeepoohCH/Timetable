@@ -75,8 +75,6 @@ export default function Delete({
   const [startTime, setstartTime] = useState<Date | null>(null);
   const [endTime, setendTime] = useState<Date | null>(null);
   const [weekday, setWeekday] = useState<string>("");
-<<<<<<< Updated upstream
-=======
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
   const [studyStartTime, setStudyStartTime] = useState<Date | null>(null);
@@ -87,7 +85,6 @@ export default function Delete({
   const [finalEndTime, setFinalEndTime] = useState<Date | null>(null);
   
 
->>>>>>> Stashed changes
 
   // เมื่อ selectedEvent เปลี่ยน ให้โหลดข้อมูลลงฟอร์ม
 useEffect(() => {
@@ -99,26 +96,7 @@ useEffect(() => {
     if (selectedEvent.exam?.midterm?.date) {
       setMidtermDate(new Date(selectedEvent.exam.midterm.date));
     } else {
-<<<<<<< Updated upstream
-      // เคลียร์ฟอร์มหากไม่มี event ที่เลือก
-      setFormData({
-        subject_id: "",
-        subjectName: "test",
-        sec: "",
-        location: "",
-        date: "",
-        weekday: "",
-        startTime: "",
-        endTime: "",
-      });
-      setTeachers([]);
-      setDay(null);
-      setstartTime(null);
-      setendTime(null);
-      setWeekday("");
-=======
       setMidtermDate(null);
->>>>>>> Stashed changes
     }
 
 
@@ -158,7 +136,7 @@ useEffect(() => {
       sec: "",
       teacher: "",
       weekday: "",
-      subjectType: "ท/ป",
+      subjectType: "",
       academicYear: "2xxx",
       study: { location: "", startTime: "", endTime: "" },
       exam: {
@@ -290,14 +268,6 @@ useEffect(() => {
               </div>
             </div>
 
-<<<<<<< Updated upstream
-          <button 
-            type="submit" 
-            className="buttonSub mt-4 bg-red-600 hover:bg-red-700 text-white"
-          >
-            ลบ
-          </button>
-=======
             <hr className="border-t-3 border-gray-200 w-full" />
             <label className=" text-sm py-1">สอบกลางภาค</label>
 
@@ -452,7 +422,6 @@ useEffect(() => {
             >
               ลบ
             </button>
->>>>>>> Stashed changes
         </div>
       </form>
     </div>

@@ -6,16 +6,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 
-type ClassItem = {
-  subject_id: string;
-  subjectName: string;
-  sec: string;
-  teacher: string[];
-  weekday: string;
-  startTime: string;
-  endTime: string;
-  location: string;
-};
 
 type EditProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
@@ -45,8 +35,6 @@ export default function Edit({
     sec: "",
     teacher: [],
     weekday: "",
-    startTime: "",
-    endTime: "",
     subjectType:"",
     academicYear:"",
     study: {
@@ -78,6 +66,7 @@ export default function Edit({
   const [subjectType, setSubjectType] = useState<string>("");
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
+  const [weekday, setWeekday] = useState<string>("");
 
 
   useEffect(() => {
@@ -137,8 +126,6 @@ export default function Edit({
     sec: "",
     teacher: [],
     weekday: "",
-    startTime: "",
-    endTime: "",
     subjectType:"",
     academicYear:"2xxx",
     study: {
@@ -164,8 +151,6 @@ export default function Edit({
     setTeachers([]);
     setNewTeacher("");
     setNewTeacher("");
-    setStartTime(null);
-    setEndTime(null);
     }
   }, [selectedEvent]);
 
@@ -311,221 +296,43 @@ export default function Edit({
     onEditEventAction({ ...formData, teacher: teachers });
     // reset ฟอร์ม
     setFormData({
-      subject_id: "",
-      subjectName: "test",
-      sec: "",
-      teacher: "",
-      date: "",
+    subject_id: "",
+    subjectName: "",
+    sec: "",
+    teacher: [],
+    weekday: "",
+    subjectType:"",
+    academicYear:"2xxx",
+    study: {
+      location: "",
       startTime: "",
       endTime: "",
-      location: "",
+    },
+    exam: {
+      midterm: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+      final: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+    },
     });
     setTeachers([]);
+    setNewTeacher("");
     setDay(null);
-    setstartTime(null);
-    setendTime(null);
-  };
-
-  const handleRemoveTeacher = (index: number) => {
-    const updated = teachers.filter((_, i) => i !== index);
-    setTeachers(updated);
-    setFormData((prev) => ({ ...prev, teacher: updated }));
-  };
-
-  const handleStartTimeChange = (date: Date | null) => {
-    setStartTime(date);
-    setFormData((prev) => ({
-      ...prev,
-      startTime: date ? formatDateToTimeString(date) : "",
-    }));
-  };
-
-  const handleEndTimeChange = (date: Date | null) => {
-    setEndTime(date);
-    setFormData((prev) => ({
-      ...prev,
-      endTime: date ? formatDateToTimeString(date) : "",
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const allTeachers =
-    newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())
-      ? [...teachers, newTeacher.trim()]
-      : teachers;
-
-
-    const requiredFields = [
-      formData.subject_id,
-      formData.sec,
-      formData.location,
-      formData.weekday,
-      formData.startTime,
-      formData.endTime,
-    ];
-    if (
-      requiredFields.some((field) => field.trim() === "") ||
-      teachers.length === 0
-    ) {
-      alert("กรุณากรอกข้อมูลให้ครบทุกช่อง รวมถึงอาจารย์อย่างน้อย 1 คน");
-      return;
-    }
-
-    onEditEventAction({ ...formData, teacher: teachers });
+    setNewTeacher("");
+    setWeekday("");
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-<<<<<<< Updated upstream
-        <div className="edit-form flex flex-col gap-4 text-sm sm:flex-row sm:flex-wrap sm:gap-10 text-sm">
-          <div>
-            <label className="block mb-1">รหัสวิชา</label>
-            <input
-              type="text"
-              name="subject_id"
-              value={formData.subject_id}
-              onChange={handleChange}
-              className="box"
-              required
-            />
-          </div>
-
-          {/* <div>
-            <label className="block mb-1">ชื่อวิชา</label>
-            <input
-              type="text"
-              name="subjectName"
-              value={formData.subjectName}
-              onChange={handleChange}
-              className="box"
-            />
-          </div> */}
-
-          <div>
-            <label className="block mb-1">กลุ่ม</label>
-            <input
-              type="text"
-              name="sec"
-              value={formData.sec}
-              onChange={handleChange}
-              className="box"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1">เวลาเริ่ม</label>
-            <DatePicker
-              selected={startTime}
-              onChange={handleStartTimeChange}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={15}
-              timeCaption="เวลา"
-              dateFormat="HH:mm"
-              className="box pl-4"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1">เวลาจบ</label>
-            <DatePicker
-              selected={endTime}
-              onChange={handleEndTimeChange}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={15}
-              timeCaption="เวลา"
-              dateFormat="HH:mm"
-              className="box pl-4"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1">สถานที่</label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className="box"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1">วัน</label>
-            <select
-              name="weekday"
-              value={formData.weekday}
-              onChange={handleChange}
-              className="box"
-              required
-            >
-              <option value="">-- เลือกวัน --</option>
-              <option value="จันทร์">จันทร์</option>
-              <option value="อังคาร">อังคาร</option>
-              <option value="พุธ">พุธ</option>
-              <option value="พฤหัส">พฤหัส</option>
-              <option value="ศุกร์">ศุกร์</option>
-              <option value="เสาร์">เสาร์</option>
-              <option value="อาทิตย์">อาทิตย์</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-1">อาจารย์</label>
-            <div className="flex items-center">
-              <input
-                type="text"
-                name="teacher"
-                value={newTeacher}
-                onChange={(e) => setNewTeacher(e.target.value)}
-                className="boxT"
-              />
-              <button
-                type="button"
-                onClick={handleAddTeacher}
-                className="px-2 rounded hover:bg-gray-100"
-                title="เพิ่มอาจารย์"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="25"
-                  height="25"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-gray-600 hover:text-gray-800 cursor-pointer"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="16" />
-                  <line x1="8" y1="12" x2="16" y2="12" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {teachers.map((teacher, index) => (
-                <div
-                  key={index}
-                  className="flex items-center bg-[#FFE5CC] text-sm px-2 py-1 rounded"
-                >
-                  <span>{teacher}</span>
-                  <button
-                    onClick={() => handleRemoveTeacher(index)}
-                    className="ml-2 text-gray-700 hover:text-red-500"
-<<<<<<< Updated upstream
-                    title="ลบอาจารย์"
-=======
-=======
         <div className="edit-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
           <label className=" text-sm py-1">ตารางเรียน</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
@@ -759,8 +566,6 @@ export default function Edit({
                         )
                         ?.focus()
                     }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -856,13 +661,7 @@ export default function Edit({
             </div>
           </div>
 
-<<<<<<< Updated upstream
-          <button type="submit" className="buttonSub bg-green-600 hover:bg-green-700 text-white px-3 rounded">
-            บันทึก
-=======
-<<<<<<< Updated upstream
-          <button type="submit" className="buttonSub">
-=======
+
           <hr className="border-t-3 border-gray-200 w-full" />
           <label className=" text-sm py-1">สอบปลายภาค</label>
 
@@ -999,9 +798,7 @@ export default function Edit({
 
 
           <button type="submit" className="buttonSub" onClick={handleAddTeacher}>
->>>>>>> Stashed changes
             แก้ไข
->>>>>>> Stashed changes
           </button>
         </div>
       </form>

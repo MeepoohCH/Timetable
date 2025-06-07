@@ -98,26 +98,11 @@ export default function StudyForm() {
         />
         )}
       </div>
-<<<<<<< Updated upstream
-      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-8 mx-2">
-<<<<<<< Updated upstream
-      <ScheduleTable 
-        classes={Array.isArray(events) ? events : []}
-        selectedEvent={selectedEvent}
-        setSelectedEvent={(event) => {
-          setSelectedEvent(event);
-          setCurrentComponent("edit"); // เปลี่ยนเป็นหน้า edit อัตโนมัติ
-        }}
-      />
 
-=======
-      <ScheduleTable classes={events}/>
-=======
       {/* ตารางเรียน */}
       <div id="schedule-section" className="w-full max-w-6xl scroll-mt-20 mt-8 px-4">
         <h2 className="text-2xl font-semibold text-orange-600 mb-6">📅 ตารางเรียน</h2>
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+
       </div>
       <div
         className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2"

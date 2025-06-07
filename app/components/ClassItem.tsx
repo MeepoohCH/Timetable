@@ -4,8 +4,6 @@ export type ClassItem = {
   sec: string,
   teacher: string[],
   weekday: string,
-  startTime: string,
-  endTime: string,
   subjectType:string,
   academicYear:string,
   study: {

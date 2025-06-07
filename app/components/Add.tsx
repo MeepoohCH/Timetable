@@ -36,8 +36,8 @@ export default function Add({
 
 
   const [day, setDay] = useState<Date | null>(null);
-  const [startTime, setstartTime] = useState<Date | null>(null);
-  const [endTime, setendTime] = useState<Date | null>(null);
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<Date | null>(null);
   const [weekday, setWeekday] = useState<string>("");
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
@@ -50,11 +50,6 @@ export default function Add({
     sec: "",
     teacher: "",
     weekday: "",
-<<<<<<< Updated upstream
-    startTime: "",
-    endTime: "",
-=======
->>>>>>> Stashed changes
     subjectType:"",
     academicYear:"",
     study: {
@@ -221,13 +216,7 @@ export default function Add({
     sec: "",
     teacher: "",
     weekday: "",
-<<<<<<< Updated upstream
-    startTime: "",
-    endTime: "",
-    subjectType:"ท/ป",
-=======
     subjectType:"",
->>>>>>> Stashed changes
     academicYear:"2xxx",
     study: {
       location: "",
@@ -253,8 +242,8 @@ export default function Add({
     setNewTeacher("");
     setDay(null);
     setNewTeacher("");
-    setstartTime(null);
-    setendTime(null);
+    setStartTime(null);
+    setEndTime(null);
     setWeekday("");
   };
   
@@ -339,7 +328,7 @@ export default function Add({
               <DatePicker
                 selected={startTime}
                 onChange={(date: Date | null) => {
-                  setstartTime(date);
+                  setStartTime(date);
                   setFormData((prev) => ({
                     ...prev,
                     study: {
@@ -363,7 +352,7 @@ export default function Add({
               <DatePicker
                 selected={endTime}
                 onChange={(date: Date | null) => {
-                  setendTime(date);
+                  setEndTime(date);
                   setFormData((prev) => ({
                     ...prev,
                     study: {
@@ -460,47 +449,7 @@ export default function Add({
           <hr className="border-t-3 border-gray-200 w-full" />
           <label className=" text-sm py-1">สอบกลางภาค</label>
 
-<<<<<<< Updated upstream
-            {/* <div className="flex items-center">
-              <input
-                type="text"
-                name="teacher"
-                value={newTeacher}
-                onChange={(e) => {
-                  handleChange(e);
-                  setNewTeacher(e.target.value);
-                }}
-                className="boxT"
-              />
-              <button type="button" onClick={handleAddTeacher} className="px-2 rounded hover:bg-gray-100">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="25"
-                  height="25"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-gray-600 hover:text-gray-800 cursor-pointer"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="16" />
-                  <line x1="8" y1="12" x2="16" y2="12" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="flex flex-wrap gap-2 mt-2">
-              {teachers.map((teacher, index) => (
-                <div key={index} className="flex items-center bg-[#FFE5CC] text-sm px-2 py-1 rounded">
-                  <span>{teacher}</span>
-          <div className="flex flex-col mb-2 gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm"> */}
-            
-=======
           <div className="flex flex-col mb-2 gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
->>>>>>> Stashed changes
             <div className="">
               <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
@@ -766,12 +715,8 @@ export default function Add({
           <button type="submit" className="buttonSub" onClick={handleAddTeacher}>
             เพิ่ม
           </button>
-<<<<<<< Updated upstream
-        
-=======
           
         </div>
->>>>>>> Stashed changes
       </form>
     </div>
   );
