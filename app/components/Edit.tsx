@@ -75,50 +75,16 @@ export default function Edit({
   const [newTeacher, setNewTeacher] = useState<string>("");
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
-<<<<<<< Updated upstream
-
-=======
   const [subjectType, setSubjectType] = useState<string>("");
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
 
 
->>>>>>> Stashed changes
   useEffect(() => {
     if (selectedEvent) {
       setFormData(selectedEvent);
       setTeachers(selectedEvent.teacher || []);
 
-<<<<<<< Updated upstream
-      // แปลงเวลา string เป็น Date
-      if (selectedEvent.startTime) {
-        const [h, m] = selectedEvent.startTime.split(":");
-        const d = new Date();
-        d.setHours(Number(h), Number(m), 0, 0);
-        setStartTime(d);
-      } else setStartTime(null);
-
-      if (selectedEvent.endTime) {
-        const [h, m] = selectedEvent.endTime.split(":");
-        const d = new Date();
-        d.setHours(Number(h), Number(m), 0, 0);
-        setEndTime(d);
-      } else setEndTime(null);
-    } else {
-      setFormData({
-        subject_id: "",
-        subjectName: "",
-        sec: "",
-        teacher: [],
-        weekday: "",
-        startTime: "",
-        endTime: "",
-        location: "",
-      });
-      setTeachers([]);
-      setStartTime(null);
-      setEndTime(null);
-=======
      const dateStr =
         selectedEvent.exam?.midterm?.date ||
         selectedEvent.exam?.final?.date;
@@ -200,7 +166,6 @@ export default function Edit({
     setNewTeacher("");
     setStartTime(null);
     setEndTime(null);
->>>>>>> Stashed changes
     }
   }, [selectedEvent]);
 
@@ -218,8 +183,6 @@ export default function Edit({
       setFormData((prev) => ({ ...prev, teacher: updated }));
       setNewTeacher("");
     }
-<<<<<<< Updated upstream
-=======
   };
 
   const handleRemoveTeacher = (index: number) => {
@@ -361,7 +324,6 @@ export default function Edit({
     setDay(null);
     setstartTime(null);
     setendTime(null);
->>>>>>> Stashed changes
   };
 
   const handleRemoveTeacher = (index: number) => {
