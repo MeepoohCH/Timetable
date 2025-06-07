@@ -8,11 +8,14 @@ import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
 import ScheduleTable from "./ui/ScheduleTable";
 import { ClassItem } from "./ClassItem";
+import ExamForm from "./ExamForm";
+
 
 export default function StudyForm() { 
 
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<ClassItem[]>([]);
 
   const handleAddEvent = (event: ClassItem) =>  setEvents((prev) => [...prev, event]);
@@ -108,6 +111,20 @@ export default function StudyForm() {
         }}
       />
 
+      </div>
+      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-8 mx-2">
+        <Calendar
+            selectedEvent={selectedEvent}
+            setSelectedEvent={(event) => {
+              setSelectedEvent(event);
+              setCurrentComponent("edit"); // เปลี่ยนเป็นหน้า edit อัตโนมัติ
+            }}
+            currentMonth={currentMonth}
+            setCurrentMonth={setCurrentMonth}
+            events={events}
+          />
+  
+          <DetailPanel selectedEvent={selectedEvent} />
       </div>
     </div>
   );
