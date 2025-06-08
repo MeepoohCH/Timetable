@@ -13,7 +13,17 @@ type EditProps = {
   onEditEventAction: (updatedEvent: ClassItem) => void;
   selectedEvent: ClassItem | null;
   events: ClassItem[];
+  existingClasses: ClassItem[]; 
 };
+
+function isTimeOverlap(
+  start1: string,
+  end1: string,
+  start2: string,
+  end2: string
+): boolean {
+  return start1 < end2 && start2 < end1;
+}
 
 // ฟังก์ชันแปลงเวลา Date เป็น HH:mm string
 function formatDateToTimeString(date: Date): string {
@@ -28,6 +38,7 @@ export default function Edit({
   onEditEventAction,
   selectedEvent,
   events,
+  existingClasses,
 }: EditProps) {
   const [formData, setFormData] = useState<ClassItem>({
     subject_id: "",
@@ -67,6 +78,9 @@ export default function Edit({
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
   const [weekday, setWeekday] = useState<string>("");
+
+  const [conflictData, setConflictData] = useState<ClassItem | null>(null);
+  const [showConflictWarning, setShowConflictWarning] = useState(false);
 
 
   useEffect(() => {
@@ -230,14 +244,55 @@ export default function Edit({
         },
       }));
     };
+  
+       const resetForm = () => {
+    setFormData({
+    subject_id: "",
+    subjectName: "",
+    sec: "",
+    teacher: [],
+    weekday: "",
+    subjectType:"",
+    academicYear:"2xxx",
+    study: {
+      location: "",
+      startTime: "",
+      endTime: "",
+    },
+    exam: {
+      midterm: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+      final: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+    },
+    });
+    setTeachers([]);
+    setNewTeacher("");
+    setDay(null);
+    setNewTeacher("");
+    setStartTime(null);
+    setEndTime(null);
+    setWeekday("");
+    setMidtermDate(null);
+    setFinalDate(null);
+   }
+
+  const getAllTeachers = () => {
+    return teachers;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const allTeachers = getAllTeachers();
 
-    const allTeachers =
-    newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())
-      ? [...teachers, newTeacher.trim()]
-      : teachers;
 
 
     const requiredFieldsStudy = [
@@ -292,45 +347,56 @@ export default function Edit({
       return;
     }
 
+    for (const cls of existingClasses || []) {
+      if (selectedEvent && cls.subject_id === selectedEvent.subject_id) continue; // ข้ามตัวเอง
 
-    onEditEventAction({ ...formData, teacher: teachers });
-    // reset ฟอร์ม
-    setFormData({
-    subject_id: "",
-    subjectName: "",
-    sec: "",
-    teacher: [],
-    weekday: "",
-    subjectType:"",
-    academicYear:"2xxx",
-    study: {
-      location: "",
-      startTime: "",
-      endTime: "",
-    },
-    exam: {
-      midterm: {
-        date:"",
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-      final: {
-        date:"",
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-    },
+      const hasSameTeacher = cls.teacher.some((t) => allTeachers.includes(t));
+      const sameDay = cls.weekday === formData.weekday;
+
+      if (hasSameTeacher && sameDay) {
+        if (
+          isTimeOverlap(
+            cls.study.startTime,
+            cls.study.endTime,
+            formData.study.startTime,
+            formData.study.endTime
+          )
+        ) {
+          console.log("Conflict detected with:", cls);
+          setConflictData(cls);
+          setShowConflictWarning(true);
+          return;
+        }
+      }
+    }
+
+
+    onEditEventAction({
+      ...formData, 
+      teacher: allTeachers 
     });
-    setTeachers([]);
-    setNewTeacher("");
-    setDay(null);
-    setNewTeacher("");
-    setWeekday("");
+
+    resetForm()
+  };
+
+  const handleOverwrite = () => {
+    if (!conflictData) return;
+
+    const allTeachers = getAllTeachers();
+
+    onEditEventAction({
+      ...formData,
+      teacher: allTeachers,
+      overwriteId: conflictData.subject_id,
+    } as ClassItem & {overwriteId?:string});
+
+    setShowConflictWarning(false);
+    setConflictData(null);
+    resetForm()
   };
 
   return (
+  <>
     <div>
       <form onSubmit={handleSubmit}>
         <div className="edit-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
@@ -803,5 +869,40 @@ export default function Edit({
         </div>
       </form>
     </div>
+
+
+        {showConflictWarning && conflictData && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded shadow max-w-md w-full">
+          <h2 className="text-xl font-bold mb-4">พบข้อมูลวิชาเรียนซ้ำ</h2>
+          <p>
+            อาจารย์ <strong>{conflictData.teacher.join(", ")}</strong> มีวิชาเรียนในวัน{" "}
+            <strong>{conflictData.weekday}</strong> เวลา{" "}
+            <strong>
+              {conflictData.study.startTime} - {conflictData.study.endTime}
+            </strong>{" "}
+            อยู่แล้ว
+          </p>
+          <p>คุณต้องการจะเขียนทับข้อมูลเดิม หรือ ยกเลิก?</p>
+
+          <div className="mt-6 flex justify-end gap-4">
+            <button
+              className="px-4 py-2 border rounded"
+              onClick={() => setShowConflictWarning(false)}
+            >
+              ยกเลิก
+            </button>
+            <button
+              className="px-4 py-2 bg-orange-600 text-white rounded"
+              onClick={handleOverwrite}
+            >
+              เขียนทับ
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    
+  </>
   );
 }

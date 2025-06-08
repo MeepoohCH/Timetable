@@ -89,6 +89,7 @@ export default function StudyForm() {
          onEditEventAction={handleEditEvent}
          events={events}
          selectedEvent={selectedEvent}
+         existingClasses={existingClasses}
        />
 
         )}
