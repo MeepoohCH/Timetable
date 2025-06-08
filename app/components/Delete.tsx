@@ -68,6 +68,7 @@ export default function Delete({
   });
 
 
+
   const [teachers, setTeachers] = useState<string[]>([]);
 
  
@@ -157,24 +158,20 @@ useEffect(() => {
   }
 }, [selectedEvent]);
 
+  const [showModal, setShowModal] = useState(false);
 
-  // ไม่ต้องแก้ไขข้อมูล เพราะเป็น delete แต่ยังโชว์ข้อมูลให้เห็นทั้งหมด
-
-  // กดลบ event
   const handleDelete = () => {
-    if (!selectedEvent) return;
-
-    const confirmDelete = window.confirm(
-      `ต้องการลบข้อมูลวิชา ${selectedEvent.subjectName} จริงหรือไม่?`
-    );
-
-    if (confirmDelete) {
-      onDeleteEventAction(selectedEvent);
-    }
+    setShowModal(true);
   };
 
+  const confirmDelete = () => {
+    if (!selectedEvent) return;
+    onDeleteEventAction(selectedEvent);
+    setShowModal(false);
+  };
 
   return (
+    <>
     <div>
       <form
         onSubmit={(e) => {
@@ -425,5 +422,33 @@ useEffect(() => {
         </div>
       </form>
     </div>
+
+    {showModal && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+        <div className="bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-md text-center">
+          <h2 className="text-lg font-semibold text-orange-600 mb-4">
+            ยืนยันการลบ
+          </h2>
+          <p className="text-gray-700 mb-6">
+            ต้องการลบวิชา <span className="font-medium">{selectedEvent?.subjectName}</span> ใช่หรือไม่?
+          </p>
+          <div className="flex justify-center gap-4">
+            <button
+              className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded text-gray-700"
+              onClick={() => setShowModal(false)}
+            >
+              ยกเลิก
+            </button>
+            <button
+              className="bg-orange-600 hover:bg-orange-700 px-4 py-2 rounded text-white"
+              onClick={confirmDelete}
+            >
+              ลบ
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

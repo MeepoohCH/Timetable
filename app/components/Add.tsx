@@ -245,6 +245,8 @@ export default function Add({
     setStartTime(null);
     setEndTime(null);
     setWeekday("");
+    setMidtermDate(null);
+    setFinalDate(null);
   };
   
 
@@ -453,7 +455,6 @@ export default function Add({
             <div className="">
               <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
-                  <div className="boxT">
                     <DatePicker
                       selected={midtermDate}
                       onChange={(date: Date | null) => {
@@ -470,9 +471,8 @@ export default function Add({
                         }));
                       }}
                       dateFormat="dd/MM/yyyy"
-                      className="outline-none w-full bg-transparent"
+                      className="boxT"
                     />
-                  </div>
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
@@ -586,7 +586,6 @@ export default function Add({
             <div className="">
               <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
-                  <div className="boxT">
                     <DatePicker
                       selected={finalDate}
                       onChange={(date: Date | null) => {
@@ -603,9 +602,8 @@ export default function Add({
                         }));
                       }}
                       dateFormat="dd/MM/yyyy"
-                      className="outline-none w-full bg-transparent"
+                      className="boxT"
                     />
-                  </div>
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"

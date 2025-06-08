@@ -19,10 +19,11 @@ export default function AppLayoutClient({ children }: { children: React.ReactNod
       )}
 
       <div className="flex flex-col w-full ">
-        <div className="sticky top-0 z-[50]">
-          <Navbar/>
-        </div>
-
+        {showNavbar && (
+          <div className="sticky top-0 z-[50]">
+            <Navbar/>
+          </div>
+        )}
         <main className="flex-1 min-w-0 overflow-auto">{children}</main>
       </div>
     </>
