@@ -12,13 +12,16 @@ import ExamForm from "./ExamForm";
 
 
 export default function StudyForm() { 
-
+  const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<ClassItem[]>([]);
 
-  const handleAddEvent = (event: ClassItem) =>  setEvents((prev) => [...prev, event]);
+   const handleAddEvent = (newClass: ClassItem) => {
+    setExistingClasses(prev => [...prev, newClass]);
+    setEvents(prev => [...prev, newClass]);  
+  };
   const handleDeleteEvent = () => {
     if (!selectedEvent) return;
 
@@ -76,6 +79,7 @@ export default function StudyForm() {
             onSwitchAction={switchComponent}
             currentComponent="add"
             onAddEventAction={handleAddEvent}
+            existingClasses={existingClasses}
           />
         )}
         {currentComponent === "edit" && (

@@ -5,13 +5,26 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
+import { ClassItem } from "./ClassItem";
 
 type AddProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
   currentComponent: "edit" | "delete" | "add";
   onAddEventAction: (event: any) => void;
-  
+  existingClasses: ClassItem[];
 };
+
+
+//เช็คเวลาทับซ้อน
+function isTimeOverlap(
+  start1: string,
+  end1: string,
+  start2: string,
+  end2: string
+): boolean {
+  return start1 < end2 && start2 < end1;
+}
+
 
 // ✅ ฟังก์ชันแปลงวันที่แบบ local (แก้ปัญหาวันเลื่อน)
 function formatDateLocal(date: Date): string {
@@ -31,6 +44,7 @@ export default function Add({
   onSwitchAction,
   currentComponent,
   onAddEventAction,
+  existingClasses,
 }: AddProps) {
   const pathname = usePathname();
 
@@ -48,7 +62,7 @@ export default function Add({
     subject_id: "",
     subjectName: "",
     sec: "",
-    teacher: "",
+    teacher: [] as string[],
     weekday: "",
     subjectType:"",
     academicYear:"",
@@ -75,14 +89,18 @@ export default function Add({
 
   const [teachers, setTeachers] = useState<string[]>([]);
   const [newTeacher, setNewTeacher] = useState<string>("");
+  const [conflictData, setConflictData] = useState<ClassItem | null>(null);
+  const [showConflictWarning, setShowConflictWarning] = useState(false);
 
   const handleAddTeacher = () => {
     if (newTeacher.trim() !== "") {
-      setTeachers([...teachers, newTeacher.trim()]);
+      const updatedTeachers = [...teachers, newTeacher.trim()];
+      setTeachers(updatedTeachers);
       setNewTeacher("");
-      setFormData({ ...formData, teacher: "" });  
+      setFormData({ ...formData, teacher: updatedTeachers });
     }
   };
+
 
   const handleRemoveTeacher = (index: number) => {
     setTeachers(teachers.filter((_, i) => i !== index));
@@ -133,15 +151,58 @@ export default function Add({
         },
       }));
     };
+  
+   const resetForm = () => {
+    setFormData({
+    subject_id: "",
+    subjectName: "",
+    sec: "",
+    teacher: [],
+    weekday: "",
+    subjectType:"",
+    academicYear:"2xxx",
+    study: {
+      location: "",
+      startTime: "",
+      endTime: "",
+    },
+    exam: {
+      midterm: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+      final: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+    },
+    });
+    setTeachers([]);
+    setNewTeacher("");
+    setDay(null);
+    setNewTeacher("");
+    setStartTime(null);
+    setEndTime(null);
+    setWeekday("");
+    setMidtermDate(null);
+    setFinalDate(null);
+   }
+
+  const getAllTeachers = () => {
+  return newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())
+    ? [...teachers, newTeacher.trim()]
+    : teachers;
+  }
 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const allTeachers =
-    newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())
-      ? [...teachers, newTeacher.trim()]
-      : teachers;
+  
+  const allTeachers = getAllTeachers();
 
 
     const requiredFieldsStudy = [
@@ -197,12 +258,30 @@ export default function Add({
     }
 
 
+     for (const cls of existingClasses || []) {
+      const hasSameTeacher = cls.teacher.some(t => allTeachers.includes(t));
+      const sameDay = cls.weekday === formData.weekday;
 
-
+      if (hasSameTeacher && sameDay) {
+        if (
+          isTimeOverlap(
+            cls.study.startTime,
+            cls.study.endTime,
+            formData.study.startTime,
+            formData.study.endTime
+          )
+        ) {
+          console.log("Conflict detected with:", cls);
+          setConflictData(cls);
+          setShowConflictWarning(true);
+          return;
+        }
+      }
+    }
 
     onAddEventAction({ 
       ...formData,
-      teacher: teachers,
+      teacher: allTeachers,
       yearLevel: "2xxx",
       semester: "x",
       subjectName: "Subjectname",
@@ -210,49 +289,35 @@ export default function Add({
 
 
     // reset ฟอร์ม
-    setFormData({
-    subject_id: "",
-    subjectName: "",
-    sec: "",
-    teacher: "",
-    weekday: "",
-    subjectType:"",
-    academicYear:"2xxx",
-    study: {
-      location: "",
-      startTime: "",
-      endTime: "",
-    },
-    exam: {
-      midterm: {
-        date:"",
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-      final: {
-        date:"",
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-    },
-    });
-    setTeachers([]);
-    setNewTeacher("");
-    setDay(null);
-    setNewTeacher("");
-    setStartTime(null);
-    setEndTime(null);
-    setWeekday("");
-    setMidtermDate(null);
-    setFinalDate(null);
+    resetForm();
+
   };
+
+  const handleOverwrite = () => {
+    if (!conflictData) return;
+
+    const allTeachers = getAllTeachers();
+
+    onAddEventAction({
+      ...formData,
+      teacher: allTeachers,
+      yearLevel: "2xxx",
+      semester: "x",
+      subjectName: formData.subjectName || "Subjectname",
+      overwriteId: conflictData.subject_id,
+    });
+
+    setShowConflictWarning(false); // ปิด popup เตือน
+    setConflictData(null);
+    resetForm();
+  };
+
   
 
 
 
   return (
+  <>
     <div className="">
       <form onSubmit={handleSubmit}>
         <div className="add-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
@@ -717,5 +782,38 @@ export default function Add({
         </div>
       </form>
     </div>
+
+    {showConflictWarning && conflictData && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded shadow max-w-md w-full">
+          <h2 className="text-xl font-bold mb-4">พบข้อมูลวิชาเรียนซ้ำ</h2>
+          <p>
+            อาจารย์ <strong>{conflictData.teacher.join(", ")}</strong> มีวิชาเรียนในวัน{" "}
+            <strong>{conflictData.weekday}</strong> เวลา{" "}
+            <strong>
+              {conflictData.study.startTime} - {conflictData.study.endTime}
+            </strong>{" "}
+            อยู่แล้ว
+          </p>
+          <p>คุณต้องการจะเขียนทับข้อมูลเดิม หรือ ยกเลิก?</p>
+
+          <div className="mt-6 flex justify-end gap-4">
+            <button
+              className="px-4 py-2 border rounded"
+              onClick={() => setShowConflictWarning(false)}
+            >
+              ยกเลิก
+            </button>
+            <button
+              className="px-4 py-2 bg-orange-600 text-white rounded"
+              onClick={handleOverwrite}
+            >
+              เขียนทับ
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+  </>
   );
 }
