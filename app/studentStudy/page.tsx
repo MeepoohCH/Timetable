@@ -1,3 +1,6 @@
+'use client';
+
+import { StudentFilterProvider } from '@/context/StudentFilterContext/page';
 import StudentDropdown from '../components/ui/studentDropdown';
 import StudyForm from '../components/StudyForm';
 
@@ -6,7 +9,7 @@ import StudyForm from '../components/StudyForm';
 export default function SchedulePage() {
   console.log("StudentPage loaded");
   return (
-    <>
+    <StudentFilterProvider>
       <div className="px-4 sm:px-6 py-4 sm:py-6 overflow-x-auto bg-[#EFEFEF] w-full">
         <h1 className="text-2xl font-medium mb-4">ตารางนักศึกษา</h1>
         <div className="mb-6">
@@ -14,6 +17,6 @@ export default function SchedulePage() {
           <StudyForm/>
         </div>
       </div>
-    </>
+    </StudentFilterProvider>
   );
 }
