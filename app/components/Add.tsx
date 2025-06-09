@@ -1,11 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
+import { useStudentFilter } from "@/context/StudentFilterContext/page"
 
 type AddProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
@@ -56,6 +57,9 @@ export default function Add({
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
   const [subjectType, setSubjectType] = useState<string>("");
+  
+
+
 
 
   const [formData, setFormData] = useState({
@@ -65,7 +69,10 @@ export default function Add({
     teacher: [] as string[],
     weekday: "",
     subjectType:"",
+    yearLevel:"",
+    semester:"",
     academicYear:"",
+    degree:"",
     study: {
       location: "",
       startTime: "",
@@ -151,6 +158,8 @@ export default function Add({
         },
       }));
     };
+
+   const { filters } = useStudentFilter()
   
    const resetForm = () => {
     setFormData({
@@ -160,7 +169,10 @@ export default function Add({
     teacher: [],
     weekday: "",
     subjectType:"",
-    academicYear:"2xxx",
+    yearLevel: filters?.yearLevel || "",
+    semester: filters?.semester || "",
+   academicYear: filters?.academicYear || "",
+   degree: filters?.degree || "",
     study: {
       location: "",
       startTime: "",
@@ -190,7 +202,17 @@ export default function Add({
     setWeekday("");
     setMidtermDate(null);
     setFinalDate(null);
+
    }
+
+useEffect(() => {
+  console.log("formData ล่าสุด:", formData)
+}, [formData])
+
+useEffect(() => {
+  console.log("component mounted")
+}, [])
+
 
   const getAllTeachers = () => {
   return newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())

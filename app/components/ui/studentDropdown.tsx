@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Dropdown from "./dropdown"
+import { useStudentFilter } from "@/context/StudentFilterContext/page"
 
 export default function StudentDropdown() {
   const [yearlevel, setYearlevel] = useState<string | null>(null)
@@ -34,26 +35,25 @@ export default function StudentDropdown() {
     { id: "physiot", label: "2 ปริญญา" },
   ]
 
+  const { setFilters } = useStudentFilter();
+
   async function handleSearch() {
     if (!yearlevel || !semester || !year) {
       alert("กรุณาเลือกให้ครบ")
       return
     }
-    try {
-      const res = await fetch("/api/api", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" }, // แก้ typo ตรงนี้
-        body: JSON.stringify({ yearlevel, semester, year }),
-      })
 
-      if (!res.ok) throw new Error("API error")
+     setFilters({
+    yearLevel: yearlevel,
+    semester,
+    academicYear: year,
+    degree,
+  });
 
-      const data = await res.json()
-      alert(`ผลลัพธ์: ${JSON.stringify(data)}`)
-    } catch (err) {
-      alert("เกิดข้อผิดพลาดในการเรียก API")
-      console.error(err)
-    }
+  // เลื่อนไปยังฟอร์ม (แค่แสดงผล)
+  const formSection = document.getElementById("form-section");
+  formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+
   }
 
   return (

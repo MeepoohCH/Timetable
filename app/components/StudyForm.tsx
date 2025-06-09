@@ -8,8 +8,7 @@ import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
 import ScheduleTable from "./ui/ScheduleTable";
 import { ClassItem } from "./ClassItem";
-import ExamForm from "./ExamForm";
-
+import { useStudentFilter } from "@/context/StudentFilterContext/page";
 
 export default function StudyForm() { 
   const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
@@ -49,7 +48,21 @@ export default function StudyForm() {
 
   const isActive = (tab: "edit" | "delete" | "add") => currentComponent === tab;
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
+ const { filters } = useStudentFilter();
 
+  const isReady =
+    filters.yearLevel &&
+    filters.semester &&
+    filters.academicYear &&
+    filters.degree;
+
+  if (!isReady) {
+    return (
+      <p className="text-red-500 mt-4 text-center">
+        ⚠ กรุณาเลือกข้อมูลจากด้านบนก่อน
+      </p>
+    );
+  }
 
 
   return (
