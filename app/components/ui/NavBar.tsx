@@ -8,7 +8,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-[#F7F7F7] text-black ">
+    <nav className="bg-[#F7F7F7] text-gray-600 ">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <div className="md:hidden">
           <button onClick={() => setIsOpen(!isOpen)}>
