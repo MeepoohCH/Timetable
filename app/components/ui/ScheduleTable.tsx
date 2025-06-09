@@ -24,11 +24,11 @@ export default function ScheduleTable({
   const timeToSlot = (time: number) => Math.round((time - startHour) * 4);
 
   return (
-    <div className="w-full overflow-x-auto">
-      <div className="inline-block min-w-[600px] bg-[#F7F7F7] rounded-xl p-2 shadow">
+    <div className="w-full max-w-[1152px] mx-auto">
+      <div className="inline-block w-full max-w-full rounded-2xl p-1 shadow bg-[#F3F4F6] border-4 border-white">
         <div className="grid grid-rows-[40px_repeat(7,1fr)]">
-          <div className="grid grid-cols-[90px_repeat(56,19px)]">
-            <div className="flex items-center justify-center sticky left-0 z-10 border-r bg-[#F7F7F7]">
+          <div className="grid grid-cols-[75px_repeat(56,19px)]">
+            <div className="flex items-center text-sm justify-center sticky left-0 border-r bg-[#F3F4F6]">
               วัน / เวลา
             </div>
             {Array.from({ length: totalSlots }).map((_, i) => {
@@ -51,16 +51,16 @@ export default function ScheduleTable({
           {weekdays.map((weekday) => (
             <div
               key={weekday}
-              className="grid grid-cols-[90px_repeat(56,19px)] border-t relative bg-[#F7F7F7]"
+              className="grid grid-cols-[75px_repeat(56,19px)] border-t relative bg-[#F3F4F6]"
             >
-              <div className="flex items-center justify-center sticky left-0 z-40 border-r bg-[#F7F7F7]">
+              <div className="flex items-center text-sm justify-center sticky left-0 border-r bg-[#F3F4F6]">
                 {weekday}
               </div>
               <div className="relative col-span-[56] flex">
                 {Array.from({ length: totalSlots }).map((_, i) => (
                   <div
                     key={i}
-                    className="relative border-r border-b border-[#F7F7F7] bg-[#F7F7F7]"
+                    className="relative border-r border-b border-[#F3F4F6] bg-[#F3F4F6]"
                     style={{ width: 19, height: 48, zIndex: 0 }}
                   />
                 ))}
@@ -68,8 +68,8 @@ export default function ScheduleTable({
                 {classes
                   .filter((c) => c.weekday === weekday)
                   .map((c, i) => {
-                    const start = parseTimeToFloat(c.startTime);
-                    const end = parseTimeToFloat(c.endTime);
+                    const start = parseTimeToFloat(c.study.startTime);
+                    const end = parseTimeToFloat(c.study.endTime);
                     const left = timeToSlot(start) * 19;
                     const width = (end - start) * 4 * 19;
                     const isSelected =
@@ -85,7 +85,7 @@ export default function ScheduleTable({
 +                         ${isSelected ? "bg-orange-300 ring-2 ring-orange-500" : "bg-[#FEDDC1]"}
                         `}
                         style={{ left, width }}
-                        title={`${c.subjectName} (${c.subject_id}) ${c.startTime} - ${c.endTime}`}
+                        title={`${c.subjectName} (${c.subject_id})`}
                       >
                         <span className="font-medium">{c.subjectName}</span>
                         <div style={{ fontSize: '10px' }}>{c.subject_id} ({c.subjectType}) ปี {c.academicYear} กลุ่ม {c.sec}</div>

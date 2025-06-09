@@ -100,7 +100,7 @@ export default function SideNavbar() {
               onClick={() => setIsOpen(false)}
             />
           </div>
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <label className="mb-2 text-sm font-medium text-gray-600">ตารางสอบ</label>
             <NavItem
               icon="ph:student"
@@ -114,7 +114,7 @@ export default function SideNavbar() {
               href="/teacherExam"
               onClick={() => setIsOpen(false)}
             />
-          </div>
+          </div> */}
           <div className="flex flex-col">
             <label className="mb-2 text-sm font-medium text-gray-600">อื่นๆ</label>
             <NavItem

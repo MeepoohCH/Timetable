@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import SideNavbar from "./SideNavbar";
+import Navbar from "./NavBar";
 
 export default function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -17,7 +18,14 @@ export default function AppLayoutClient({ children }: { children: React.ReactNod
         </aside>
       )}
 
-      <main className="flex-1 min-w-0 overflow-auto">{children}</main>
+      <div className="flex flex-col w-full ">
+        {showNavbar && (
+          <div className="sticky top-0 z-[50]">
+            <Navbar/>
+          </div>
+        )}
+        <main className="flex-1 min-w-0 overflow-auto">{children}</main>
+      </div>
     </>
   );
 }

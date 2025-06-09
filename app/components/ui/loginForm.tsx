@@ -24,13 +24,14 @@ export function LoginForm({ action }: { action?: (formData: FormData) => void })
     }
 
     if (uname === "admin" && password === "1234") {
-      window.location.href = "/student";
+      window.location.href = "/studentStudy";
     } else {
       setError("Username หรือ Password ไม่ถูกต้อง");
     }
-  };
+  }; 
 
   return (
+    <>
     <Card className="bg-white/70 backdrop-blur-md shadow-md rounded-xl p-8 w-355 h-512 max-w-sm">
       <div className="w-full flex justify-center mb-6">
         <Image
@@ -89,25 +90,26 @@ export function LoginForm({ action }: { action?: (formData: FormData) => void })
 
           </div>
         </form>
-    
-
-        {error && (
-          <div className="fixed inset-0 rounded-xl bg-black bg-opacity-30 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded shadow-lg max-w-xs text-center">
-              <p className="mb-4 text-red-600">{error}</p>
-              <button
-                className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-[#ffffff] hover:text-[#F96D00]"
-                onClick={() => setError("")}
-              >
-                close
-              </button>
-            </div>
-          </div>
-        )}
-
-
-
       </div>
     </Card>
+
+    {error && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+        <div className="bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-md text-center">
+          <h2 className="text-lg font-semibold text-red-600 mb-4">เกิดข้อผิดพลาด</h2>
+          <p className="text-gray-700 mb-6">{error}</p>
+          <div className="flex justify-center">
+            <button
+              className="bg-orange-600 hover:bg-orange-700 px-4 py-2 rounded text-white"
+              onClick={() => setError("")}
+            >
+              ปิด
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    </>
   );
 }

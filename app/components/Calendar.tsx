@@ -11,6 +11,7 @@ import {
   startOfMonth,
   startOfWeek,
   subMonths,
+  subDays,
 } from "date-fns";
 import { th } from "date-fns/locale";
 
@@ -42,12 +43,14 @@ export default function Calendar({
   currentMonth,
   setCurrentMonth,
   events,
+  examType,
 }: {
   selectedEvent: any | null;
   setSelectedEvent: (event: any | null) => void;
   currentMonth: Date;
   setCurrentMonth: (date: Date) => void;
   events: any[] | undefined;
+  examType?: "final" | "midterm"
 }) {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
@@ -68,8 +71,14 @@ export default function Calendar({
 
         const dayEvents = Array.isArray(events)
           ? events.filter((e) => {
-              if (!e.date) return false;
-              return isSameDay(new Date(e.date), day);
+              if (examType === "final") {
+                if (!e.exam.final.date) return false;
+                return isSameDay(new Date(e.exam.final.date), subDays(day, 1));
+              } else if (examType === "midterm") {
+                if (!e.exam.midterm.date) return false;
+                return isSameDay(new Date(e.exam.midterm.date), subDays(day, 1));
+              }
+              return false;
             })
           : [];
 
@@ -99,7 +108,7 @@ export default function Calendar({
                   }}
                   onClick={() => setSelectedEvent(event)}
                 >
-                  {event.title || "ไม่มีชื่อกิจกรรม"}
+                  {event.subjectName || event.title || "ไม่มีชื่อกิจกรรม"}
                 </div>
               );
             })}
@@ -127,6 +136,7 @@ export default function Calendar({
 
     return rows;
   };
+
 
   return (
     <div className="flex-1 w-[70%] p-4 rounded-lg shadow bg-[#F3F4F6] border-4 border-white">
