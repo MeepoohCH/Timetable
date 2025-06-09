@@ -22,8 +22,8 @@ export default function StudyForm() {
     setExistingClasses(prev => [...prev, newClass]);
     setEvents(prev => [...prev, newClass]);  
   };
-  const handleDeleteEvent = () => {
-    if (!selectedEvent) return;
+const handleDeleteEvent = () => {
+      if (!selectedEvent) return;
 
     setEvents((prev) =>
       prev.filter((ev) =>

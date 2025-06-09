@@ -1,21 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import AddTeacher from "./AddTeacher";
-import Calendar from "./Calendar";
-import Delete from "./Delete";
-import DetailPanel from "./DetailPanel";
-import Edit from "./Edit";
-import ScheduleTable from "./ui/ScheduleTable";
 import { ClassItem } from "./ClassItem";
-import ExamForm from "./ExamForm";
-import EditTeacher from "./EditTeacher";
-import DeleteTeacher from "./DeleteTeacher";
-import TableDemo  from "./TeacherTable";
-import TeacherTable from "./TeacherTable";
+import SubjectTable from "./SubjectTable";
+import AddSubject from "./AddSubject";
+import EditSubject from "./EditSubject";
+import DeleteSubject from "./DeleteSubject";
 
 
-export default function TeacherDataForm() { 
+export default function SubjectDataForm() { 
   const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
@@ -31,11 +24,11 @@ export default function TeacherDataForm() {
     if (!selectedEvent) return;
 
     console.log("ลบ event:", selectedEvent);
-
+    
     setEvents((prev) =>
       prev.filter((ev) =>
         !(
-          ev.id === selectedEvent.id
+          ev.subject_id === selectedEvent.subject_id
         )
       )
     );
@@ -46,7 +39,7 @@ export default function TeacherDataForm() {
   const handleEditEvent = (updatedEvent: ClassItem) => {
     setEvents((prev) =>
       prev.map((ev) =>
-        ev.id === updatedEvent.id ? updatedEvent : ev
+        ev.subject_id === updatedEvent.subject_id ? updatedEvent : ev
       )
     );
     setSelectedEvent(null);
@@ -82,7 +75,7 @@ export default function TeacherDataForm() {
 
       <div id="form-section" className="flex-1 p-4 mx-2 shadow scroll-mt-20 bg-[#F3F4F6] border-4 border-white  rounded-2xl w-full max-w-[1152px]">
         {currentComponent === "add" && (
-          <AddTeacher
+          <AddSubject
             onSwitchAction={switchComponent}
             currentComponent="add"
             onAddEventAction={handleAddEvent}
@@ -90,7 +83,7 @@ export default function TeacherDataForm() {
           />
         )}
         {currentComponent === "edit" && (
-         <EditTeacher
+         <EditSubject
          onSwitchAction={switchComponent}
          currentComponent="edit"
          onEditEventAction={handleEditEvent}
@@ -101,7 +94,7 @@ export default function TeacherDataForm() {
 
         )}
         {currentComponent === "delete" && (
-          <DeleteTeacher
+          <DeleteSubject
           onSwitchAction={switchComponent}
           currentComponent="delete"
           onDeleteEventAction={handleDeleteEvent}
@@ -111,7 +104,7 @@ export default function TeacherDataForm() {
         )}
       </div>
       <div id="form-section" className="flex-1 mt-8 mx-2 w-full max-w-[1152px]">
-        <TeacherTable
+        <SubjectTable
           classes={Array.isArray(events) ? events : []}
           selectedEvent={selectedEvent}
           setSelectedEvent={(event) => {

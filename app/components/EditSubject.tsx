@@ -14,7 +14,7 @@ type EditTeacherProps = {
   existingClasses: ClassItem[];
 };
 
-export default function EditTeacher({
+export default function EditSubject({
   onSwitchAction,
   currentComponent,
   onEditEventAction,
@@ -108,52 +108,63 @@ const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
   if (!selectedEvent) return;
 
-  const fullName = `${formData.teacherName} ${formData.teacherSurname}`.trim();
   const updatedEvent: ClassItem = {
     ...formData,
-    teacher: [fullName, formData.role], 
   };
 
   onEditEventAction(updatedEvent);
 };
 
 
-  return (
-    <div>
+return (
+  <>
+    <div className="">
       <form onSubmit={handleSubmit}>
         <div className="edit-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
-          <label className="text-sm py-1">ข้อมูลอาจารย์</label>
+          <label className=" text-sm py-1">ข้อมูลวิชา</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
-            <div>
-              <label className="block mb-1">ชื่อ</label>
+            <div className="">
+              <label className="block mb-1">รหัสวิชา</label>
               <input
                 type="text"
-                name="teacherName"
-                value={formData.teacherName}
+                name="subject_id"
+                value={formData.subject_id}
                 onChange={handleChange}
                 className="box"
                 required
               />
             </div>
 
-            <div>
-              <label className="block mb-1">นามสกุล</label>
+            <div className=" ">
+              <label className="block mb-1">ชื่อวิชา</label>
               <input
                 type="text"
-                name="teacherSurname"
-                value={formData.teacherSurname}
+                name="subjectName"
+                value={formData.subjectName}
                 onChange={handleChange}
                 className="box"
                 required
               />
             </div>
 
-            <div>
-              <label className="block mb-1">ตำแหน่ง</label>
+            <div className="">
+              <label className="block mb-1">หน่วยกิต</label>
               <input
                 type="text"
-                name="role"
-                value={formData.role}
+                name="credit"
+                value={formData.credit}
+                onChange={handleChange}
+                className="box"
+                required
+              />
+            </div>
+
+            <div className="">
+              <label className="block mb-1">ประเภทหน่วยกิต</label>
+              <input
+                type="text"
+                name="creditType"
+                value={formData.creditType}
                 onChange={handleChange}
                 className="box"
                 required
@@ -163,9 +174,11 @@ const handleSubmit = (e: React.FormEvent) => {
             <button type="submit" className="buttonSub">
               แก้ไข
             </button>
+
           </div>
         </div>
       </form>
     </div>
+  </>
   );
 } 

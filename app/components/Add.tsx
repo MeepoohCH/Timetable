@@ -66,6 +66,11 @@ export default function Add({
     weekday: "",
     subjectType:"",
     academicYear:"",
+    role:"",
+    teacherName:"",
+    teacherSurname:"",
+    credit: "",
+    creditType: "",
     study: {
       location: "",
       startTime: "",
@@ -161,6 +166,11 @@ export default function Add({
     weekday: "",
     subjectType:"",
     academicYear:"2xxx",
+    role:"",
+    teacherName:"",
+    teacherSurname:"",
+    credit: "",
+    creditType: "",
     study: {
       location: "",
       startTime: "",

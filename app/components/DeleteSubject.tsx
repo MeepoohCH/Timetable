@@ -13,7 +13,7 @@ type DeleteTeacherProps = {
   events: any[];
 };
 
-export default function DeleteTeacher({
+export default function DeleteSubject({
   onSwitchAction,
   currentComponent,
   onDeleteEventAction,
@@ -32,6 +32,8 @@ export default function DeleteTeacher({
     teacherName:"",
     teacherSurname:"",
     role:"",
+    credit: "",
+    creditType: "",
     study: {
       location: "",
       startTime: "",
@@ -68,6 +70,8 @@ useEffect(() => {
       academicYear: "",
       teacherName: "",
       teacherSurname: "",
+      credit: "",
+      creditType: "",
       role: "",
       study: {
         location: "",
@@ -111,28 +115,38 @@ useEffect(() => {
     <div>
       <form>
         <div className="edit-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
-          <label className="text-sm py-1">ข้อมูลอาจารย์</label>
+          <label className="text-sm py-1">ข้อมูลวิชา</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
               <div className="">
-                <label className="block mb-1">ชื่อ</label>
-                <input type="text" value={formData.teacherName} readOnly className="box" />
+                <label className="block mb-1">รหัสวิชา</label>
+                <input type="text" value={formData.subject_id} readOnly className="box" />
               </div>
 
             <div>
-              <label className="block mb-1">นามสกุล</label>
+              <label className="block mb-1">ชื่อวิชา</label>
               <input
                 type="text"
-                value={formData.teacherSurname}
+                value={formData.subjectName}
                 className="box"
                 readOnly
               />
             </div>
 
             <div>
-              <label className="block mb-1">ตำแหน่ง</label>
+              <label className="block mb-1">หน่วยกิต</label>
               <input
                 type="text"
-                value={formData.role}
+                value={formData.credit}
+                className="box"
+                readOnly
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1">ประเภทหน่วยกิต</label>
+              <input
+                type="text"
+                value={formData.creditType}
                 className="box"
                 readOnly
               />

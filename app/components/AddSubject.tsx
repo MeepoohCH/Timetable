@@ -28,7 +28,7 @@ function isTimeOverlap(
 
 
 
-export default function AddTeacher({
+export default function AddSubject({
   onSwitchAction,
   currentComponent,
   onAddEventAction,
@@ -41,10 +41,40 @@ export default function AddTeacher({
   const [teacherSurname, setTeacherSurname] = useState<string>("");
 
   const [formData, setFormData] = useState({
-    role: "",
-    teacherName: "",
+    id: "",
+    subject_id: "",
+    subjectName: "",
+    sec: "",
+    teacher: [] as string[],
+    weekday: "",
+    subjectType:"",
+    academicYear:"",
+    teacherName:"",
     teacherSurname:"",
+    role:"",
+    credit: "",
+    creditType: "",
+    study: {
+      location: "",
+      startTime: "",
+      endTime: "",
+    },
+    exam: {
+      midterm: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+      final: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+    },
   });
+
 
   const [conflictData, setConflictData] = useState<ClassItem | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
@@ -58,47 +88,74 @@ export default function AddTeacher({
 
    const resetForm = () => {
     setFormData({
-    role: "",
-    teacherName: "",
-    teacherSurname:"",
+      id: "",
+      subject_id: "",
+      subjectName: "",
+      sec: "",
+      teacher: [] as string[],
+      weekday: "",
+      subjectType: "",
+      academicYear: "",
+      teacherName: "",
+      teacherSurname: "",
+      credit: "",
+      creditType: "",
+      role: "",
+      study: {
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+      exam: {
+        midterm: {
+          date: "",
+          location: "",
+          startTime: "",
+          endTime: "",
+        },
+        final: {
+          date: "",
+          location: "",
+          startTime: "",
+          endTime: "",
+        },
+      },
     });
-    setRole("")
-    setTeacherName("")
-    setTeacherSurname("")
    }
 
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
 
   const requiredFields = [
-    formData.role,
-    formData.teacherName,
-    formData.teacherSurname,
+    formData.subject_id,
+    formData.subjectName,
+    formData.credit,
+    formData.creditType,
   ];
 
-  const isTeacherValid = requiredFields.every(
+  const isSubjectValid = requiredFields.every(
     (field) => typeof field === "string" && field.trim() !== ""
   );
 
-  if (!isTeacherValid) {
+  if (!isSubjectValid) {
     alert("กรุณากรอกข้อมูลให้ครบถ้วน");
     return;
   }
 
   const newEvent: ClassItem = {
-    id: uuidv4(),
-    subject_id: "",  
-    subjectName: "",
+    id: "",
+    subject_id: formData.subject_id,  
+    subjectName: formData.subjectName,
     sec: "",
-    teacher: [`${formData.teacherName} ${formData.teacherSurname}`],
-    role: formData.role,
-    teacherName: formData.teacherName,
-    teacherSurname: formData.teacherSurname,
+    teacher: [],
+    role: "",
+    teacherName: "",
+    teacherSurname: "",
     weekday: "",
     subjectType: "",
     academicYear: "",
-    credit: "",
-    creditType: "",
+    credit: formData.credit,
+    creditType: formData.creditType,
     study: {
       location: "",
       startTime: "",
@@ -121,14 +178,14 @@ return (
     <div className="">
       <form onSubmit={handleSubmit}>
         <div className="add-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
-          <label className=" text-sm py-1">ข้อมูลอาจารย์</label>
+          <label className=" text-sm py-1">ข้อมูลวิชา</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
             <div className="">
-              <label className="block mb-1">ชื่อ</label>
+              <label className="block mb-1">รหัสวิชา</label>
               <input
                 type="text"
-                name="teacherName"
-                value={formData.teacherName}
+                name="subject_id"
+                value={formData.subject_id}
                 onChange={handleChange}
                 className="box"
                 required
@@ -136,11 +193,11 @@ return (
             </div>
 
             <div className=" ">
-              <label className="block mb-1">นามสกุล</label>
+              <label className="block mb-1">ชื่อวิชา</label>
               <input
                 type="text"
-                name="teacherSurname"
-                value={formData.teacherSurname}
+                name="subjectName"
+                value={formData.subjectName}
                 onChange={handleChange}
                 className="box"
                 required
@@ -148,11 +205,23 @@ return (
             </div>
 
             <div className="">
-              <label className="block mb-1">ตำแหน่ง</label>
+              <label className="block mb-1">หน่วยกิต</label>
               <input
                 type="text"
-                name="role"
-                value={formData.role}
+                name="credit"
+                value={formData.credit}
+                onChange={handleChange}
+                className="box"
+                required
+              />
+            </div>
+
+            <div className="">
+              <label className="block mb-1">ประเภทหน่วยกิต</label>
+              <input
+                type="text"
+                name="creditType"
+                value={formData.creditType}
                 onChange={handleChange}
                 className="box"
                 required
