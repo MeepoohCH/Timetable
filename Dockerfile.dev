@@ -8,6 +8,8 @@ COPY package.json package-lock.json ./
 
 RUN npm install
 
+COPY . .
+
 # ใช้ port 3000 สำหรับ Next.js
 EXPOSE 3000
 

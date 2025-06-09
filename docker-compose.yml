@@ -16,7 +16,7 @@ services:
       NODE_ENV: development
       CHOKIDAR_USEPOLLING: "true" 
     volumes:
-      - /mnt/d/Timetable/Timetable:/app
+      - ./:/app
       - /app/node_modules
 
     depends_on:
