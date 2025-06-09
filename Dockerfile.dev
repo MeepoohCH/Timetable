@@ -3,12 +3,12 @@ FROM node:18
 
 WORKDIR /app
 
+# ติดตั้ง dependency โดยไม่ต้อง copy โค้ดเข้า image
 COPY package.json package-lock.json ./
 
 RUN npm install
 
-COPY . .
-
+# ใช้ port 3000 สำหรับ Next.js
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
