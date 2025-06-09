@@ -6,6 +6,9 @@ export type ClassItem = {
   weekday: string,
   subjectType:string,
   academicYear:string,
+  role:string,
+  teacherName:string,
+  teacherSurname:string,
   study: {
     location: string,
     startTime: string,

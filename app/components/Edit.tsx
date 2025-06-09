@@ -48,6 +48,9 @@ export default function Edit({
     weekday: "",
     subjectType:"",
     academicYear:"",
+    role:"",
+    teacherName:"",
+    teacherSurname:"",
     study: {
       location: "",
       startTime: "",
@@ -142,6 +145,9 @@ export default function Edit({
     weekday: "",
     subjectType:"",
     academicYear:"2xxx",
+    role:"",
+    teacherName:"",
+    teacherSurname:"",
     study: {
       location: "",
       startTime: "",
@@ -254,6 +260,9 @@ export default function Edit({
     weekday: "",
     subjectType:"",
     academicYear:"2xxx",
+    role:"",
+    teacherName:"",
+    teacherSurname:"",
     study: {
       location: "",
       startTime: "",

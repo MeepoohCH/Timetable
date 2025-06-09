@@ -7,7 +7,7 @@ import Navbar from "./NavBar";
 export default function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  const hideNavbarPaths = ["/login"];
+  const hideNavbarPaths = ["/login","/"];
   const showNavbar = !hideNavbarPaths.includes(pathname || "");
 
   return (
