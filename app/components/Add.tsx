@@ -320,7 +320,7 @@ export default function Add({
   <>
     <div className="">
       <form onSubmit={handleSubmit}>
-        <div className="add-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
+        <div className="add-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 ">
           <label className=" text-sm py-1">ตารางเรียน</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
             <div className="">
