@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       INSERT INTO Timetable (
         id, subject_id, subjectType, yearLevel, sec, semester, academicYear,
         weekday, startTime, endTime, location, exam_id, teacher_id
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
     `;
 
     const values = [
@@ -34,6 +34,7 @@ export async function POST(request: Request) {
       data.subject_id,
       data.subjectType,
       data.yearLevel,
+      data.degree,
       data.sec,
       data.semester,
       data.academicYear,

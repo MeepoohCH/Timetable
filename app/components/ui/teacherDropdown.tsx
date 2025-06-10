@@ -8,8 +8,8 @@ import TeacherInput from "./teacherInput";
 
 export default function TeacherDropdown() {
   const [teacher, setTeacher] = useState("")
-  const [semester, setsemester] = useState<string | null>(null)
-  const [year, setyear] = useState<string | null>(null)
+  const [semester, setsemester] = useState<number|string | null>(null)
+  const [year, setyear] = useState< number|string | null>(null)
   
 
 //   จำลองรายชื่อที่มีอยู่ในระบบ
