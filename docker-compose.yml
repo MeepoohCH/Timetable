@@ -8,17 +8,16 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
     environment:
       DB_HOST: mysql-db
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_NAME: ${MYSQL_DATABASE}
       NODE_ENV: development
-      CHOKIDAR_USEPOLLING: "true" 
-    volumes:
-      - ./:/app
-      - /app/node_modules
-
+      WATCHPACK_POLLING: true
     depends_on:
       - mysql
     restart: unless-stopped
