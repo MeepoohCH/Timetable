@@ -5,10 +5,10 @@ import Dropdown from "./dropdown"
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
 
 export default function StudentDropdown() {
-  const [yearlevel, setYearlevel] = useState<number | null>(null)
-  const [semester, setSemester] = useState<number | null>(null)
-  const [year, setYear] = useState<number | null>(null)
-  const [degree, setDegree] =useState<number | null>(null)
+  const [yearlevel, setYearlevel] = useState<number|string | null>(null)
+  const [semester, setSemester] = useState< number|string | null>(null)
+  const [year, setYear] = useState< number|string | null>(null)
+  const [degree, setDegree] =useState< number|string | null>(null)
 
   const yearlevelItems = [
     { id: 1, label: "1" },

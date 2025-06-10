@@ -8,9 +8,9 @@ import TeacherInput from "./teacherInput";
 
 export default function TeacherExamDropdown() {
     const [teacher, setTeacher] = useState("")
-    const [semester, setsemester] = useState<string | null>(null)
-    const [year, setyear] = useState<string | null>(null)
-    const [examtype, setexamtype] = useState<string | null>(null)
+    const [semester, setsemester] = useState<number |string | null>(null)
+    const [year, setyear] = useState<number|string  | null>(null)
+    const [examtype, setexamtype] = useState<number |string | null>(null)
 
 //   จำลองรายชื่อที่มีอยู่ในระบบ
     const teacherList=[
@@ -22,16 +22,16 @@ export default function TeacherExamDropdown() {
     ]
 
         const semesterlItems =[
-        {id: "semester1", label:"1"},
-        {id: "semester2", label:"2"},
-        {id: "semester3", label:"3"},
+        {id: 1, label:"1"},
+        {id: 2, label:"2"},
+        {id: 3, label:"3"},
     ]
 
         const yearlItems =[
-        {id: "2568", label:"2568"},
-        {id: "2567", label:"2567"},
-        {id: "2566", label:"2566"},
-        {id: "2565", label:"2565"},
+        {id: 2568, label:"2568"},
+        {id: 2567, label:"2567"},
+        {id: 2566, label:"2566"},
+        {id: 2565, label:"2565"},
     ]
 
     const examtypeItems = [

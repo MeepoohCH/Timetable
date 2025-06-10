@@ -80,10 +80,10 @@ export default function Add({
    console.log("Updated filtersAdd:", filters);
 
 interface Filters {
-  yearLevel?: number | null;
-  semester?: number | null;
-  academicYear?: number | null;
-  degree?: number | null;
+  yearLevel?:  number|string | null;
+  semester?:  number|string | null;
+  academicYear?:  number|string | null;
+  degree?:  number|string | null;
 }
 type FormData = {
   subject_id: string;
@@ -92,10 +92,10 @@ type FormData = {
   teacher: string[];
   weekday: string;
   subjectType: string;
-  yearLevel: number | null;
-  semester: number | null;
-  academicYear: number | null;
-  degree: number | null;
+  yearLevel: number|string | null;
+  semester: number|string | null;
+  academicYear: number|string | null;
+  degree: number |string| null;
   study: {
     location: string;
     startTime: string;
