@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
@@ -57,6 +57,19 @@ export default function Add({
   const [finalDate, setFinalDate] = useState<Date | null>(null);
   const [subjectType, setSubjectType] = useState<string>("");
 
+  // เพิ่ม ref ให้ DatePicker รู้
+  const midtermDateRef = useRef<HTMLInputElement>(null);
+  const finalDateRef = useRef<HTMLInputElement>(null);
+  const [isMidtermOpen, setIsMidtermOpen] = useState(false);
+  const [isFinalOpen, setIsFinalOpen] = useState(false);
+
+  const studyStartTimeRef = useRef<HTMLInputElement>(null);
+  const midtermStartTimeRef = useRef<HTMLInputElement>(null);
+  const finalStartTimeRef = useRef<HTMLInputElement>(null);
+
+  const studyEndTimeRef = useRef<HTMLInputElement>(null);
+  const midtermEndTimeRef = useRef<HTMLInputElement>(null);
+  const finalEndTimeRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     subject_id: "",
@@ -419,7 +432,7 @@ export default function Add({
                 timeIntervals={15}
                 timeCaption="เวลา"
                 dateFormat="HH:mm"
-                className="box pl-4"
+                customInput={<input ref={studyStartTimeRef} className="boxT pl-4" />}
               />
             </div>
 
@@ -443,7 +456,7 @@ export default function Add({
                 timeIntervals={15}
                 timeCaption="เวลา"
                 dateFormat="HH:mm"
-                className="box pl-4"
+                customInput={<input ref={studyEndTimeRef} className="boxT pl-4" />}
               />
             </div>
 
@@ -544,20 +557,17 @@ export default function Add({
                             },
                           },
                         }));
+                        setIsMidtermOpen(false);
                       }}
+                      open={isMidtermOpen}
+                      onClickOutside={() => setIsMidtermOpen(false)}
                       dateFormat="dd/MM/yyyy"
-                      className="boxT"
+                      customInput={<input ref={midtermDateRef} className="boxT" />}
                     />
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
-                    onClick={() =>
-                      document
-                        .querySelector<HTMLInputElement>(
-                          ".react-datepicker__input-container input"
-                        )
-                        ?.focus()
-                    }
+                    onClick={() => setIsMidtermOpen(true)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -600,13 +610,14 @@ export default function Add({
                       },
                     },
                   }));
+
                 }}
                 showTimeSelect
                 showTimeSelectOnly
                 timeIntervals={15}
                 timeCaption="เวลา"
                 dateFormat="HH:mm"
-                className="box pl-4"
+                customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
               />
             </div>
 
@@ -637,7 +648,7 @@ export default function Add({
                 timeIntervals={15}
                 timeCaption="เวลา"
                 dateFormat="HH:mm"
-                className="box pl-4"
+                customInput={<input ref={midtermEndTimeRef} className="boxT pl-4" />}
               />
             </div>
 
@@ -675,20 +686,17 @@ export default function Add({
                             },
                           },
                         }));
+                        setIsFinalOpen(false);
                       }}
+                      open={isFinalOpen}
+                      onClickOutside={() => setIsFinalOpen(false)}
                       dateFormat="dd/MM/yyyy"
-                      className="boxT"
+                      customInput={<input ref={finalDateRef} className="boxT" />}
                     />
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
-                    onClick={() =>
-                      document
-                        .querySelector<HTMLInputElement>(
-                          ".react-datepicker__input-container input"
-                        )
-                        ?.focus()
-                    }
+                    onClick={() => setIsFinalOpen(true)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -737,7 +745,7 @@ export default function Add({
                 timeIntervals={15}
                 timeCaption="เวลา"
                 dateFormat="HH:mm"
-                className="box pl-4"
+                customInput={<input ref={finalStartTimeRef} className="boxT pl-4" />}
               />
             </div>
 
@@ -768,7 +776,7 @@ export default function Add({
                 timeIntervals={15}
                 timeCaption="เวลา"
                 dateFormat="HH:mm"
-                className="box pl-4"
+                 customInput={<input ref={finalEndTimeRef} className="boxT pl-4" />}
               />
             </div>
 
