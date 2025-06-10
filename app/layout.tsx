@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {  Kanit } from "next/font/google";
 import "./globals.css";
 import AppLayoutClient from "./components/ui/AppLayoutClient";
+import { StudentFilterProvider } from '@/context/StudentFilterContext/page';
 
 
 
@@ -39,7 +40,9 @@ export default function RootLayout({
       <body
         className={`${kanit.variable} antialiased bg-[#EFEFEF] flex min-h-screen`}
       >
+        <StudentFilterProvider>
         <AppLayoutClient>{children}</AppLayoutClient>
+        </StudentFilterProvider>
       </body>
     </html>
   )

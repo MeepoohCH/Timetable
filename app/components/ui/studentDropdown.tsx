@@ -1,38 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { useState,  useEffect } from "react"
 import Dropdown from "./dropdown"
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
 
 export default function StudentDropdown() {
-  const [yearlevel, setYearlevel] = useState<string | null>(null)
-  const [semester, setSemester] = useState<string | null>(null)
-  const [year, setYear] = useState<string | null>(null)
-  const [degree, setDegree] =useState<string | null>(null)
+  const [yearlevel, setYearlevel] = useState<number | null>(null)
+  const [semester, setSemester] = useState<number | null>(null)
+  const [year, setYear] = useState<number | null>(null)
+  const [degree, setDegree] =useState<number | null>(null)
 
   const yearlevelItems = [
-    { id: "year1", label: "1" },
-    { id: "year2", label: "2" },
-    { id: "year3", label: "3" },
-    { id: "year4", label: "4" },
+    { id: 1, label: "1" },
+    { id: 2, label: "2" },
+    { id: 3, label: "3" },
+    { id: 4, label: "4" },
   ]
 
   const semesterItems = [
-    { id: "semester1", label: "1" },
-    { id: "semester2", label: "2" },
-    { id: "semester3", label: "3" },
+    { id: 1, label: "1" },
+    { id: 2, label: "2" },
+    { id: 3, label: "3" },
   ]
 
   const yearItems = [
-    { id: "2568", label: "2568" },
-    { id: "2567", label: "2567" },
-    { id: "2566", label: "2566" },
-    { id: "2565", label: "2565" },
+    { id: 2568, label: "2568" },
+    { id: 2567, label: "2567" },
+    { id: 2566, label: "2566" },
+    { id: 2565, label: "2565" },
   ]
 
   const degreeItems = [
-    { id: "iot", label: "1 ปริญญา"},
-    { id: "physiot", label: "2 ปริญญา" },
+    { id: 1, label: "1 ปริญญา"},
+    { id: 2, label: "2 ปริญญา"},
   ]
 
   const { setFilters } = useStudentFilter();
@@ -49,6 +49,14 @@ export default function StudentDropdown() {
     academicYear: year,
     degree,
   });
+
+
+console.log("Updated filters:", {
+  yearLevel: yearlevel,
+  semester,
+  academicYear: year,
+  degree,
+});
 
   // เลื่อนไปยังฟอร์ม (แค่แสดงผล)
   const formSection = document.getElementById("form-section");

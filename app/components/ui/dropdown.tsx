@@ -7,9 +7,9 @@ export default function Dropdown ({
   setSelected,
 }: {
   label: string
-  items: {id: string; label: string}[]
-  selected: string | null
-  setSelected: (val: string) => void
+  items: {id: number; label: string}[]
+  selected: number | null
+  setSelected: (val: number) => void
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)

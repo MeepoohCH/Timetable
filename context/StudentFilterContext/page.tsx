@@ -3,10 +3,10 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 type StudentFilter = {
-  yearLevel: string | null;
-  semester: string | null;
-  academicYear: string | null;
-  degree: string | null;
+  yearLevel: number | null;
+  semester: number | null;
+  academicYear: number | null;
+  degree: number | null;
 };
 
 type StudentFilterContextType = {

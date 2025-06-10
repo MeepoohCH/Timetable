@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
+import { Filter } from "lucide-react";
 
 type AddProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
@@ -61,18 +62,59 @@ export default function Add({
 
 
 
+   const { filters } = useStudentFilter()
 
-  const [formData, setFormData] = useState({
+   console.log("Updated filtersAdd:", filters);
+
+interface Filters {
+  yearLevel?: number | null;
+  semester?: number | null;
+  academicYear?: number | null;
+  degree?: number | null;
+}
+type FormData = {
+  subject_id: string;
+  subjectName: string;
+  sec: number | null;
+  teacher: string[];
+  weekday: string;
+  subjectType: string;
+  yearLevel: number | null;
+  semester: number | null;
+  academicYear: number | null;
+  degree: number | null;
+  study: {
+    location: string;
+    startTime: string;
+    endTime: string;
+  };
+  exam: {
+    midterm: {
+      date: string;
+      location: string;
+      startTime: string;
+      endTime: string;
+    };
+    final: {
+      date: string;
+      location: string;
+      startTime: string;
+      endTime: string;
+    };
+  };
+};
+
+const [formData, setFormData] = useState<FormData>({
     subject_id: "",
     subjectName: "",
-    sec: "",
+    sec: null,
     teacher: [] as string[],
     weekday: "",
     subjectType:"",
-    yearLevel:"",
-    semester:"",
-    academicYear:"",
-    degree:"",
+    yearLevel: filters.yearLevel || null,
+    semester: filters.semester || null,
+    academicYear: filters.academicYear || null,
+     degree: filters.degree || null,
     study: {
       location: "",
       startTime: "",
@@ -93,6 +135,9 @@ export default function Add({
       },
     },
   });
+
+  
+
 
   const [teachers, setTeachers] = useState<string[]>([]);
   const [newTeacher, setNewTeacher] = useState<string>("");
@@ -119,6 +164,17 @@ export default function Add({
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleSecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: name === "sec"
+      ? value === "" ? null : Number(value) // ✅ แปลงเฉพาะ sec เป็น number
+      : value,
+  }));
+};
 
   const handleFinalExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -159,20 +215,19 @@ export default function Add({
       }));
     };
 
-   const { filters } = useStudentFilter()
-  
-   const resetForm = () => {
+   const resetForm = (filters: Filters = {}) => {
+   console.log("resetForm filters:", filters);
     setFormData({
     subject_id: "",
     subjectName: "",
-    sec: "",
+    sec: null,
     teacher: [],
     weekday: "",
     subjectType:"",
-    yearLevel: filters?.yearLevel || "",
-    semester: filters?.semester || "",
-   academicYear: filters?.academicYear || "",
-   degree: filters?.degree || "",
+    yearLevel: filters.yearLevel || null,
+    semester: filters.semester || null,
+   academicYear: filters.academicYear || null,
+   degree: filters.degree || null,
     study: {
       location: "",
       startTime: "",
@@ -209,9 +264,7 @@ useEffect(() => {
   console.log("formData ล่าสุด:", formData)
 }, [formData])
 
-useEffect(() => {
-  console.log("component mounted")
-}, [])
+
 
 
   const getAllTeachers = () => {
@@ -304,14 +357,12 @@ useEffect(() => {
     onAddEventAction({ 
       ...formData,
       teacher: allTeachers,
-      yearLevel: "2xxx",
-      semester: "x",
-      subjectName: "Subjectname",
+      
     });
 
 
     // reset ฟอร์ม
-    resetForm();
+    resetForm(filters);
 
   };
 
@@ -323,15 +374,13 @@ useEffect(() => {
     onAddEventAction({
       ...formData,
       teacher: allTeachers,
-      yearLevel: "2xxx",
-      semester: "x",
       subjectName: formData.subjectName || "Subjectname",
       overwriteId: conflictData.subject_id,
     });
 
     setShowConflictWarning(false); // ปิด popup เตือน
     setConflictData(null);
-    resetForm();
+    resetForm(filters);
   };
 
   
@@ -380,10 +429,10 @@ useEffect(() => {
             <div className="">
               <label className="block mb-1">กลุ่ม</label>
               <input
-                type="text"
+                type="number"
                 name="sec"
-                value={formData.sec}
-                onChange={handleChange}
+                value={formData.sec !== null ? formData.sec : "" }
+                onChange={handleSecChange}
                 className="box"
                 required
               />
