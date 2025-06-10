@@ -1,4 +1,5 @@
 export type ClassItem = {
+  id: string;
   subject_id: string,
   subjectName: string,
   sec: string,
@@ -6,6 +7,11 @@ export type ClassItem = {
   weekday: string,
   subjectType:string,
   academicYear:string,
+  role:string,
+  teacherName:string,
+  teacherSurname:string,
+  credit: string,
+  creditType: string,
   study: {
     location: string,
     startTime: string,

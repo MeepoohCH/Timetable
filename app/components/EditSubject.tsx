@@ -1,0 +1,184 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
+import "../components/DesignForm.css";
+import { ClassItem } from "./ClassItem";
+
+type EditTeacherProps = {
+  onSwitchAction: (view: "edit" | "delete" | "add") => void;
+  currentComponent: "edit" | "delete" | "add";
+  onEditEventAction: (updatedEvent: ClassItem) => void;
+  selectedEvent: ClassItem | null;
+  events: ClassItem[];
+  existingClasses: ClassItem[];
+};
+
+export default function EditSubject({
+  onSwitchAction,
+  currentComponent,
+  onEditEventAction,
+  selectedEvent,
+  events,
+  existingClasses,
+}: EditTeacherProps) {
+  const [formData, setFormData] = useState({
+    id: "",
+    subject_id: "",
+    subjectName: "",
+    sec: "",
+    teacher: [] as string[],
+    weekday: "",
+    subjectType:"",
+    academicYear:"",
+    teacherName:"",
+    teacherSurname:"",
+    role:"",
+    credit: "",
+    creditType: "",
+    study: {
+      location: "",
+      startTime: "",
+      endTime: "",
+    },
+    exam: {
+      midterm: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+      final: {
+        date:"",
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+    },
+  });
+
+useEffect(() => {
+  if (selectedEvent) {
+    setFormData(selectedEvent);
+  } else {
+    setFormData({
+      id: "",
+      subject_id: "",
+      subjectName: "",
+      sec: "",
+      teacher: [] as string[],
+      weekday: "",
+      subjectType: "",
+      academicYear: "",
+      teacherName: "",
+      teacherSurname: "",
+      credit: "",
+      creditType: "",
+      role: "",
+      study: {
+        location: "",
+        startTime: "",
+        endTime: "",
+      },
+      exam: {
+        midterm: {
+          date: "",
+          location: "",
+          startTime: "",
+          endTime: "",
+        },
+        final: {
+          date: "",
+          location: "",
+          startTime: "",
+          endTime: "",
+        },
+      },
+    });
+  }
+}, [selectedEvent]);
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!selectedEvent) return;
+
+  const updatedEvent: ClassItem = {
+    ...formData,
+  };
+
+  onEditEventAction(updatedEvent);
+};
+
+
+return (
+  <>
+    <div className="">
+      <form onSubmit={handleSubmit}>
+        <div className="edit-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
+          <label className=" text-sm py-1">ข้อมูลวิชา</label>
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
+            <div className="">
+              <label className="block mb-1">รหัสวิชา</label>
+              <input
+                type="text"
+                name="subject_id"
+                value={formData.subject_id}
+                onChange={handleChange}
+                className="box"
+                required
+              />
+            </div>
+
+            <div className=" ">
+              <label className="block mb-1">ชื่อวิชา</label>
+              <input
+                type="text"
+                name="subjectName"
+                value={formData.subjectName}
+                onChange={handleChange}
+                className="box"
+                required
+              />
+            </div>
+
+            <div className="">
+              <label className="block mb-1">หน่วยกิต</label>
+              <input
+                type="text"
+                name="credit"
+                value={formData.credit}
+                onChange={handleChange}
+                className="box"
+                required
+              />
+            </div>
+
+            <div className="">
+              <label className="block mb-1">ประเภทหน่วยกิต</label>
+              <input
+                type="text"
+                name="creditType"
+                value={formData.creditType}
+                onChange={handleChange}
+                className="box"
+                required
+              />
+            </div>
+
+            <button type="submit" className="buttonSub">
+              แก้ไข
+            </button>
+
+          </div>
+        </div>
+      </form>
+    </div>
+  </>
+  );
+} 

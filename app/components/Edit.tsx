@@ -41,6 +41,7 @@ export default function Edit({
   existingClasses,
 }: EditProps) {
   const [formData, setFormData] = useState<ClassItem>({
+    id: "",
     subject_id: "",
     subjectName: "",
     sec: "",
@@ -48,6 +49,11 @@ export default function Edit({
     weekday: "",
     subjectType:"",
     academicYear:"",
+    role:"",
+    teacherName:"",
+    teacherSurname:"",
+    credit: "",
+    creditType: "",
     study: {
       location: "",
       startTime: "",
@@ -135,6 +141,7 @@ export default function Edit({
       }
     } else {
     setFormData({
+    id: "",
     subject_id: "",
     subjectName: "",
     sec: "",
@@ -142,6 +149,11 @@ export default function Edit({
     weekday: "",
     subjectType:"",
     academicYear:"2xxx",
+    role:"",
+    teacherName:"",
+    teacherSurname:"",
+    credit: "",
+    creditType: "",
     study: {
       location: "",
       startTime: "",
@@ -245,8 +257,9 @@ export default function Edit({
       }));
     };
   
-       const resetForm = () => {
+  const resetForm = () => {
     setFormData({
+    id: "",
     subject_id: "",
     subjectName: "",
     sec: "",
@@ -254,6 +267,11 @@ export default function Edit({
     weekday: "",
     subjectType:"",
     academicYear:"2xxx",
+    role:"",
+    teacherName:"",
+    teacherSurname:"",
+    credit: "",
+    creditType: "",
     study: {
       location: "",
       startTime: "",

@@ -123,6 +123,18 @@ export default function SideNavbar() {
               href="/makeupclass"
               onClick={() => setIsOpen(false)}
             />
+            <NavItem
+              icon="tabler:file-description"
+              label="ข้อมูลอาจารย์"
+              href="/teacherData"
+              onClick={() => setIsOpen(false)}
+            />
+            <NavItem
+              icon="tabler:file-description"
+              label="ข้อมูลวิชา"
+              href="/SubjectData"
+              onClick={() => setIsOpen(false)}
+            />
           </div>
           <div className="absolute inset-x-4 bottom-6">
             <LogoutButton />

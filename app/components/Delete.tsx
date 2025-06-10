@@ -35,7 +35,6 @@ export default function Delete({
   selectedEvent,
 }: DeleteProps) {
   const pathname = usePathname();
-   const isstudyPage = pathname.includes("/studentStudy") || pathname.includes("/teacherStudy")
 
 
   const [formData, setFormData] = useState({
