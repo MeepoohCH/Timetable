@@ -1,13 +1,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { useRef,useState, useEffect } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
-import { Filter } from "lucide-react";
+
 
 type AddProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
@@ -58,7 +58,7 @@ export default function Add({
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
   const [subjectType, setSubjectType] = useState<string>("");
-  
+
 
   // เพิ่ม ref ให้ DatePicker รู้
   const midtermDateRef = useRef<HTMLInputElement>(null);
@@ -75,59 +75,59 @@ export default function Add({
   const finalEndTimeRef = useRef<HTMLInputElement>(null);
 
 
-   const { filters } = useStudentFilter()
+  const { filters } = useStudentFilter()
 
-   console.log("Updated filtersAdd:", filters);
+  console.log("Updated filtersAdd:", filters);
 
-interface Filters {
-  yearLevel?:  number|string | null;
-  semester?:  number|string | null;
-  academicYear?:  number|string | null;
-  degree?:  number|string | null;
-}
-type FormData = {
-  subject_id: string;
-  subjectName: string;
-  sec: number | null;
-  teacher: string[];
-  weekday: string;
-  subjectType: string;
-  yearLevel: number|string | null;
-  semester: number|string | null;
-  academicYear: number|string | null;
-  degree: number |string| null;
-  study: {
-    location: string;
-    startTime: string;
-    endTime: string;
-  };
-  exam: {
-    midterm: {
-      date: string;
+  interface Filters {
+    yearLevel?: number | string | null;
+    semester?: number | string | null;
+    academicYear?: number | string | null;
+    degree?: number | string | null;
+  }
+  type FormData = {
+    subject_id: string;
+    subjectName: string;
+    sec: number | null;
+    teacher: string[];
+    weekday: string;
+    subjectType: string;
+    yearLevel: number | string | null;
+    semester: number | string | null;
+    academicYear: number | string | null;
+    degree: number | string | null;
+    study: {
       location: string;
       startTime: string;
       endTime: string;
     };
-    final: {
-      date: string;
-      location: string;
-      startTime: string;
-      endTime: string;
+    exam: {
+      midterm: {
+        date: string;
+        location: string;
+        startTime: string;
+        endTime: string;
+      };
+      final: {
+        date: string;
+        location: string;
+        startTime: string;
+        endTime: string;
+      };
     };
   };
-};
 
-const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormData>({
     subject_id: "",
     subjectName: "",
     sec: null,
     teacher: [] as string[],
     weekday: "",
-    subjectType:"",
+    subjectType: "",
     yearLevel: filters.yearLevel || null,
     semester: filters.semester || null,
     academicYear: filters.academicYear || null,
-     degree: filters.degree || null,
+    degree: filters.degree || null,
     study: {
       location: "",
       startTime: "",
@@ -135,13 +135,13 @@ const [formData, setFormData] = useState<FormData>({
     },
     exam: {
       midterm: {
-        date:"",
+        date: "",
         location: "",
         startTime: "",
         endTime: "",
       },
       final: {
-        date:"",
+        date: "",
         location: "",
         startTime: "",
         endTime: "",
@@ -149,7 +149,7 @@ const [formData, setFormData] = useState<FormData>({
     },
   });
 
-  
+
 
 
   const [teachers, setTeachers] = useState<string[]>([]);
@@ -179,15 +179,15 @@ const [formData, setFormData] = useState<FormData>({
   };
 
   const handleSecChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
+    const { name, value } = e.target;
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: name === "sec"
-      ? value === "" ? null : Number(value) // ✅ แปลงเฉพาะ sec เป็น number
-      : value,
-  }));
-};
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "sec"
+        ? value === "" ? null : Number(value) // ✅ แปลงเฉพาะ sec เป็น number
+        : value,
+    }));
+  };
 
   const handleFinalExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -203,63 +203,65 @@ const [formData, setFormData] = useState<FormData>({
     }));
   };
 
-    const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({
-        ...prev,
-        exam: {
-          ...prev.exam,
-          midterm: {
-            ...prev.exam.midterm,
-            [name]: value,
-          },
+  const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      exam: {
+        ...prev.exam,
+        midterm: {
+          ...prev.exam.midterm,
+          [name]: value,
         },
-      }));
-    };
+      },
+    }));
+  };
 
-    const handleStudyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setFormData(prev => ({
-        ...prev,
-        study: {
-          ...prev.study,
-          [name]: value, 
-        },
-      }));
-    };
+  const handleStudyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      study: {
+        ...prev.study,
+        [name]: value,
+      },
+    }));
+  };
 
-   const resetForm = (filters: Filters = {}) => {
-   console.log("resetForm filters:", filters);
+
+
+  const resetForm = (filters: Filters = {}) => {
+    console.log("resetForm filters:", filters);
     setFormData({
-    subject_id: "",
-    subjectName: "",
-    sec: null,
-    teacher: [],
-    weekday: "",
-    subjectType:"",
-    yearLevel: filters.yearLevel || null,
-    semester: filters.semester || null,
-   academicYear: filters.academicYear || null,
-   degree: filters.degree || null,
-    study: {
-      location: "",
-      startTime: "",
-      endTime: "",
-    },
-    exam: {
-      midterm: {
-        date:"",
+      subject_id: "",
+      subjectName: "",
+      sec: null,
+      teacher: [],
+      weekday: "",
+      subjectType: "",
+      yearLevel: filters.yearLevel || null,
+      semester: filters.semester || null,
+      academicYear: filters.academicYear || null,
+      degree: filters.degree || null,
+      study: {
         location: "",
         startTime: "",
         endTime: "",
       },
-      final: {
-        date:"",
-        location: "",
-        startTime: "",
-        endTime: "",
+      exam: {
+        midterm: {
+          date: "",
+          location: "",
+          startTime: "",
+          endTime: "",
+        },
+        final: {
+          date: "",
+          location: "",
+          startTime: "",
+          endTime: "",
+        },
       },
-    },
     });
     setTeachers([]);
     setNewTeacher("");
@@ -271,113 +273,151 @@ const [formData, setFormData] = useState<FormData>({
     setMidtermDate(null);
     setFinalDate(null);
 
-   }
+  }
 
-useEffect(() => {
-  console.log("formData ล่าสุด:", formData)
-}, [formData])
+  useEffect(() => {
+    console.log("formData ล่าสุด:", formData)
+  }, [formData])
 
 
 
 
   const getAllTeachers = () => {
-  return newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())
-    ? [...teachers, newTeacher.trim()]
-    : teachers;
+    return newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())
+      ? [...teachers, newTeacher.trim()]
+      : teachers;
   }
 
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-  
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
   const allTeachers = getAllTeachers();
 
+    // ตรวจสอบทีละช่อง
+  const errors: string[] = [];
 
-    const requiredFieldsStudy = [
-      formData.subject_id,
-      formData.sec,
-      formData.study.location,
-      formData.weekday,
-      formData.study.startTime,
-      formData.study.endTime,
-    ];
+  if (!formData.subject_id.trim()) errors.push("รหัสวิชา");
+  if (!formData.sec) errors.push("กลุ่มเรียน (Sec)");
+  if (!formData.study.location.trim()) errors.push("สถานที่เรียน");
+  if (!formData.weekday.trim()) errors.push("วันเรียน");
+  if (!formData.study.startTime.trim()) errors.push("เวลาเริ่มเรียน");
+  if (!formData.study.endTime.trim()) errors.push("เวลาสิ้นสุดเรียน");
 
-    const requiredFieldsExamMid = [
-      formData.exam.midterm.date,
-      formData.exam.midterm.location,
-      formData.exam.midterm.startTime,
-      formData.exam.midterm.endTime,
-    ];
+  if (!formData.exam.midterm.date.trim()) errors.push("วันที่สอบกลางภาค");
+  if (!formData.exam.midterm.location.trim()) errors.push("สถานที่สอบกลางภาค");
+  if (!formData.exam.midterm.startTime.trim()) errors.push("เวลาเริ่มสอบกลางภาค");
+  if (!formData.exam.midterm.endTime.trim()) errors.push("เวลาสิ้นสุดสอบกลางภาค");
 
-    const requiredFieldsExamFinal = [
-      formData.exam.final.date,
-      formData.exam.final.location,
-      formData.exam.final.startTime,
-      formData.exam.final.endTime,
-    ];
+  if (!formData.exam.final.date.trim()) errors.push("วันที่สอบปลายภาค");
+  if (!formData.exam.final.location.trim()) errors.push("สถานที่สอบปลายภาค");
+  if (!formData.exam.final.startTime.trim()) errors.push("เวลาเริ่มสอบปลายภาค");
+  if (!formData.exam.final.endTime.trim()) errors.push("เวลาสิ้นสุดสอบปลายภาค");
 
+  if (errors.length > 0) {
+    alert("กรุณากรอกข้อมูลให้ครบถ้วนในช่องต่อไปนี้:\n- " + errors.join("\n- "));
+    return;
+  }
 
-    const isStudyValid = requiredFieldsStudy.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
+  /*const requiredFieldsStudy = [
+    formData.subject_id,
+    formData.sec,
+    formData.study.location,
+    formData.weekday,
+    formData.study.startTime,
+    formData.study.endTime,
+  ];
 
-    const isMidtermValid = requiredFieldsExamMid.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
+  const requiredFieldsExamMid = [
+    formData.exam.midterm.date,
+    formData.exam.midterm.location,
+    formData.exam.midterm.startTime,
+    formData.exam.midterm.endTime,
+  ];
 
-    const isFinalValid = requiredFieldsExamFinal.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
+  const requiredFieldsExamFinal = [
+    formData.exam.final.date,
+    formData.exam.final.location,
+    formData.exam.final.startTime,
+    formData.exam.final.endTime,
+  ];
 
+  const isStudyValid = requiredFieldsStudy.every(
+    (field) => typeof field === "string" && field.trim() !== ""
+  );
 
-    if (!isStudyValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของตารางเรียนให้ครบถ้วน");
-      return;
-    }
+  const isMidtermValid = requiredFieldsExamMid.every(
+    (field) => typeof field === "string" && field.trim() !== ""
+  );
 
-    if (!isMidtermValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของสอบกลางภาคให้ครบถ้วน");
-      return;
-    }
+  const isFinalValid = requiredFieldsExamFinal.every(
+    (field) => typeof field === "string" && field.trim() !== ""
+  );
 
-    if (!isFinalValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของสอบปลายภาคให้ครบถ้วน");
-      return;
-    }
+  if (!isStudyValid) {
+    alert("กรุณากรอกข้อมูลในส่วนของตารางเรียนให้ครบถ้วน");
+    return;
+  }
 
+  if (!isMidtermValid) {
+    alert("กรุณากรอกข้อมูลในส่วนของสอบกลางภาคให้ครบถ้วน");
+    return;
+  }
 
-     for (const cls of existingClasses || []) {
-      const hasSameTeacher = cls.teacher.some(t => allTeachers.includes(t));
-      const sameDay = cls.weekday === formData.weekday;
+  if (!isFinalValid) {
+    alert("กรุณากรอกข้อมูลในส่วนของสอบปลายภาคให้ครบถ้วน");
+    return;
+  }*/
 
-      if (hasSameTeacher && sameDay) {
-        if (
-          isTimeOverlap(
-            cls.study.startTime,
-            cls.study.endTime,
-            formData.study.startTime,
-            formData.study.endTime
-          )
-        ) {
-          console.log("Conflict detected with:", cls);
-          setConflictData(cls);
-          setShowConflictWarning(true);
-          return;
-        }
+  // ตรวจสอบเวลาเรียนซ้อน
+  for (const cls of existingClasses || []) {
+    const hasSameTeacher = cls.teacher.some((t) => allTeachers.includes(t));
+    const sameDay = cls.weekday === formData.weekday;
+
+    if (hasSameTeacher && sameDay) {
+      if (
+        isTimeOverlap(
+          cls.study.startTime,
+          cls.study.endTime,
+          formData.study.startTime,
+          formData.study.endTime
+        )
+      ) {
+        console.log("Conflict detected with:", cls);
+        setConflictData(cls);
+        setShowConflictWarning(true);
+        return;
       }
     }
+  }
 
-    onAddEventAction({ 
-      ...formData,
-      teacher: allTeachers,
-      
+  // เตรียมข้อมูลสำหรับส่ง
+  const dataToSend = {
+    ...formData,
+    teacher: allTeachers,
+  };
+
+  try {
+    const response = await fetch("/api/Timetable/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend),
     });
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-    // reset ฟอร์ม
+    const result = await response.json();
+    console.log("Success:", result);
+
     resetForm(filters);
-
-  };
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
+};
 
   const handleOverwrite = () => {
     if (!conflictData) return;
@@ -396,31 +436,33 @@ useEffect(() => {
     resetForm(filters);
   };
 
-  
+
+
+
 
 
 
   return (
-  <>
-    <div className="">
-      <form onSubmit={handleSubmit}>
-        <div className="add-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 ">
-          <label className=" text-sm py-1">ตารางเรียน</label>
-          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
-            <div className="">
-              <label className="block mb-1">รหัสวิชา</label>
-              <input
-                type="text"
-                name="subject_id"
-                value={formData.subject_id}
-                onChange={handleChange}
-                className="box"
-                required
-              />
-            </div>
+    <>
+      <div className="">
+        <form onSubmit={handleSubmit}>
+          <div className="add-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 ">
+            <label className=" text-sm py-1">ตารางเรียน</label>
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
+              <div className="">
+                <label className="block mb-1">รหัสวิชา</label>
+                <input
+                  type="text"
+                  name="subject_id"
+                  value={formData.subject_id}
+                  onChange={handleChange}
+                  className="box"
+                  required
+                />
+              </div>
 
-            <div className=" ">
-              <label className="block mb-1">ประเภทวิชา</label>
+              <div className=" ">
+                <label className="block mb-1">ประเภทวิชา</label>
                 <select
                   name="subjectType"
                   value={formData.subjectType}
@@ -435,24 +477,24 @@ useEffect(() => {
                   <option value="ท">ท</option>
                   <option value="ป">ป</option>
                 </select>
-            </div>
+              </div>
 
 
 
-            <div className="">
-              <label className="block mb-1">กลุ่ม</label>
-              <input
-                type="number"
-                name="sec"
-                value={formData.sec !== null ? formData.sec : "" }
-                onChange={handleSecChange}
-                className="box"
-                required
-              />
-            </div>
+              <div className="">
+                <label className="block mb-1">กลุ่ม</label>
+                <input
+                  type="number"
+                  name="sec"
+                  value={formData.sec !== null ? formData.sec : ""}
+                  onChange={handleSecChange}
+                  className="box"
+                  required
+                />
+              </div>
 
-            <div className=" ">
-              <label className="block mb-1">วันเรียน</label>
+              <div className=" ">
+                <label className="block mb-1">วันเรียน</label>
                 <select
                   name="weekday"
                   value={formData.weekday}
@@ -472,159 +514,159 @@ useEffect(() => {
                   <option value="เสาร์">เสาร์</option>
                   <option value="อาทิตย์">อาทิตย์</option>
                 </select>
-            </div>
+              </div>
 
-            <div className="">
-              <label className="block mb-1">เวลาเริ่ม</label>
-              <DatePicker
-                selected={startTime}
-                onChange={(date: Date | null) => {
-                  setStartTime(date);
-                  setFormData((prev) => ({
-                    ...prev,
-                    study: {
-                      ...prev.study,
-                      startTime: date ? formatDateToTimeString(date) : "",
-                    },
-                  }));
-                }}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="เวลา"
-                dateFormat="HH:mm"
-                customInput={<input ref={studyStartTimeRef} className="boxT pl-4" />}
-              />
-            </div>
+              <div className="">
+                <label className="block mb-1">เวลาเริ่ม</label>
+                <DatePicker
+                  selected={startTime}
+                  onChange={(date: Date | null) => {
+                    setStartTime(date);
+                    setFormData((prev) => ({
+                      ...prev,
+                      study: {
+                        ...prev.study,
+                        startTime: date ? formatDateToTimeString(date) : "",
+                      },
+                    }));
+                  }}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="เวลา"
+                  dateFormat="HH:mm"
+                  customInput={<input ref={studyStartTimeRef} className="boxT pl-4" />}
+                />
+              </div>
 
 
-            <div className="col-span-1 text-sm">
-              <label className="block mb-1">เวลาจบ</label>
-              <DatePicker
-                selected={endTime}
-                onChange={(date: Date | null) => {
-                  setEndTime(date);
-                  setFormData((prev) => ({
-                    ...prev,
-                    study: {
-                      ...prev.study,
-                      endTime: date ? formatDateToTimeString(date) : "",
-                    },
-                  }));
-                }}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="เวลา"
-                dateFormat="HH:mm"
-                customInput={<input ref={studyEndTimeRef} className="boxT pl-4" />}
-              />
-            </div>
+              <div className="col-span-1 text-sm">
+                <label className="block mb-1">เวลาจบ</label>
+                <DatePicker
+                  selected={endTime}
+                  onChange={(date: Date | null) => {
+                    setEndTime(date);
+                    setFormData((prev) => ({
+                      ...prev,
+                      study: {
+                        ...prev.study,
+                        endTime: date ? formatDateToTimeString(date) : "",
+                      },
+                    }));
+                  }}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="เวลา"
+                  dateFormat="HH:mm"
+                  customInput={<input ref={studyEndTimeRef} className="boxT pl-4" />}
+                />
+              </div>
 
-            <div className="">
-              <label className="block mb-1">สถานที่</label>
-              <input
-                type="text"
-                name="location"
-                value={formData.study.location}
-                onChange={handleStudyChange}
-                className="box"
-              />
-            </div>
-
-            <div className="">
-              <label className="block mb-1">อาจารย์</label>
-
-              <div className="flex items-center">
+              <div className="">
+                <label className="block mb-1">สถานที่</label>
                 <input
                   type="text"
-                  name="teacher"
-                  value={formData.teacher}
-                  onChange={(e) => {
-                    handleChange(e);
-                    setNewTeacher(e.target.value);
-                  }}
-                  className="boxT"
+                  name="location"
+                  value={formData.study.location}
+                  onChange={handleStudyChange}
+                  className="box"
                 />
-                <button type="button" onClick={handleAddTeacher} className="px-2 rounded hover:bg-gray-100">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="25"
-                    height="25"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-gray-600 hover:text-gray-800 cursor-pointer"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="8" x2="12" y2="16" />
-                    <line x1="8" y1="12" x2="16" y2="12" />
-                  </svg>
-                </button>
               </div>
 
-              <div className="flex flex-wrap gap-2 mt-2">
-                {teachers.map((teacher, index) => (
-                  <div key={index} className="flex items-center bg-[#FFE5CC] text-sm px-2 py-1 rounded">
-                    <span>{teacher}</span>
-                    <button
-                      onClick={() => handleRemoveTeacher(index)}
-                      className="ml-2 text-gray-700 hover:text-red-500"
+              <div className="">
+                <label className="block mb-1">อาจารย์</label>
+
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    name="teacher"
+                    value={formData.teacher}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setNewTeacher(e.target.value);
+                    }}
+                    className="boxT"
+                  />
+                  <button type="button" onClick={handleAddTeacher} className="px-2 rounded hover:bg-gray-100">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      height="25"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-gray-600 hover:text-gray-800 cursor-pointer"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="text-gray-500 hover:text-gray-800 cursor-pointer"
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="16" />
+                      <line x1="8" y1="12" x2="16" y2="12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {teachers.map((teacher, index) => (
+                    <div key={index} className="flex items-center bg-[#FFE5CC] text-sm px-2 py-1 rounded">
+                      <span>{teacher}</span>
+                      <button
+                        onClick={() => handleRemoveTeacher(index)}
+                        className="ml-2 text-gray-700 hover:text-red-500"
                       >
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="8" y1="12" x2="16" y2="12" />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-gray-500 hover:text-gray-800 cursor-pointer"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="8" y1="12" x2="16" y2="12" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        
 
-          <hr className="border-t-3 border-gray-200 w-full" />
-          <label className=" text-sm py-1">สอบกลางภาค</label>
 
-          <div className="flex flex-col mb-2 gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
-            <div className="">
-              <label className="block mb-1">วันที่สอบ</label>
+            <hr className="border-t-3 border-gray-200 w-full" />
+            <label className=" text-sm py-1">สอบกลางภาค</label>
+
+            <div className="flex flex-col mb-2 gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
+              <div className="">
+                <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
-                    <DatePicker
-                      selected={midtermDate}
-                      onChange={(date: Date | null) => {
-                        setMidtermDate(date);
-                        setFormData((prev) => ({
-                          ...prev,
-                          exam: {
-                            ...prev.exam,
-                            midterm: {
-                              ...prev.exam.midterm,
-                              date: date ? date.toISOString().split("T")[0] : "",
-                            },
+                  <DatePicker
+                    selected={midtermDate}
+                    onChange={(date: Date | null) => {
+                      setMidtermDate(date);
+                      setFormData((prev) => ({
+                        ...prev,
+                        exam: {
+                          ...prev.exam,
+                          midterm: {
+                            ...prev.exam.midterm,
+                            date: date ? date.toISOString().split("T")[0] : "",
                           },
-                        }));
-                        setIsMidtermOpen(false);
-                      }}
-                      open={isMidtermOpen}
-                      onClickOutside={() => setIsMidtermOpen(false)}
-                      dateFormat="dd/MM/yyyy"
-                      customInput={<input ref={midtermDateRef} className="boxT" />}
-                    />
+                        },
+                      }));
+                      setIsMidtermOpen(false);
+                    }}
+                    open={isMidtermOpen}
+                    onClickOutside={() => setIsMidtermOpen(false)}
+                    dateFormat="dd/MM/yyyy"
+                    customInput={<input ref={midtermDateRef} className="boxT" />}
+                  />
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
@@ -648,112 +690,112 @@ useEffect(() => {
                     </svg>
                   </button>
                 </div>
-            </div>
+              </div>
 
-            <div>
-              <label className="block mb-1">เวลาเริ่ม</label>
-              <DatePicker
-                selected={
-                  formData.exam.midterm.startTime
-                    ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
-                    : null
-                }
-                onChange={(date: Date | null) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    exam: {
-                      ...prev.exam,
-                      midterm: {
-                        ...prev.exam.midterm,
-                        startTime: date ? formatDateToTimeString(date) : "",
-                        endTime: prev.exam.midterm.endTime, // รักษาค่าเดิมไว้
-                        location: prev.exam.midterm.location,
+              <div>
+                <label className="block mb-1">เวลาเริ่ม</label>
+                <DatePicker
+                  selected={
+                    formData.exam.midterm.startTime
+                      ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
+                      : null
+                  }
+                  onChange={(date: Date | null) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      exam: {
+                        ...prev.exam,
+                        midterm: {
+                          ...prev.exam.midterm,
+                          startTime: date ? formatDateToTimeString(date) : "",
+                          endTime: prev.exam.midterm.endTime, // รักษาค่าเดิมไว้
+                          location: prev.exam.midterm.location,
+                        },
                       },
-                    },
-                  }));
+                    }));
 
-                }}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="เวลา"
-                dateFormat="HH:mm"
-                customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
-              />
-            </div>
+                  }}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="เวลา"
+                  dateFormat="HH:mm"
+                  customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
+                />
+              </div>
 
-            <div>
-              <label className="block mb-1">เวลาจบ</label>
-              <DatePicker
-                selected={
-                  formData.exam.midterm.endTime
-                    ? new Date(`1970-01-01T${formData.exam.midterm.endTime}`)
-                    : null
-                }
-                onChange={(date: Date | null) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    exam: {
-                      ...prev.exam,
-                      midterm: {
-                        ...prev.exam.midterm,
-                        endTime: date ? formatDateToTimeString(date) : "",
-                        startTime: prev.exam.midterm.startTime,
-                        location: prev.exam.midterm.location,
+              <div>
+                <label className="block mb-1">เวลาจบ</label>
+                <DatePicker
+                  selected={
+                    formData.exam.midterm.endTime
+                      ? new Date(`1970-01-01T${formData.exam.midterm.endTime}`)
+                      : null
+                  }
+                  onChange={(date: Date | null) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      exam: {
+                        ...prev.exam,
+                        midterm: {
+                          ...prev.exam.midterm,
+                          endTime: date ? formatDateToTimeString(date) : "",
+                          startTime: prev.exam.midterm.startTime,
+                          location: prev.exam.midterm.location,
+                        },
                       },
-                    },
-                  }));
-                }}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="เวลา"
-                dateFormat="HH:mm"
-                customInput={<input ref={midtermEndTimeRef} className="boxT pl-4" />}
-              />
+                    }));
+                  }}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="เวลา"
+                  dateFormat="HH:mm"
+                  customInput={<input ref={midtermEndTimeRef} className="boxT pl-4" />}
+                />
+              </div>
+
+              <div className="">
+                <label className="block mb-1">สถานที่</label>
+                <input
+                  type="text"
+                  name="location"
+                  value={formData.exam.midterm.location}
+                  onChange={handleMidtermExamChange}
+                  className="box"
+                />
+              </div>
             </div>
 
-            <div className="">
-              <label className="block mb-1">สถานที่</label>
-              <input
-                type="text"
-                name="location"
-                value={formData.exam.midterm.location}
-                onChange={handleMidtermExamChange}
-                className="box"
-              />
-            </div>
-          </div>
+            <hr className="border-t-3 border-gray-200 w-full" />
+            <label className=" text-sm py-1">สอบปลายภาค</label>
 
-          <hr className="border-t-3 border-gray-200 w-full" />
-          <label className=" text-sm py-1">สอบปลายภาค</label>
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
-            
-            <div className="">
-              <label className="block mb-1">วันที่สอบ</label>
+              <div className="">
+                <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
-                    <DatePicker
-                      selected={finalDate}
-                      onChange={(date: Date | null) => {
-                        setFinalDate(date);
-                        setFormData((prev) => ({
-                          ...prev,
-                          exam: {
-                            ...prev.exam,
-                            final: {
-                              ...prev.exam.final,
-                              date: date ? date.toISOString().split("T")[0] : "",
-                            },
+                  <DatePicker
+                    selected={finalDate}
+                    onChange={(date: Date | null) => {
+                      setFinalDate(date);
+                      setFormData((prev) => ({
+                        ...prev,
+                        exam: {
+                          ...prev.exam,
+                          final: {
+                            ...prev.exam.final,
+                            date: date ? date.toISOString().split("T")[0] : "",
                           },
-                        }));
-                        setIsFinalOpen(false);
-                      }}
-                      open={isFinalOpen}
-                      onClickOutside={() => setIsFinalOpen(false)}
-                      dateFormat="dd/MM/yyyy"
-                      customInput={<input ref={finalDateRef} className="boxT" />}
-                    />
+                        },
+                      }));
+                      setIsFinalOpen(false);
+                    }}
+                    open={isFinalOpen}
+                    onClickOutside={() => setIsFinalOpen(false)}
+                    dateFormat="dd/MM/yyyy"
+                    customInput={<input ref={finalDateRef} className="boxT" />}
+                  />
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
@@ -777,122 +819,122 @@ useEffect(() => {
                     </svg>
                   </button>
                 </div>
-            </div>
+              </div>
 
-            <div>
-              <label className="block mb-1">เวลาเริ่ม</label>
-              <DatePicker
-                selected={
-                  formData.exam.final.startTime
-                    ? new Date(`1970-01-01T${formData.exam.final.startTime}`)
-                    : null
-                }
-                onChange={(date: Date | null) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    exam: {
-                      ...prev.exam,
-                      final: {
-                        ...prev.exam.final,
-                        startTime: date ? formatDateToTimeString(date) : "",
-                        endTime: prev.exam.final.endTime,
-                        location: prev.exam.final.location,
+              <div>
+                <label className="block mb-1">เวลาเริ่ม</label>
+                <DatePicker
+                  selected={
+                    formData.exam.final.startTime
+                      ? new Date(`1970-01-01T${formData.exam.final.startTime}`)
+                      : null
+                  }
+                  onChange={(date: Date | null) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      exam: {
+                        ...prev.exam,
+                        final: {
+                          ...prev.exam.final,
+                          startTime: date ? formatDateToTimeString(date) : "",
+                          endTime: prev.exam.final.endTime,
+                          location: prev.exam.final.location,
+                        },
                       },
-                    },
-                  }));
-                }}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="เวลา"
-                dateFormat="HH:mm"
-                customInput={<input ref={finalStartTimeRef} className="boxT pl-4" />}
-              />
-            </div>
+                    }));
+                  }}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="เวลา"
+                  dateFormat="HH:mm"
+                  customInput={<input ref={finalStartTimeRef} className="boxT pl-4" />}
+                />
+              </div>
 
-            <div>
-              <label className="block mb-1">เวลาจบ</label>
-              <DatePicker
-                selected={
-                  formData.exam.final.endTime
-                    ? new Date(`1970-01-01T${formData.exam.final.endTime}`)
-                    : null
-                }
-                onChange={(date: Date | null) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    exam: {
-                      ...prev.exam,
-                      final: {
-                        ...prev.exam.final,
-                        endTime: date ? formatDateToTimeString(date) : "",
-                        startTime: prev.exam.final.startTime,
-                        location: prev.exam.final.location,
+              <div>
+                <label className="block mb-1">เวลาจบ</label>
+                <DatePicker
+                  selected={
+                    formData.exam.final.endTime
+                      ? new Date(`1970-01-01T${formData.exam.final.endTime}`)
+                      : null
+                  }
+                  onChange={(date: Date | null) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      exam: {
+                        ...prev.exam,
+                        final: {
+                          ...prev.exam.final,
+                          endTime: date ? formatDateToTimeString(date) : "",
+                          startTime: prev.exam.final.startTime,
+                          location: prev.exam.final.location,
+                        },
                       },
-                    },
-                  }));
-                }}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="เวลา"
-                dateFormat="HH:mm"
-                 customInput={<input ref={finalEndTimeRef} className="boxT pl-4" />}
-              />
+                    }));
+                  }}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="เวลา"
+                  dateFormat="HH:mm"
+                  customInput={<input ref={finalEndTimeRef} className="boxT pl-4" />}
+                />
+              </div>
+
+              <div className="">
+                <label className="block mb-1">สถานที่</label>
+                <input
+                  type="text"
+                  name="location"
+                  value={formData.exam.final.location}
+                  onChange={handleFinalExamChange}
+                  className="box"
+                />
+              </div>
             </div>
 
-            <div className="">
-              <label className="block mb-1">สถานที่</label>
-              <input
-                type="text"
-                name="location"
-                value={formData.exam.final.location}
-                onChange={handleFinalExamChange}
-                className="box"
-              />
-            </div>
-          </div>
 
-
-          <button type="submit" className="buttonSub" onClick={handleAddTeacher}>
-            เพิ่ม
-          </button>
-          
-        </div>
-      </form>
-    </div>
-
-    {showConflictWarning && conflictData && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded shadow max-w-md w-full">
-          <h2 className="text-xl font-bold mb-4">พบข้อมูลวิชาเรียนซ้ำ</h2>
-          <p>
-            อาจารย์ <strong>{conflictData.teacher.join(", ")}</strong> มีวิชาเรียนในวัน{" "}
-            <strong>{conflictData.weekday}</strong> เวลา{" "}
-            <strong>
-              {conflictData.study.startTime} - {conflictData.study.endTime}
-            </strong>{" "}
-            อยู่แล้ว
-          </p>
-          <p>คุณต้องการจะเขียนทับข้อมูลเดิม หรือ ยกเลิก?</p>
-
-          <div className="mt-6 flex justify-end gap-4">
-            <button
-              className="px-4 py-2 border rounded"
-              onClick={() => setShowConflictWarning(false)}
-            >
-              ยกเลิก
+            <button type="submit" className="buttonSub" onClick={ handleAddTeacher}>
+              เพิ่ม
             </button>
-            <button
-              className="px-4 py-2 bg-orange-600 text-white rounded"
-              onClick={handleOverwrite}
-            >
-              เขียนทับ
-            </button>
+
           </div>
-        </div>
+        </form>
       </div>
-    )}
-  </>
+
+      {showConflictWarning && conflictData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">พบข้อมูลวิชาเรียนซ้ำ</h2>
+            <p>
+              อาจารย์ <strong>{conflictData.teacher.join(", ")}</strong> มีวิชาเรียนในวัน{" "}
+              <strong>{conflictData.weekday}</strong> เวลา{" "}
+              <strong>
+                {conflictData.study.startTime} - {conflictData.study.endTime}
+              </strong>{" "}
+              อยู่แล้ว
+            </p>
+            <p>คุณต้องการจะเขียนทับข้อมูลเดิม หรือ ยกเลิก?</p>
+
+            <div className="mt-6 flex justify-end gap-4">
+              <button
+                className="px-4 py-2 border rounded"
+                onClick={() => setShowConflictWarning(false)}
+              >
+                ยกเลิก
+              </button>
+              <button
+                className="px-4 py-2 bg-orange-600 text-white rounded"
+                onClick={handleOverwrite}
+              >
+                เขียนทับ
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
