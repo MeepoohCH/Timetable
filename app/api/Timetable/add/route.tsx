@@ -1,123 +1,115 @@
 import { NextRequest, NextResponse } from 'next/server';
-import mysql from 'mysql2/promise';
+import { pool } from '@/lib/db';
+import { getOrCreateExamId } from '@/lib/exam';
+import { getTeacherIdsByNames } from '@/lib/teacher';
+import { createTimetable, updateTimetable, deleteTimetable, findTimetableIdByFields } from '@/lib/timetable';
+import { RowDataPacket } from 'mysql2/promise';
 
-const pool = mysql.createPool({
-  host: process.env.MYSQL_HOST,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
-
-async function getOrCreateExamId(conn: mysql.PoolConnection, exam: {
-  examType: string,
-  date: string,
-  startTime: string,
-  endTime: string,
-  location: string
-}): Promise<number> {
-  const [existing] = await conn.query<mysql.RowDataPacket[]>(
-    `SELECT exam_id FROM Exam WHERE examType = ? AND date = ? AND startTime = ? AND endTime = ? AND location = ?`,
-    [exam.examType, exam.date, exam.startTime, exam.endTime, exam.location]
-  );
-
-  if (existing.length > 0) {
-    return existing[0].exam_id;
-  }
-
-  const [insertResult] = await conn.query<mysql.ResultSetHeader>(
-    `INSERT INTO Exam (examType, date, startTime, endTime, location) VALUES (?, ?, ?, ?, ?)`,
-    [exam.examType, exam.date, exam.startTime, exam.endTime, exam.location]
-  );
-
-  return insertResult.insertId;
-}
 
 export async function POST(req: NextRequest) {
-  let conn: mysql.PoolConnection | null = null;
+  let conn = null;
+
   try {
     const body = await req.json();
-    console.log('Received timetable data:', body);
+    console.log('Creating timetable:', body);
 
-    // Destructure and validate as needed
     const {
       subject_id,
-      subjectName,
-      sec,
-      teacher,
-      weekday,
       subjectType,
       yearLevel,
+      degree,
+      sec,
       semester,
       academicYear,
-      degree,
+      weekday,
       study,
-      exam,
+      teacher,
+      exam
     } = body;
 
     conn = await pool.getConnection();
 
-    for (const fullName of teacher) {
-      const parts = fullName.split(' ');
-      const name = parts[0];
-      const surname = parts.slice(1).join(' ');
+ /*   const subjectName = await getSubjectNameById(conn, subject_id);
+    if (!subjectName) {
+      const url = new URL('/SubjectData', req.url);  // สร้าง absolute URL
+      url.searchParams.set('error', 'Subject not found'); // ส่งข้อความผ่าน query string
 
-      const [teacherRows] = await conn.query<mysql.RowDataPacket[]>(
-        `SELECT teacher_id FROM Teacher WHERE teacherName = ? AND teacherSurname = ?`,
-        [name, surname]
-      );
-
-      
-  let teacher_id: number | null = null;
-  if (teacherRows.length > 0) {
-    teacher_id = teacherRows[0].teacher_id;
-  }
-      
-
-      const midterm_id = await getOrCreateExamId(conn, {
-        examType: 'midterm',
-        date: exam.midterm.date,
-        startTime: exam.midterm.startTime,
-        endTime: exam.midterm.endTime,
-        location: exam.midterm.location,
-      });
-
-      const final_id = await getOrCreateExamId(conn, {
-        examType: 'final',
-        date: exam.final.date,
-        startTime: exam.final.startTime,
-        endTime: exam.final.endTime,
-        location: exam.final.location,
-      });
-
-      await conn.query(
-        `INSERT INTO Timetable 
-          (subject_id, subjectType, yearLevel, degree, sec, semester, academicYear, weekday, startTime, endTime, location, midterm_id, final_id, teacher_id)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          subject_id,
-          subjectType,
-          yearLevel,
-          degree,
-          sec,
-          semester,
-          academicYear,
-          weekday,
-          study.startTime,
-          study.endTime,
-          study.location,
-          midterm_id,
-          final_id,
-          teacher_id,
-        ]
-      );
+      return NextResponse.redirect(url.toString(), 302);
     }
 
+    */
+    // เช็คว่ามี timetable ที่ข้อมูลซ้ำกันหรือยัง
+    
+   
+    const teacherIds = await getTeacherIdsByNames(conn, teacher || []);
+    console.log('Teacher IDs:', teacherIds);
+    const teacher_id_csv = teacherIds.join(',');
+
+    // ตัวอย่าง query เช็ค timetable ซ้ำ (สมมติเรียง field ตาม create)
+    const [existing] = await conn.query<RowDataPacket[]>(
+      `SELECT timetable_id FROM Timetable WHERE
+        subject_id = ? AND subjectType = ? AND yearLevel = ? AND degree = ? AND sec = ? AND
+        semester = ? AND academicYear = ? AND weekday = ? AND startTime = ? AND endTime = ? AND
+        location = ? AND teacher_id = ?`,
+      [
+        subject_id,
+        subjectType,
+        yearLevel,
+        degree,
+        sec,
+        semester,
+        academicYear,
+        weekday,
+        study.startTime,
+        study.endTime,
+        study.location,
+        teacher_id_csv
+      ]
+    );
+
+    if (existing.length > 0) {
+      console.log('Duplicate timetable found, skipping insert:', existing[0].timetable_id);
+      return NextResponse.json({ message: 'Timetable already exists', timetable_id: existing[0].timetable_id }, { status: 200 });
+    }
+
+
+    
+
+    const midterm_id = await getOrCreateExamId(conn, {
+      examType: 'midterm',
+      ...exam.midterm,
+    });
+    console.log('Midterm exam ID:', midterm_id);
+
+    const final_id = await getOrCreateExamId(conn, {
+      examType: 'final',
+      ...exam.final,
+    });
+    console.log('Final exam ID:', final_id);
+
+    await createTimetable(conn, {
+      subject_id,
+      subjectType,
+      yearLevel,
+      degree,
+      sec,
+      semester,
+      academicYear,
+      weekday,
+      study,
+      teacherIds,
+      midterm_id,
+      final_id,
+    });
+    console.log('Timetable created.');
+
     return NextResponse.json({ message: 'Timetable created successfully' }, { status: 201 });
+
   } catch (error: any) {
-  console.error('Error creating timetable:', error.message || error);
-  return NextResponse.json({ error: error.message || 'Failed to create timetable' }, { status: 500 });
+    console.error('POST error:', error);
+    return NextResponse.json({ error: error.message || 'Failed to create timetable' }, { status: 500 });
+  } finally {
+    if (conn) conn.release();
+  }
 }
-}
+

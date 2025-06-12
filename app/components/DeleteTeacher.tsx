@@ -113,6 +113,17 @@ useEffect(() => {
         <div className="edit-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
           <label className="text-sm py-1">ข้อมูลอาจารย์</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
+
+           <div>
+              <label className="block mb-1">ตำแหน่ง</label>
+              <input
+                type="text"
+                value={formData.role}
+                className="box"
+                readOnly
+              />
+            </div>
+
               <div className="">
                 <label className="block mb-1">ชื่อ</label>
                 <input type="text" value={formData.teacherName} readOnly className="box" />
@@ -128,15 +139,7 @@ useEffect(() => {
               />
             </div>
 
-            <div>
-              <label className="block mb-1">ตำแหน่ง</label>
-              <input
-                type="text"
-                value={formData.role}
-                className="box"
-                readOnly
-              />
-            </div>
+          
 
             <button type="button" className="buttonSub" onClick={handleDelete}>
               ลบ

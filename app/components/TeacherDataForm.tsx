@@ -25,6 +25,7 @@ export default function TeacherDataForm() {
    const handleAddEvent = (newClass: ClassItem) => {
     setExistingClasses(prev => [...prev, newClass]);
     setEvents(prev => [...prev, newClass]);  
+    
   };
 
   const handleDeleteEvent = () => {

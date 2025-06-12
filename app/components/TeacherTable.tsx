@@ -11,6 +11,7 @@ import {
 
 import { ClassItem } from "./ClassItem";
 
+
 type Props = {
   classes: ClassItem[];
   selectedEvent: ClassItem | null;
@@ -29,9 +30,9 @@ export default function TeacherTable({
           <TableHeader>
             <TableRow>
               <TableHead className="text-center w-12">ลำดับ</TableHead>
+              <TableHead className="text-center">ตำแหน่ง</TableHead>
               <TableHead className="text-center">ชื่อ</TableHead>
               <TableHead className="text-center">นามสกุล</TableHead>
-              <TableHead className="text-center">ตำแหน่ง</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -46,9 +47,9 @@ export default function TeacherTable({
                 onClick={() => setSelectedEvent(cls)}
               >
                 <TableCell className="font-medium">{index + 1}</TableCell>
+                 <TableCell>{cls.role}</TableCell>
                 <TableCell>{cls.teacherName}</TableCell>
                 <TableCell>{cls.teacherSurname}</TableCell>
-                <TableCell>{cls.role}</TableCell>
               </TableRow>
             ))}
           </TableBody>

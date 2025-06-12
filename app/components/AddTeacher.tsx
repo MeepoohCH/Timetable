@@ -67,7 +67,7 @@ export default function AddTeacher({
     setTeacherSurname("")
    }
 
-const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
   const requiredFields = [
@@ -105,15 +105,41 @@ const handleSubmit = (e: React.FormEvent) => {
       endTime: "",
     },
     exam: {
-      midterm: { date:"", location:"", startTime:"", endTime:"" },
-      final: { date:"", location:"", startTime:"", endTime:"" },
+      midterm: { date: "", location: "", startTime: "", endTime: "" },
+      final: { date: "", location: "", startTime: "", endTime: "" },
     },
   };
 
+  // 🔧 เตรียมข้อมูลสำหรับส่งไป backend
+  const dataToSend = {
+    role: formData.role,
+    teacherName: formData.teacherName,
+    teacherSurname: formData.teacherSurname,
+  };
 
+  try {
+    const response = await fetch("/api/Teacher/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend),
+    });
 
-  onAddEventAction(newEvent);
-  resetForm();
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("✅ Success:", result);
+
+    onAddEventAction(newEvent);
+    resetForm();
+
+  } catch (error) {
+    console.error("❌ Error submitting form:", error);
+  }
+
 };
 
 return (
@@ -123,6 +149,19 @@ return (
         <div className="add-form flex flex-row gap-4 text-sm sm:flex-col sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
           <label className=" text-sm py-1">ข้อมูลอาจารย์</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
+
+             <div className="">
+              <label className="block mb-1">ตำแหน่ง</label>
+              <input
+                type="text"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="box"
+                required
+              />
+            </div>
+
             <div className="">
               <label className="block mb-1">ชื่อ</label>
               <input
@@ -146,18 +185,7 @@ return (
                 required
               />
             </div>
-
-            <div className="">
-              <label className="block mb-1">ตำแหน่ง</label>
-              <input
-                type="text"
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="box"
-                required
-              />
-            </div>
+           
 
             <button type="submit" className="buttonSub">
               เพิ่ม

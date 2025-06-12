@@ -1,6 +1,3 @@
-import StudentDropdown from '../components/ui/studentDropdown';
-import StudyForm from '../components/StudyForm';
-import ExamForm from '../Exam/page';
 import TeacherDataForm from '../components/TeacherDataForm';
 
 
