@@ -2,16 +2,18 @@ export type ClassItem = {
   id: string;
   subject_id: string,
   subjectName: string,
-  sec: string,
+  sec: number | null;
+  academicYear: "",
   teacher: string[],
   weekday: string,
-  subjectType:string,
-  academicYear:string,
-  role:string,
-  teacherName:string,
-  teacherSurname:string,
-  credit: string,
+  subjectType: string,
+  role: string,
+  teacher_id: string,
+  teacherName: string,
+  teacherSurname: string,
+  credit: number | null,
   creditType: string,
+
   study: {
     location: string,
     startTime: string,
@@ -19,13 +21,13 @@ export type ClassItem = {
   },
   exam: {
     midterm: {
-      date:string,
+      date: string,
       location: string,
       startTime: string,
       endTime: string,
     },
     final: {
-      date:string,
+      date: string,
       location: string,
       startTime: string,
       endTime: string,

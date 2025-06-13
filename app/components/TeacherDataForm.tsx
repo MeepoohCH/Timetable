@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import AddTeacher from "./AddTeacher";
 import Calendar from "./Calendar";
 import Delete from "./Delete";
@@ -11,7 +11,6 @@ import { ClassItem } from "./ClassItem";
 import ExamForm from "./ExamForm";
 import EditTeacher from "./EditTeacher";
 import DeleteTeacher from "./DeleteTeacher";
-import TableDemo  from "./TeacherTable";
 import TeacherTable from "./TeacherTable";
 
 
@@ -21,14 +20,46 @@ export default function TeacherDataForm() {
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<ClassItem[]>([]);
+  const intervalRef = useRef <ReturnType<typeof setInterval> | null>(null);
+async function fetchEvents() {
+    try {
+      const res = await fetch("/api/Teacher/getData");
+      if (!res.ok) throw new Error("Failed to fetch data");
+      const data = await res.json();
+      setEvents(data.teachers);
+    } catch (error) {
+      console.error("Error fetching teachers:", error);
+    }
+  }
 
-   const handleAddEvent = (newClass: ClassItem) => {
+  // fetch ตอนโหลด component และตั้ง polling ให้ fetch ทุก 5 วินาที
+  useEffect(() => {
+    fetchEvents(); // fetch ครั้งแรกตอน mount
+
+    intervalRef.current = setInterval(() => {
+      fetchEvents();
+    }, 5000); // 5000 ms = 5 วินาที
+
+    return () => {
+      // clear interval เมื่อ component ถูก unmount
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  // ฟังก์ชันสำหรับรีเฟรชข้อมูล (ใช้เรียกหลังเพิ่ม/แก้ไข/ลบ)
+  const refreshData = async () => {
+    await fetchEvents();
+  };
+
+   const handleAddEvent = async (newClass: ClassItem) => {
     setExistingClasses(prev => [...prev, newClass]);
     setEvents(prev => [...prev, newClass]);  
+
+    await refreshData(); // ดึงข้อมูลใหม่จาก API
     
   };
 
-  const handleDeleteEvent = () => {
+  const handleDeleteEvent = async () => {
     if (!selectedEvent) return;
 
     console.log("ลบ event:", selectedEvent);
@@ -42,21 +73,25 @@ export default function TeacherDataForm() {
     );
 
     setSelectedEvent(null); // clear class ที่ถูกเลือกหลังลบ
+    await refreshData(); // ดึงข้อมูลใหม่จาก API
   };
 
-  const handleEditEvent = (updatedEvent: ClassItem) => {
+  const handleEditEvent = async (updatedEvent: ClassItem) => {
     setEvents((prev) =>
       prev.map((ev) =>
         ev.id === updatedEvent.id ? updatedEvent : ev
       )
     );
     setSelectedEvent(null);
+    await refreshData(); // ดึงข้อมูลใหม่จาก API
   };
 
 
 
   const isActive = (tab: "edit" | "delete" | "add") => currentComponent === tab;
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
+
+
 
 
 
@@ -105,7 +140,6 @@ export default function TeacherDataForm() {
           <DeleteTeacher
           onSwitchAction={switchComponent}
           currentComponent="delete"
-          onDeleteEventAction={handleDeleteEvent}
           events={events}
           selectedEvent={selectedEvent} 
         />
@@ -113,11 +147,12 @@ export default function TeacherDataForm() {
       </div>
       <div id="form-section" className="flex-1 mt-8 mx-2 w-full max-w-[1152px]">
         <TeacherTable
-          classes={Array.isArray(events) ? events : []}
           selectedEvent={selectedEvent}
           setSelectedEvent={(event) => {
             setSelectedEvent(event);
             setCurrentComponent("edit");
+
+            // เลื่อนหน้าไปยัง form-section
             const formSection = document.getElementById("form-section");
             formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}

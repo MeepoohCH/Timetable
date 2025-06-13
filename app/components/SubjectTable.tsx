@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import {
   Table,
   TableBody,
@@ -17,11 +21,31 @@ type Props = {
   setSelectedEvent: (event: ClassItem) => void;
 };
 
-export default function SubjectTable({
-  classes,
-  selectedEvent,
-  setSelectedEvent,
-}: Props) {
+export default function SubjectTable({ selectedEvent, setSelectedEvent }: Props) {
+  const [classes, setClasses] = useState<ClassItem[]>([]);
+
+
+const fetchSubjects = async () => {
+    try {
+      const res = await fetch("/api/Subject/getData");
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data = await res.json();
+      setClasses(data.subjects);  // เพราะ API ส่ง subjects มา
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    }
+  };
+
+/*   useEffect(() => {
+    fetchSubjects();
+
+   const interval = setInterval(() => {
+      fetchSubjects();
+    }, 10000); // fetch ทุก 10 วิ
+
+    return () => clearInterval(interval);
+  }, []);
+*/
   return (
     <div className="w-full max-w-[1152px] overflow-x-auto">
       <div className="min-w-full bg-[#F3F4F6] text-center shadow border-4 rounded-2xl border-white font-kanit">

@@ -23,98 +23,100 @@ export default function EditTeacher({
   existingClasses,
 }: EditTeacherProps) {
   const [formData, setFormData] = useState({
-    id: "",
-    subject_id: "",
-    subjectName: "",
-    sec: "",
-    teacher: [] as string[],
-    weekday: "",
-    subjectType:"",
-    academicYear:"",
-    teacherName:"",
-    teacherSurname:"",
-    role:"",
-    credit: "",
-    creditType: "",
-    study: {
-      location: "",
-      startTime: "",
-      endTime: "",
-    },
-    exam: {
-      midterm: {
-        date:"",
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-      final: {
-        date:"",
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-    },
+    teacher_id: "",
+    teacherName: "",
+    teacherSurname: "",
+    role: "",
   });
 
-useEffect(() => {
+
+    useEffect(() => {
+      console.log("🧪 selectedEvent:", selectedEvent);
   if (selectedEvent) {
-    setFormData(selectedEvent);
+    setFormData({
+      teacher_id: selectedEvent.teacher_id,
+      teacherName: selectedEvent.teacherName || "",
+      teacherSurname: selectedEvent.teacherSurname || "",
+      role: selectedEvent.role || "",
+    });
   } else {
     setFormData({
-      id: "",
-      subject_id: "",
-      subjectName: "",
-      sec: "",
-      teacher: [] as string[],
-      weekday: "",
-      subjectType: "",
-      academicYear: "",
+      teacher_id: "",
       teacherName: "",
       teacherSurname: "",
-      credit: "",
-      creditType: "",
       role: "",
-      study: {
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-      exam: {
-        midterm: {
-          date: "",
-          location: "",
-          startTime: "",
-          endTime: "",
-        },
-        final: {
-          date: "",
-          location: "",
-          startTime: "",
-          endTime: "",
-        },
-      },
     });
-  }
-}, [selectedEvent]);
+  }}, [selectedEvent]);
+
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+     console.log(`Changed ${name}:`, value);  // <-- เพิ่มตรงนี้
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   if (!selectedEvent) return;
 
   const fullName = `${formData.teacherName} ${formData.teacherSurname}`.trim();
+
+  const duplicateTeacher = existingClasses.find(
+    (cls) =>
+      cls.id !== formData.teacher_id &&
+      cls.teacherName.trim().toLowerCase() === formData.teacherName.trim().toLowerCase() &&
+      cls.teacherSurname.trim().toLowerCase() === formData.teacherSurname.trim().toLowerCase()
+  );
+
+  if (duplicateTeacher) {
+    const isExactDuplicate =
+      duplicateTeacher.role.trim().toLowerCase() === formData.role.trim().toLowerCase();
+
+    if (isExactDuplicate) {
+      alert("มีอาจารย์ชื่อ-นามสกุล-ตำแหน่งนี้อยู่ในระบบแล้ว");
+      return;
+    }
+  }
+
   const updatedEvent: ClassItem = {
-    ...formData,
-    teacher: [fullName, formData.role], 
+    ...selectedEvent,
+    teacher_id: formData.teacher_id,
+    teacherName: formData.teacherName.trim(),
+    teacherSurname: formData.teacherSurname.trim(),
+    role: formData.role.trim(),
+    teacher: [`${formData.teacherName} ${formData.teacherSurname}`, formData.role],
   };
 
-  onEditEventAction(updatedEvent);
+  const dataToSend = {
+    teacher_id: formData.teacher_id,
+    teacherName: formData.teacherName.trim(),
+    teacherSurname: formData.teacherSurname.trim(),
+    role: formData.role.trim(),
+  };
+
+  console.log("📤 ส่งข้อมูลไป backend:", dataToSend);
+  try {
+    const response = await fetch("/api/Teacher/edit", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("✅ แก้ไขสำเร็จ:", result);
+
+    onEditEventAction(updatedEvent);
+  } catch (error) {
+    console.error("❌ เกิดข้อผิดพลาดในการแก้ไข:", error);
+    alert("เกิดข้อผิดพลาดในการแก้ไขข้อมูล");
+  }
 };
 
 
@@ -125,7 +127,7 @@ const handleSubmit = (e: React.FormEvent) => {
           <label className="text-sm py-1">ข้อมูลอาจารย์</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
 
-                <div>
+            <div>
               <label className="block mb-1">ตำแหน่ง</label>
               <input
                 type="text"
@@ -136,7 +138,7 @@ const handleSubmit = (e: React.FormEvent) => {
                 required
               />
             </div>
-            
+
             <div>
               <label className="block mb-1">ชื่อ</label>
               <input
@@ -161,9 +163,9 @@ const handleSubmit = (e: React.FormEvent) => {
               />
             </div>
 
-        
 
-            <button type="submit" className="buttonSub">
+
+            <button type="submit" className="buttonSub" >
               แก้ไข
             </button>
           </div>

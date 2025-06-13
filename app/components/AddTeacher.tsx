@@ -36,9 +36,6 @@ export default function AddTeacher({
 }: AddProps) {
   const pathname = usePathname();
 
-  const [role, setRole] = useState<string>("");
-  const [teacherName, setTeacherName] = useState<string>("");
-  const [teacherSurname, setTeacherSurname] = useState<string>("");
 
   const [formData, setFormData] = useState({
     role: "",
@@ -48,6 +45,7 @@ export default function AddTeacher({
 
   const [conflictData, setConflictData] = useState<ClassItem | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -62,9 +60,6 @@ export default function AddTeacher({
     teacherName: "",
     teacherSurname:"",
     });
-    setRole("")
-    setTeacherName("")
-    setTeacherSurname("")
    }
 
 const handleSubmit = async (e: React.FormEvent) => {
@@ -81,15 +76,27 @@ const handleSubmit = async (e: React.FormEvent) => {
   );
 
   if (!isTeacherValid) {
-    alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+      setErrorMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
     return;
   }
+  const isDuplicate = existingClasses.some(
+  (cls) =>
+    cls.teacherName.toLowerCase() === formData.teacherName.toLowerCase().trim() &&
+    cls.teacherSurname.toLowerCase() === formData.teacherSurname.toLowerCase().trim()
+);
+
+if (isDuplicate) {
+    setErrorMessage("มีอาจารย์ชื่อ-นามสกุลนี้อยู่ในระบบแล้ว");
+  return;
+}
+
 
   const newEvent: ClassItem = {
     id: uuidv4(),
     subject_id: "",  
     subjectName: "",
-    sec: "",
+    sec: null,
+    teacher_id: "",
     teacher: [`${formData.teacherName} ${formData.teacherSurname}`],
     role: formData.role,
     teacherName: formData.teacherName,
@@ -97,7 +104,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     weekday: "",
     subjectType: "",
     academicYear: "",
-    credit: "",
+    credit: null,
     creditType: "",
     study: {
       location: "",
@@ -195,6 +202,10 @@ return (
         </div>
       </form>
     </div>
+    {errorMessage && (
+  <p className="text-red-600 text-sm mb-2">{errorMessage}</p>
+)}
   </>
+  
   );
 }

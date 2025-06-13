@@ -22,97 +22,102 @@ export default function EditSubject({
   events,
   existingClasses,
 }: EditTeacherProps) {
-  const [formData, setFormData] = useState({
-    id: "",
-    subject_id: "",
-    subjectName: "",
-    sec: "",
-    teacher: [] as string[],
-    weekday: "",
-    subjectType:"",
-    academicYear:"",
-    teacherName:"",
-    teacherSurname:"",
-    role:"",
-    credit: "",
-    creditType: "",
-    study: {
-      location: "",
-      startTime: "",
-      endTime: "",
-    },
-    exam: {
-      midterm: {
-        date:"",
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-      final: {
-        date:"",
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-    },
-  });
 
-useEffect(() => {
+  const [formData, setFormData] = useState<{
+     subject_id: string;
+  subjectName: string;
+  credit: number | null;
+  creditType: string;
+}>({
+  subject_id: "",
+  subjectName: "",
+  credit: null,
+  creditType: "",
+});
+    useEffect(() => {
+      console.log("🧪 selectedEventSubject:", selectedEvent);
   if (selectedEvent) {
-    setFormData(selectedEvent);
+    setFormData({
+      subject_id: selectedEvent.subject_id,
+      subjectName: selectedEvent.subjectName || "",
+      credit: selectedEvent.credit || null,
+      creditType: selectedEvent.creditType || "",
+    });
   } else {
     setFormData({
-      id: "",
-      subject_id: "",
-      subjectName: "",
-      sec: "",
-      teacher: [] as string[],
-      weekday: "",
-      subjectType: "",
-      academicYear: "",
-      teacherName: "",
-      teacherSurname: "",
-      credit: "",
-      creditType: "",
-      role: "",
-      study: {
-        location: "",
-        startTime: "",
-        endTime: "",
-      },
-      exam: {
-        midterm: {
-          date: "",
-          location: "",
-          startTime: "",
-          endTime: "",
-        },
-        final: {
-          date: "",
-          location: "",
-          startTime: "",
-          endTime: "",
-        },
-      },
+    subject_id: "",
+    subjectName: "",
+    credit: null,
+    creditType: "",
     });
-  }
-}, [selectedEvent]);
-
+  }}, [selectedEvent]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    console.log(`Changed ${name}:`, value);  // <-- เพิ่มตรงนี้
+     setFormData((prev) => ({
+    ...prev,
+    [name]: name === "credit" ? (value === "" ? null : Number(value)) : value,
+  }));
+};
+  
 
-const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   if (!selectedEvent) return;
 
+  const originalSubjectId = selectedEvent.subject_id;
+
+  const duplicateSubject = existingClasses.find(
+    (cls) =>
+      cls.subject_id === formData.subject_id &&
+      cls.subject_id !== originalSubjectId
+  );
+
+  if (duplicateSubject) {
+    alert("มีรหัสวิชานี้อยู่ในระบบแล้ว");
+    return;
+  }
+
   const updatedEvent: ClassItem = {
-    ...formData,
+    ...selectedEvent,
+    subject_id: formData.subject_id.trim(),
+    subjectName: formData.subjectName.trim(),
+    credit: formData.credit ?? null,
+    creditType: formData.creditType.trim(),
   };
 
-  onEditEventAction(updatedEvent);
+  const dataToSend = {
+    original_subject_id: originalSubjectId, // รหัสเดิม (ใช้ค้นหา)
+    subject_id: formData.subject_id.trim(), // รหัสใหม่ (อาจเปลี่ยน)
+    subjectName: formData.subjectName.trim(),
+    credit: formData.credit ?? null,
+    creditType: formData.creditType.trim(),
+  };
+
+  console.log("📤 ส่งข้อมูลวิชาไป backend:", dataToSend);
+
+  try {
+    const response = await fetch("/api/Subject/edit", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("✅ แก้ไขวิชาสำเร็จ:", result);
+
+    onEditEventAction(updatedEvent);
+  } catch (error) {
+    console.error("❌ เกิดข้อผิดพลาดในการแก้ไขวิชา:", error);
+    alert("เกิดข้อผิดพลาดในการแก้ไขข้อมูลวิชา");
+  }
 };
 
 
@@ -150,9 +155,9 @@ return (
             <div className="">
               <label className="block mb-1">หน่วยกิต</label>
               <input
-                type="text"
+                type="number"
                 name="credit"
-                value={formData.credit}
+                value={formData.credit ?? ""}
                 onChange={handleChange}
                 className="box"
                 required
