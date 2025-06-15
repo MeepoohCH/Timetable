@@ -12,10 +12,7 @@
     "@headlessui/react": "^2.2.4",
     "date-fns": "^4.1.0",
     "mysql2": "^3.14.1",
-    "next": "15.1.8",
-    "react": "^19.0.0",
     "react-datepicker": "^8.4.0",
-    "react-dom": "^19.0.0",
     "react-router-dom": "^7.6.0",
     "uuid": "^11.1.0"
   },
