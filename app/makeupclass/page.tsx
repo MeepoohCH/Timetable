@@ -1,6 +1,7 @@
 import ScheduleTable from '@/app/components/ui/ScheduleTable'
 import CourseCard from '../components/ui/courseCard';
 import MakeupDropdown from '../components/ui/MakeupDropdown';
+import 
 
 type Course = {
   subject: string;
@@ -50,6 +51,11 @@ export default function MakeupClassPage() {
           <MakeupDropdown />
         </div>
         <div className="">
+          <button
+            onClick={() => exportToExcel}
+          >
+
+          </button>
           {courses.map((c, i) => (
             <CourseCard key={i} course={c} />
           ))}

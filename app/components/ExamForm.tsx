@@ -9,6 +9,7 @@ import Edit from "../components/Edit";
 import { ClassItem } from "./ClassItem";
 
 export default function ExamForm() { 
+  const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -55,15 +56,13 @@ export default function ExamForm() {
         </div>
       </div>
 
-      <div className="flex-1 p-4 mx-2 shadow bg-[#F3F4F6] border-4 border-white font-kanit rounded-2xl w-full max-w-[1152px]">
-
-
-
+      <div id="form-section" className="flex-1 p-4 mx-2 shadow scroll-mt-20 bg-[#F3F4F6] border-4 border-white  rounded-2xl w-full max-w-[1152px]">
         {currentComponent === "add" && (
           <Add
             onSwitchAction={switchComponent}
             currentComponent="add"
             onAddEventAction={handleAddEvent}
+            existingClasses={existingClasses}
           />
         )}
         {currentComponent === "edit" && (
@@ -73,6 +72,7 @@ export default function ExamForm() {
          onEditEventAction={handleEditEvent}
          events={events}
          selectedEvent={selectedEvent}
+         existingClasses={existingClasses}
        />
 
         )}
@@ -82,21 +82,9 @@ export default function ExamForm() {
           currentComponent="delete"
           onDeleteEventAction={handleDeleteEvent}
           events={events}
-          selectedEvent={selectedEvent} // ✅ เพิ่มตรงนี้
+          selectedEvent={selectedEvent} // เพิ่มตรงนี้✅ 
         />
         )}
-      </div>
-      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-8 mx-2">
-      <Calendar
-          selectedEvent={selectedEvent}
-          setSelectedEvent={(event) => {
-            setSelectedEvent(event);
-            setCurrentComponent("edit"); // เปลี่ยนเป็นหน้า edit อัตโนมัติ
-          }}
-          currentMonth={currentMonth}
-          setCurrentMonth={setCurrentMonth}
-          events={events}
-        />
 
         <DetailPanel selectedEvent={selectedEvent} />
       </div>
