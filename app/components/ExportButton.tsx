@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { Download } from "lucide-react";
 
@@ -14,25 +14,36 @@ const ExportButton: React.FC<ExportButtonProps> = ({ data, fileName = "export" }
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     setIsDownloading(true);
     setDownloaded(false);
 
-    setTimeout(() => {
-      const worksheet = XLSX.utils.json_to_sheet(data);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Sheet1");
 
-      const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-      const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+      if (data.length > 0) {
+        // สร้าง header จาก keys ของ object แถวแรก
+        const columns = Object.keys(data[0]).map((key) => ({ header: key, key }));
+        worksheet.columns = columns;
+
+        // เติมข้อมูลแถว
+        data.forEach((item) => {
+          worksheet.addRow(item);
+        });
+      }
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: "application/octet-stream" });
       saveAs(blob, `${fileName}.xlsx`);
 
-      setIsDownloading(false);
       setDownloaded(true);
-
-
+    } catch (error) {
+      console.error("Export Excel failed:", error);
+    } finally {
+      setIsDownloading(false);
       setTimeout(() => setDownloaded(false), 2000);
-    }, 800); 
+    }
   };
 
   return (
@@ -63,7 +74,7 @@ const ExportButton: React.FC<ExportButtonProps> = ({ data, fileName = "export" }
           ></div>
         </div>
       )}
-      
+
       <style jsx>{`
         @keyframes progress {
           0% {

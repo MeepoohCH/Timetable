@@ -129,7 +129,7 @@ export default function AddSubject({
         }
 
         const result = await response.json();
-        alert(result.message || "เพิ่มข้อมูลวิชาเรียบร้อยแล้ว");
+        console.log(result.message || "เพิ่มข้อมูลวิชาเรียบร้อยแล้ว");
           triggerRefresh();
 
         // เรียก callback เพื่ออัปเดตข้อมูลหน้าจอ (ถ้ามี)

@@ -110,6 +110,8 @@ const confirmDelete = async () => {
   if (!selectedEvent) return;
 
   try {
+     setLoading(true);
+     
     const res = await fetch("/api/Subject/delete", {
       method: "DELETE",
       headers: {
@@ -125,15 +127,19 @@ const confirmDelete = async () => {
     }
 
     const result = await res.json();
-     console.log(result.message);
-    onDeleteEventAction(selectedEvent); // ถ้าคุณใช้ callback เพื่อลบใน client
+    console.log(result.message);
+    onDeleteEventAction(selectedEvent);
     triggerRefresh();
     setShowModal(false);
   } catch (err) {
     console.error("❌ Error deleting subject:", err);
     console.log("เกิดข้อผิดพลาดระหว่างลบวิชา");
+  } finally {
+    setLoading(false); // ✅ ปิด loading หลังเสร็จ
   }
 };
+
+
 
 
 
@@ -205,7 +211,7 @@ const confirmDelete = async () => {
             <button
               className="bg-orange-600 hover:bg-orange-700 px-4 py-2 rounded text-white"
               onClick={confirmDelete}
-            disabled={loading}
+              disabled={loading}
               >
                 {loading ? "กำลังลบ..." : "ลบ"}
             </button>
