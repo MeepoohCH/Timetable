@@ -23,12 +23,12 @@ export default function StudentDropdown() {
     {id: 3, label:"3"},
   ]
 
-    const yearlItems =[
-    {id: 2568, label:"2568"},
-    {id: 2567, label:"2567"},
-    {id: 2566, label:"2566"},
-    {id: 2565, label:"2565"},
-  ]
+const currentYear = new Date().getFullYear() + 543; // แปลง ค.ศ. เป็น พ.ศ.
+
+const yearItems = Array.from({ length: 4 }, (_, i) => {
+  const year = currentYear - i;
+  return { id: year, label: year.toString() };
+});
 
   const examtypeItems = [
     {id: "midterm", label:"กลางภาค"},
@@ -60,7 +60,7 @@ export default function StudentDropdown() {
     <div className="flex flex-wrap gap-6">
       <Dropdown label="ชั้นปี" items={yearlevelItems} selected={yearlevel} setSelected={setyearlevel}/>
       <Dropdown label="ภาคการศึกษา" items={semesterlItems} selected={semester} setSelected={setsemester}/>
-      <Dropdown label="ปีการศึกษา" items={yearlItems} selected={year} setSelected={setyear}/>
+      <Dropdown label="ปีการศึกษา" items={yearItems} selected={year} setSelected={setyear}/>
       <Dropdown label="การสอบ..." items={examtypeItems} selected={examtype} setSelected={setexamtype}/>
           <button
             className="mt-auto bg-[#F96D00] h-7 text-sm text-white px-4 rounded-15px transition hover:bg-white hover:text-[#F96D00]"

@@ -16,12 +16,12 @@ import {
 import { ClassItem } from "./ClassItem";
 
 type Props = {
-  classes: ClassItem[];
   selectedEvent: ClassItem | null;
   setSelectedEvent: (event: ClassItem) => void;
+  refreshKey: number;
 };
 
-export default function SubjectTable({ selectedEvent, setSelectedEvent }: Props) {
+export default function SubjectTable({ selectedEvent, setSelectedEvent, refreshKey }: Props) {
   const [classes, setClasses] = useState<ClassItem[]>([]);
 
 
@@ -30,22 +30,19 @@ const fetchSubjects = async () => {
       const res = await fetch("/api/Subject/getData");
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
-      setClasses(data.subjects);  // เพราะ API ส่ง subjects มา
+      setClasses(data.subjects);  
     } catch (error) {
       console.error("Error fetching subjects:", error);
     }
   };
 
-/*   useEffect(() => {
-    fetchSubjects();
+  useEffect(() => {
+  fetchSubjects();
+}, [refreshKey]);
 
-   const interval = setInterval(() => {
-      fetchSubjects();
-    }, 10000); // fetch ทุก 10 วิ
 
-    return () => clearInterval(interval);
-  }, []);
-*/
+
+
   return (
     <div className="w-full max-w-[1152px] overflow-x-auto">
       <div className="min-w-full bg-[#F3F4F6] text-center shadow border-4 rounded-2xl border-white font-kanit">

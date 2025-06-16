@@ -8,11 +8,20 @@ import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 import { v4 as uuidv4 } from 'uuid';
 
+type SubjectItem = {
+  subject_id: string;
+  subjectName: string;
+  credit: number | null;
+  creditType: string;
+};
+
+
 type AddProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
   currentComponent: "edit" | "delete" | "add";
   onAddEventAction: (event: any) => void;
-  existingClasses: ClassItem[];
+  existingClasses: ClassItem[];  // ✅ เปลี่ยนชื่อ
+  triggerRefresh: () => void;
 };
 
 
@@ -33,6 +42,7 @@ export default function AddSubject({
   currentComponent,
   onAddEventAction,
   existingClasses,
+  triggerRefresh,
 }: AddProps) {
   const pathname = usePathname();
 
@@ -120,6 +130,7 @@ export default function AddSubject({
 
         const result = await response.json();
         alert(result.message || "เพิ่มข้อมูลวิชาเรียบร้อยแล้ว");
+          triggerRefresh();
 
         // เรียก callback เพื่ออัปเดตข้อมูลหน้าจอ (ถ้ามี)
         onAddEventAction(newSubject);

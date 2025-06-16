@@ -13,6 +13,7 @@ type AddProps = {
   currentComponent: "edit" | "delete" | "add";
   onAddEventAction: (event: any) => void;
   existingClasses: ClassItem[];
+  triggerRefresh: () => void;
 };
 
 
@@ -28,12 +29,16 @@ function isTimeOverlap(
 
 
 
+
 export default function AddTeacher({
   onSwitchAction,
   currentComponent,
   onAddEventAction,
   existingClasses,
+  triggerRefresh,
 }: AddProps) {
+
+  console.log("TriggerRefresh is", triggerRefresh);
   const pathname = usePathname();
 
 
@@ -142,6 +147,7 @@ if (isDuplicate) {
 
     onAddEventAction(newEvent);
     resetForm();
+    triggerRefresh();
 
   } catch (error) {
     console.error("❌ Error submitting form:", error);

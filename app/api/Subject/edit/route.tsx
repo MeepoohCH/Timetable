@@ -6,6 +6,7 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     const { old_subject_id, subject_id, subjectName, credit, creditType } = body;
+    console.log(body);
 
     if (!old_subject_id) {
       return NextResponse.json(

@@ -12,6 +12,7 @@ type EditTeacherProps = {
   selectedEvent: ClassItem | null;
   events: ClassItem[];
   existingClasses: ClassItem[];
+   triggerRefresh: () => void;
 };
 
 export default function EditTeacher({
@@ -21,6 +22,7 @@ export default function EditTeacher({
   selectedEvent,
   events,
   existingClasses,
+  triggerRefresh,
 }: EditTeacherProps) {
   const [formData, setFormData] = useState({
     teacher_id: "",
@@ -111,6 +113,7 @@ export default function EditTeacher({
 
     const result = await response.json();
     console.log("✅ แก้ไขสำเร็จ:", result);
+    triggerRefresh();
 
     onEditEventAction(updatedEvent);
   } catch (error) {

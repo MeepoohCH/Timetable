@@ -11,6 +11,7 @@ type DeleteTeacherProps = {
   onDeleteEventAction: (event: any) => void;
   selectedEvent: any | null;
   events: any[];
+  triggerRefresh: () => void;
 };
 
 export default function DeleteSubject({
@@ -18,6 +19,7 @@ export default function DeleteSubject({
   currentComponent,
   onDeleteEventAction,
   selectedEvent,
+  triggerRefresh,
 }: DeleteTeacherProps) {
 
   const [formData, setFormData] = useState({
@@ -98,16 +100,40 @@ useEffect(() => {
 
 
  const [showModal, setShowModal] = useState(false);
+ const [loading, setLoading] = useState(false);
 
   const handleDelete = () => {
     setShowModal(true);
   };
 
-  const confirmDelete = () => {
-    if (!selectedEvent) return;
-    onDeleteEventAction(selectedEvent);
+const confirmDelete = async () => {
+  if (!selectedEvent) return;
+
+  try {
+    const res = await fetch("/api/Subject/delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ subject_id: selectedEvent.subject_id }),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+       console.log("ลบไม่สำเร็จ: " + errorData.error);
+      return;
+    }
+
+    const result = await res.json();
+     console.log(result.message);
+    onDeleteEventAction(selectedEvent); // ถ้าคุณใช้ callback เพื่อลบใน client
+    triggerRefresh();
     setShowModal(false);
-  };
+  } catch (err) {
+    console.error("❌ Error deleting subject:", err);
+    console.log("เกิดข้อผิดพลาดระหว่างลบวิชา");
+  }
+};
 
 
 
@@ -179,8 +205,9 @@ useEffect(() => {
             <button
               className="bg-orange-600 hover:bg-orange-700 px-4 py-2 rounded text-white"
               onClick={confirmDelete}
-            >
-              ลบ
+            disabled={loading}
+              >
+                {loading ? "กำลังลบ..." : "ลบ"}
             </button>
           </div>
         </div>

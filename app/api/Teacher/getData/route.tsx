@@ -1,4 +1,4 @@
-// /api/teacher/get.ts
+// /api/teacher/getData.ts
 
 import { NextRequest, NextResponse } from 'next/server';
 import { pool } from '@/lib/db';

@@ -9,12 +9,14 @@ type DeleteTeacherProps = {
   currentComponent: "edit" | "delete" | "add";
   selectedEvent: any | null;
   events: any[];
+  triggerRefresh: () => void;
 };
 
 export default function DeleteTeacher({
   onSwitchAction,
   currentComponent,
   selectedEvent,
+  triggerRefresh,
 }: DeleteTeacherProps) {
   const [formData, setFormData] = useState({
     teacher_id: "",
@@ -60,6 +62,7 @@ export default function DeleteTeacher({
 
       const result = await res.json();
       console.log("✅ ลบสำเร็จ:", result);
+      triggerRefresh();
 
     
       setShowModal(false);

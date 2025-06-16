@@ -14,9 +14,10 @@ import { ClassItem } from "./ClassItem";
 type Props = {
   selectedEvent: ClassItem | null;
   setSelectedEvent: (event: ClassItem) => void;
+   refreshKey: number;
 };
 
-export default function TeacherTable({ selectedEvent, setSelectedEvent }: Props) {
+export default function TeacherTable({ selectedEvent, setSelectedEvent, refreshKey }: Props) {
   const [classes, setClasses] = useState<ClassItem[]>([]);
 
 
@@ -31,16 +32,12 @@ const fetchTeachers = async () => {
     }
   };
 
-/*  useEffect(() => {
-    fetchTeachers();
+// เปลี่ยนเป็น trigger ด้วย refreshKey
+useEffect(() => {
+  fetchTeachers();
+}, [refreshKey]);
 
-    const interval = setInterval(() => {
-      fetchTeachers();
-    }, 5000); // fetch ทุก 5 วิ
 
-    return () => clearInterval(interval);
-  }, []);
-*/
 
   return (
     <div className="w-full max-w-[1152px] overflow-x-auto">

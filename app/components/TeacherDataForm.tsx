@@ -18,9 +18,9 @@ export default function TeacherDataForm() {
   const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
-  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<ClassItem[]>([]);
-  const intervalRef = useRef <ReturnType<typeof setInterval> | null>(null);
+
+
 async function fetchEvents() {
     try {
       const res = await fetch("/api/Teacher/getData");
@@ -32,19 +32,10 @@ async function fetchEvents() {
     }
   }
 
-  // fetch ตอนโหลด component และตั้ง polling ให้ fetch ทุก 5 วินาที
+  
   useEffect(() => {
-    fetchEvents(); // fetch ครั้งแรกตอน mount
-
-    intervalRef.current = setInterval(() => {
-      fetchEvents();
-    }, 5000); // 5000 ms = 5 วินาที
-
-    return () => {
-      // clear interval เมื่อ component ถูก unmount
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
+  fetchEvents(); // fetch ตอน mount ครั้งเดียว
+}, []);
 
   // ฟังก์ชันสำหรับรีเฟรชข้อมูล (ใช้เรียกหลังเพิ่ม/แก้ไข/ลบ)
   const refreshData = async () => {
@@ -92,7 +83,12 @@ async function fetchEvents() {
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
 
 
-
+  const [refreshKey, setRefreshKey] = useState(0);
+  
+const triggerRefresh = () => {
+  setRefreshKey(prev => prev + 1);
+  console.log("triggerRefresh called!");
+};
 
 
   return (
@@ -123,6 +119,7 @@ async function fetchEvents() {
             currentComponent="add"
             onAddEventAction={handleAddEvent}
             existingClasses={existingClasses}
+            triggerRefresh={triggerRefresh}
           />
         )}
         {currentComponent === "edit" && (
@@ -133,6 +130,7 @@ async function fetchEvents() {
          events={events}
          selectedEvent={selectedEvent}
          existingClasses={existingClasses}
+        triggerRefresh={triggerRefresh}
        />
 
         )}
@@ -142,6 +140,7 @@ async function fetchEvents() {
           currentComponent="delete"
           events={events}
           selectedEvent={selectedEvent} 
+           triggerRefresh={triggerRefresh}
         />
         )}
       </div>
@@ -156,6 +155,7 @@ async function fetchEvents() {
             const formSection = document.getElementById("form-section");
             formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
+          refreshKey={refreshKey} 
         />
       </div>
     </div>

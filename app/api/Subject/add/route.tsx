@@ -27,9 +27,10 @@ export async function POST(req: NextRequest) {
     }
 
     // ✅ ถ้ายังไม่มี, ทำการเพิ่ม
+    const cleanedCreditType = creditType.replace(/[()]/g, '');
     await conn.query(
       `INSERT INTO Subject (subject_id, subjectName, credit, creditType) VALUES (?, ?, ?, ?)`,
-      [subject_id, subjectName, credit, creditType]
+      [subject_id, subjectName, credit, cleanedCreditType]
     );
 
     console.log('✅ สร้าง Subject ใหม่สำเร็จ');

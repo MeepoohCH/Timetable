@@ -12,6 +12,7 @@ type EditTeacherProps = {
   selectedEvent: ClassItem | null;
   events: ClassItem[];
   existingClasses: ClassItem[];
+  triggerRefresh: () => void;
 };
 
 export default function EditSubject({
@@ -21,6 +22,7 @@ export default function EditSubject({
   selectedEvent,
   events,
   existingClasses,
+ triggerRefresh,
 }: EditTeacherProps) {
 
   const [formData, setFormData] = useState<{
@@ -88,7 +90,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   };
 
   const dataToSend = {
-    original_subject_id: originalSubjectId, // รหัสเดิม (ใช้ค้นหา)
+    old_subject_id: originalSubjectId, // รหัสเดิม (ใช้ค้นหา)
     subject_id: formData.subject_id.trim(), // รหัสใหม่ (อาจเปลี่ยน)
     subjectName: formData.subjectName.trim(),
     credit: formData.credit ?? null,
@@ -112,6 +114,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     const result = await response.json();
     console.log("✅ แก้ไขวิชาสำเร็จ:", result);
+      triggerRefresh();
 
     onEditEventAction(updatedEvent);
   } catch (error) {

@@ -23,12 +23,12 @@ export default function StudentDropdown() {
     { id: 3, label: "3" },
   ]
 
-  const yearItems = [
-    { id: 2568, label: "2568" },
-    { id: 2567, label: "2567" },
-    { id: 2566, label: "2566" },
-    { id: 2565, label: "2565" },
-  ]
+const currentYear = new Date().getFullYear() + 543; // แปลง ค.ศ. เป็น พ.ศ.
+
+const yearItems = Array.from({ length: 4 }, (_, i) => {
+  const year = currentYear - i;
+  return { id: year, label: year.toString() };
+});
 
   const degreeItems = [
     { id: 1, label: "1 ปริญญา"},
