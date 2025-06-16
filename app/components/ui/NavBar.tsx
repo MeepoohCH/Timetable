@@ -9,7 +9,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-[#F7F7F7] text-gray-600 ">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div className="max-w-7xl px-4 py-3 flex justify-between items-center">
         <div className="md:hidden">
           <button onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}

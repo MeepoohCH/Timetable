@@ -40,7 +40,7 @@ export default function MakeupDropdown() {
     } try {
       const res = await fetch("/api/api",{
         method: "POST",
-        headers: {"Content-Type":"apllication/json"},
+        headers: {"Content-Type":"aplication/json"},
         body: JSON.stringify({day, semester, year}),
       })
 
