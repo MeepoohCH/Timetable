@@ -17,9 +17,9 @@ const Navbar = () => {
         </div>
 
         <div className={`text-l md:flex space-x-6 ${isOpen ? 'block mt-4' : 'hidden'} md:mt-0`}>
-          <Link href="#form-section" className="block py-2 md:py-0 hover:text-orange-600">
+          {/* <Link href="#form-section" className="block py-2 md:py-0 hover:text-orange-600">
             ฟอร์ม
-          </Link>
+          </Link> */}
           <Link href="#schedule-section" className="block py-2 md:py-0 hover:text-orange-600">
             ตารางเรียน
           </Link>

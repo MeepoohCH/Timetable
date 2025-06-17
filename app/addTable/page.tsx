@@ -1,7 +1,5 @@
 import StudentDropdown from '../components/ui/studentDropdown';
 import StudyForm from '../components/StudyForm';
-import StudentOutput from '../components/StudentOutput';
-
 
 export default function SchedulePage() {
   console.log("StudentPage loaded");
@@ -11,7 +9,7 @@ export default function SchedulePage() {
         <h1 className="text-2xl font-medium mb-4">ตารางนักศึกษา</h1>
         <div className="mb-6">
           <StudentDropdown />
-          <StudentOutput/>
+          <StudyForm/>
         </div>
       </div>
     </>
