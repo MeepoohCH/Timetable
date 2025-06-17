@@ -30,8 +30,10 @@ export default function StudentDropdown() {
   ]
 
   const secItems = [
-    { id: "iot", label: "1 ปริญญา"},
-    { id: "physiot", label: "2 ปริญญา" },
+    { id: "27", label: "27"},
+    { id: "24", label: "24" },
+    { id: "207", label: "207"},
+    { id: "204", label: "204" },
   ]
 
   async function handleSearch() {
@@ -90,7 +92,7 @@ export default function StudentDropdown() {
       >
         ค้นหา
       </button>
-      
+
     </div>
   )
 }
