@@ -1,14 +1,24 @@
 "use client"
 
-import { div } from "framer-motion/client";
 import { useState, useRef,useEffect } from "react"
 import Dropdown from "./dropdown";
+import TeacherMakeUpInput from "./TeacherMakeUpInput";
 
 
 export default function MakeupDropdown() {
+  const [teacher, setTeacher] = useState("")
   const [day, setday] = useState<string | null>(null)
   const [semester, setsemester] = useState<string | null>(null)
   const [year, setyear] = useState<string | null>(null)
+
+  const teacherList=[
+    "อาจารย์สมชาย",
+    "อาจารย์สมหญิง",
+    "ดร.วิภา",
+    "ดร.ปรัชญา",
+    "ผศ.ดร.จิตรา",
+  ]
+
 
   const dayItems =[
     {id: "Mon", label:"จันทร์"},
@@ -56,6 +66,12 @@ export default function MakeupDropdown() {
 
   return (
     <div className="flex flex-wrap gap-6">
+      <TeacherMakeUpInput
+          label="อาจารย์"
+          teachers={teacherList}
+          selected={teacher}
+          setSelected={setTeacher}
+      />
       <Dropdown label="วัน" items={dayItems} selected={day} setSelected={setday}/>
       <Dropdown label="ภาคการศึกษา" items={semesterlItems} selected={semester} setSelected={setsemester}/>
       <Dropdown label="ปีการศึกษา" items={yearlItems} selected={year} setSelected={setyear}/>
