@@ -6,12 +6,24 @@ import DetailPanel from "../components/DetailPanel";
 import StudentScheduleTable from "./ui/StudentScheduleTable";
 import { ClassItem } from "./ClassItem";
 
-export default function StudentOutput() { 
+type Props = {
+  filters: {
+    yearLevel: string;
+    semester: string;
+    academicYear: string;
+    degree: string;
+  };
+};
+
+
+
+export default function StudentOutput({ filters }: Props) { 
   const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<ClassItem[]>([]);
+
 
     return (
         <div className="">
@@ -24,7 +36,7 @@ export default function StudentOutput() {
             className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2"
             >
             <StudentScheduleTable
-                classes={Array.isArray(events) ? events : []}
+                filters={filters}
                 selectedEvent={selectedEvent}
                 setSelectedEvent={(event) => {
                 setSelectedEvent(event);

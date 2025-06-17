@@ -3,11 +3,22 @@
 import { useState, useEffect } from "react"
 import Dropdown from "./dropdown"
 
-export default function StudentDropdown() {
+type DropdownProps = {
+  onSearch: (filters: {
+    yearLevel: string;
+    semester: string;
+    academicYear: string;
+    degree: string;
+  }) => void;
+};
+
+
+export default function StudentDropdown({ onSearch }: DropdownProps) {
   const [yearlevel, setYearlevel] = useState<number | string | null>(null)
   const [semester, setSemester] = useState<number | string | null>(null)
   const [year, setYear] = useState<number | string | null>(null)
   const [degree, setDegree] = useState<number | string | null>(null)
+
 
 
   const yearlevelItems = [
@@ -51,15 +62,19 @@ useEffect(() => {
       return
     }
 
-   
-
-
+  onSearch({
+    yearLevel: String(yearlevel),
+    semester: String(semester),
+    academicYear: String(year),
+    degree: String(degree),
+  });
 
   // เลื่อนไปยังฟอร์ม (แค่แสดงผล)
   const formSection = document.getElementById("form-section");
   formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   }
+
 
   return (
     <div className="flex flex-wrap gap-6 items-end">

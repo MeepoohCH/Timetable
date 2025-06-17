@@ -1,16 +1,27 @@
 import { ClassItem } from "../ClassItem";
+import { useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
 
 type Props = {
-  classes: ClassItem[];
+  filters: {
+    yearLevel: string;
+    semester: string;
+    academicYear: string;
+    degree: string;
+  } | null;
   selectedEvent: ClassItem | null;
   setSelectedEvent: (event: ClassItem) => void;
 };
 
-export default function StudentScheduleTable({ 
-  classes, 
-  selectedEvent, 
-  setSelectedEvent 
+export default function StudentScheduleTable({
+  filters,
+  selectedEvent,
+  setSelectedEvent
 }: Props) {
+  const [classes, setClasses] = useState<ClassItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const weekdays = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
   const startHour = 8;
   const endHour = 22;
@@ -22,6 +33,37 @@ export default function StudentScheduleTable({
   };
 
   const timeToSlot = (time: number) => Math.round((time - startHour) * 4);
+
+
+
+  useEffect(() => {
+
+    if (!filters) return;
+
+    const { yearLevel, semester, academicYear, degree } = filters;
+
+    setLoading(true);
+    setError(null);
+
+    fetch(`/api/Timetable/studentSeach?yearLevel=${yearLevel}&semester=${semester}&academicYear=${academicYear}&degree=${degree}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then(data => {
+        console.log("📦 ข้อมูลที่ได้จาก API:", data); // 👈 log ตรงนี้
+        setClasses(data);
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [filters]);
+
+  if (!filters) return <p>กรุณาเลือกข้อมูลจาก dropdown</p>;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (classes.length === 0) return <p>ไม่พบข้อมูลตารางเรียน</p>;
+
+
 
   return (
     <div className="w-full max-w-[1152px] mx-auto">
@@ -80,7 +122,7 @@ export default function StudentScheduleTable({
                       <div
                         key={i}
                         onClick={() => setSelectedEvent(c)}
-                        
+
                         className={`absolute top-1 bottom-1 ml-3 rounded p-1 shadow text-xs overflow-hidden text-center z-10 cursor-pointer
 +                         ${isSelected ? "bg-orange-300 ring-2 ring-orange-500" : "bg-[#FEDDC1]"}
                         `}
@@ -100,3 +142,4 @@ export default function StudentScheduleTable({
     </div>
   );
 }
+
