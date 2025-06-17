@@ -7,7 +7,7 @@ export default function StudentDropdown() {
   const [yearlevel, setYearlevel] = useState<string | null>(null)
   const [semester, setSemester] = useState<string | null>(null)
   const [year, setYear] = useState<string | null>(null)
-  const [degree, setDegree] =useState<string | null>(null)
+  const [sec, setSec] =useState<string | null>(null)
 
   const yearlevelItems = [
     { id: "year1", label: "1" },
@@ -29,7 +29,7 @@ export default function StudentDropdown() {
     { id: "2565", label: "2565" },
   ]
 
-  const degreeItems = [
+  const secItems = [
     { id: "iot", label: "1 ปริญญา"},
     { id: "physiot", label: "2 ปริญญา" },
   ]
@@ -79,9 +79,9 @@ export default function StudentDropdown() {
 
       <Dropdown
         label="เซค"
-        items={degreeItems}
-        selected={degree}
-        setSelected={setDegree}
+        items={secItems}
+        selected={sec}
+        setSelected={setSec}
       />
 
       <button
@@ -90,6 +90,7 @@ export default function StudentDropdown() {
       >
         ค้นหา
       </button>
+      
     </div>
   )
 }
