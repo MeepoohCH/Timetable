@@ -1,4 +1,4 @@
-import ScheduleTable from '@/app/components/ui/ScheduleTable'
+import ScheduleTable from '@/app/components/ui/StudentScheduleTable'
 import StudentExamDropdown from '../components/ui/studentExamDropdown';
 import ExamForm from '../components/ExamForm';
 

@@ -135,6 +135,11 @@ export default function AddSubject({
         // เรียก callback เพื่ออัปเดตข้อมูลหน้าจอ (ถ้ามี)
         onAddEventAction(newSubject);
 
+          if (Number(formData.credit) <= 0) {
+  alert("กรุณากรอกหน่วยกิตมากกว่า 0");
+  return;
+}
+
         // รีเซ็ตฟอร์ม
         resetForm();
 
@@ -184,6 +189,7 @@ export default function AddSubject({
                     value={formData.credit ?? ""}
                     onChange={handleChange}
                     className="box"
+                    min="1"
                     required
                   />
                 </div>

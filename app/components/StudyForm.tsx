@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Add from "../components/Add";
-import Calendar from "./Calendar";
+import Calendar from "./TeacherCalendar";
 import Delete from "../components/Delete";
 import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
-import ScheduleTable from "./ui/ScheduleTable";
+import ScheduleTable from "./ui/StudentScheduleTable";
 import { ClassItem } from "./ClassItem";
 import { useStudentFilter } from "@/context/StudentFilterContext/page";
 
@@ -66,7 +66,7 @@ const handleDeleteEvent = () => {
 
 
   return (
-    <div className=" min-h-screen font-kanit">
+    <div className=" ">
       <div id="form-section" className="scroll-mt-20 pt-6">
         <div id="form-section" className="flex justify-start   gap-2 px-6 pt-4font-kanit ">
           {(["add", "edit", "delete"] as const).map((tab) => (
@@ -115,68 +115,6 @@ const handleDeleteEvent = () => {
           selectedEvent={selectedEvent} // เพิ่มตรงนี้✅ 
         />
         )}
-      </div>
-
-      {/* ตารางเรียน */}
-      <div id="schedule-section" className="w-full max-w-6xl scroll-mt-20 mt-8 px-4">
-        <h2 className="text-2xl font-semibold text-orange-600 mb-6">📅 ตารางเรียน</h2>
-
-      </div>
-      <div
-        className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2"
-      >
-        <ScheduleTable
-          classes={Array.isArray(events) ? events : []}
-          selectedEvent={selectedEvent}
-          setSelectedEvent={(event) => {
-            setSelectedEvent(event);
-            setCurrentComponent("edit");
-            const formSection = document.getElementById("form-section");
-            formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }}
-        />
-      </div>
-
-      {/* ตารางสอบกลางภาค */}
-      <div id="midterm-section" className="w-full scroll-mt-20 max-w-6xl mt-8 px-4">
-        <h2 className="text-2xl font-semibold text-orange-600 mb-6">📝 ตารางสอบกลางภาค</h2>
-      </div>
-      <div
-        className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2"
-      >
-        <Calendar
-          selectedEvent={selectedEvent}
-          setSelectedEvent={(event) => {
-            setSelectedEvent(event);
-            setCurrentComponent("edit");
-          }}
-          currentMonth={currentMonth}
-          setCurrentMonth={setCurrentMonth}
-          events={events}
-          examType="midterm"
-        />
-        <DetailPanel examType="midterm" selectedEvent={selectedEvent} />
-      </div>
-
-      {/* ตารางสอบปลายภาค */}
-      <div id="final-section" className="w-full scroll-mt-20 max-w-6xl mt-8 px-4">
-        <h2 className="text-2xl font-semibold text-orange-600 mb-6">📝 ตารางสอบปลายภาค</h2>
-      </div>
-      <div
-        className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2"
-      >
-        <Calendar
-          selectedEvent={selectedEvent}
-          setSelectedEvent={(event) => {
-            setSelectedEvent(event);
-            setCurrentComponent("edit");
-          }}
-          currentMonth={currentMonth}
-          setCurrentMonth={setCurrentMonth}
-          events={events}
-          examType="final"
-        />
-        <DetailPanel examType="final" selectedEvent={selectedEvent} />
       </div>
     </div>
   );

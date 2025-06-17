@@ -2,37 +2,46 @@
 
 import { useState } from "react";
 import Add from "../components/Add";
-import Calendar from "../components/Calendar";
+import Calendar from "./TeacherCalendar";
 import Delete from "../components/Delete";
 import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
+import ScheduleTable from "./ui/StudentScheduleTable";
+import { ClassItem } from "./ClassItem";
+import ExamForm from "./ExamForm";
 
 
-type ClassItem = {
-    subject_id: string,
-    subjectName: string,
-    sec: string,
-    teacher: string[],
-    day: string,
-    startTime: string,
-    endTime: string,
-    location: string,
-};
-
-export default function StudyForm() { 
-
+export default function StudentForm() { 
+  const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const [events, setEvents] = useState<ClassItem[]>([]);
 
-  const handleAddEvent = (event: ClassItem) => setEvents((prev) => [...prev, event]);
-  const handleDeleteEvent = (updatedEvents: any[]) => setEvents(updatedEvents);
+   const handleAddEvent = (newClass: ClassItem) => {
+    setExistingClasses(prev => [...prev, newClass]);
+    setEvents(prev => [...prev, newClass]);  
+  };
+const handleDeleteEvent = () => {
+      if (!selectedEvent) return;
+
+    setEvents((prev) =>
+      prev.filter((ev) =>
+        !(
+          ev.subject_id === selectedEvent.subject_id &&
+          ev.sec === selectedEvent.sec
+        )
+      )
+    );
+
+    setSelectedEvent(null); // clear class ที่ถูกเลือกหลังลบ
+  };
   const handleEditEvent = (updatedEvent: any) => {
     setEvents((prev) =>
       prev.map((ev) =>
-        ev.subject_id === updatedEvent.subject_id ? updatedEvent : ev
+      ev.subject_id === updatedEvent.subject_id && ev.sec === updatedEvent.sec
+        ? updatedEvent
+        : ev
       )
     );
     setSelectedEvent(null); // reset event ที่เลือกหลังแก้ไข
@@ -44,9 +53,9 @@ export default function StudyForm() {
 
 
   return (
-    <div className=" min-h-screen font-kanit">
-      <div className=" pt-6">
-        <div className="flex justify-start gap-2 px-6 pt-4font-kanit ">
+    <div className="">
+      <div id="form-section" className="scroll-mt-20 pt-6">
+        <div id="form-section" className="flex justify-start   gap-2 px-6 pt-4font-kanit ">
           {(["add", "edit", "delete"] as const).map((tab) => (
             <button
               key={tab}
@@ -64,15 +73,13 @@ export default function StudyForm() {
         </div>
       </div>
 
-      <div className="flex-1 p-4 mx-2 shadow bg-[#F3F4F6] border-4 border-white font-kanit rounded-2xl w-full max-w-[1152px]">
-
-
-
+      <div id="form-section" className="flex-1 p-4 mx-2 shadow scroll-mt-20 bg-[#F3F4F6] border-4 border-white  rounded-2xl w-full max-w-[1152px]">
         {currentComponent === "add" && (
           <Add
             onSwitchAction={switchComponent}
             currentComponent="add"
             onAddEventAction={handleAddEvent}
+            existingClasses={existingClasses}
           />
         )}
         {currentComponent === "edit" && (
@@ -82,6 +89,7 @@ export default function StudyForm() {
          onEditEventAction={handleEditEvent}
          events={events}
          selectedEvent={selectedEvent}
+         existingClasses={existingClasses}
        />
 
         )}
@@ -91,24 +99,9 @@ export default function StudyForm() {
           currentComponent="delete"
           onDeleteEventAction={handleDeleteEvent}
           events={events}
-          selectedEvent={selectedEvent} // ✅ เพิ่มตรงนี้
+          selectedEvent={selectedEvent} // เพิ่มตรงนี้✅ 
         />
         )}
-      </div>
-      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-8 mx-2">
-
-      {/* <Calendar
-          selectedEvent={selectedEvent}
-          setSelectedEvent={(event) => {
-            setSelectedEvent(event);
-            setCurrentComponent("edit"); // เปลี่ยนเป็นหน้า edit อัตโนมัติ
-          }}
-          currentMonth={currentMonth}
-          setCurrentMonth={setCurrentMonth}
-          events={events}
-        />
-
-        <DetailPanel selectedEvent={selectedEvent} /> */}
       </div>
     </div>
   );

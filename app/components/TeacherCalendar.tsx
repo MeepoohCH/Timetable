@@ -37,7 +37,7 @@ function getColorFromString(str: string): string {
   return COLORS[index];
 }
 
-export default function Calendar({
+export default function TeacherCalendar({
   selectedEvent,
   setSelectedEvent,
   currentMonth,

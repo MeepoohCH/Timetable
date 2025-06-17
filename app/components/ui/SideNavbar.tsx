@@ -85,8 +85,32 @@ export default function SideNavbar() {
               className="max-w-full h-auto"
             />
           </div>
+
           <div className="flex flex-col">
-            <label className="mb-2 text-sm font-medium text-gray-600">ตารางเรียน</label>
+            <label className="mb-2 text-sm font-medium text-gray-600">จัดการตาราง</label>
+            <NavItem
+              icon="ph:student"
+              label="เพิ่มตาราง"
+              href="/addTable"
+              onClick={() => setIsOpen(false)}
+            />
+            <NavItem
+              icon="tabler:file-description"
+              label="ข้อมูลอาจารย์"
+              href="/teacherData"
+              onClick={() => setIsOpen(false)}
+            />
+            <NavItem
+              icon="tabler:file-description"
+              label="ข้อมูลวิชา"
+              href="/SubjectData"
+              onClick={() => setIsOpen(false)}
+            />
+          </div>
+
+
+          <div className="flex flex-col">
+            <label className="mb-2 text-sm font-medium text-gray-600">ตาราง</label>
             <NavItem
               icon="ph:student"
               label="นักศึกษา"
@@ -100,39 +124,13 @@ export default function SideNavbar() {
               onClick={() => setIsOpen(false)}
             />
           </div>
-          {/* <div className="flex flex-col">
-            <label className="mb-2 text-sm font-medium text-gray-600">ตารางสอบ</label>
-            <NavItem
-              icon="ph:student"
-              label="นักศึกษา"
-              href="/studentExam"
-              onClick={() => setIsOpen(false)}
-            />
-            <NavItem
-              icon="hugeicons:teacher"
-              label="อาจารย์"
-              href="/teacherExam"
-              onClick={() => setIsOpen(false)}
-            />
-          </div> */}
+
           <div className="flex flex-col">
             <label className="mb-2 text-sm font-medium text-gray-600">อื่นๆ</label>
             <NavItem
               icon="mage:plus-square"
               label="ชดเชย"
               href="/makeupclass"
-              onClick={() => setIsOpen(false)}
-            />
-            <NavItem
-              icon="tabler:file-description"
-              label="ข้อมูลอาจารย์"
-              href="/teacherData"
-              onClick={() => setIsOpen(false)}
-            />
-            <NavItem
-              icon="tabler:file-description"
-              label="ข้อมูลวิชา"
-              href="/SubjectData"
               onClick={() => setIsOpen(false)}
             />
           </div>

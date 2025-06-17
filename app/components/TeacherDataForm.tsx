@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import AddTeacher from "./AddTeacher";
-import Calendar from "./Calendar";
+import Calendar from "./TeacherCalendar";
 import Delete from "./Delete";
 import DetailPanel from "./DetailPanel";
 import Edit from "./Edit";
-import ScheduleTable from "./ui/ScheduleTable";
+import ScheduleTable from "./ui/StudentScheduleTable";
 import { ClassItem } from "./ClassItem";
 import ExamForm from "./ExamForm";
 import EditTeacher from "./EditTeacher";

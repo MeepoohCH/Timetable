@@ -1,6 +1,6 @@
 "use client";
 
-import ScheduleTable from '@/app/components/ui/ScheduleTable'
+import ScheduleTable from '@/app/components/ui/StudentScheduleTable'
 import CourseCard from '../components/ui/courseCard';
 import MakeupDropdown from '../components/ui/MakeupDropdown';
 import ExportButton from '../components/ExportButton';

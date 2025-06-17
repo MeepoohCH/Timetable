@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Add from "../components/Add";
-import Calendar from "../components/Calendar";
+import Calendar from "../components/TeacherCalendar";
 import Delete from "../components/Delete";
 import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";

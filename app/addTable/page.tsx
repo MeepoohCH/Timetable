@@ -1,12 +1,7 @@
-'use client';
-
-
 import StudentDropdown from '../components/ui/studentDropdown';
-import StudyForm from '../components/StudyForm';
-import StudentOutput from '../components/StudentOutput';
+import StudentForm from '../components/StudentForm';
 
-
-export default function SchedulePage() {
+export default function AddTablePage() {
   console.log("StudentPage loaded");
   return (
     <>
@@ -14,7 +9,7 @@ export default function SchedulePage() {
         <h1 className="text-2xl font-medium mb-4">ตารางนักศึกษา</h1>
         <div className="mb-6">
           <StudentDropdown />
-          <StudentOutput/>
+          <StudentForm/>
         </div>
       </div>
     </>
