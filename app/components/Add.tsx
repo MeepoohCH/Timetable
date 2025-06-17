@@ -79,6 +79,18 @@ export default function Add({
 
   console.log("Updated filtersAdd:", filters);
 
+  useEffect(() => {
+  if (filters.yearLevel && filters.semester && filters.academicYear) {
+    setFormData((prev) => ({
+      ...prev,
+      yearLevel: filters.yearLevel,
+      semester: filters.semester,
+      academicYear: filters.academicYear,
+      degree: filters.degree ?? null, // เผื่อ degree ยังไม่เลือก
+    }))
+  }
+}, [filters])
+
   interface Filters {
     yearLevel?: number | string | null;
     semester?: number | string | null;
@@ -305,12 +317,11 @@ export default function Add({
   if (!formData.study.endTime.trim()) errors.push("เวลาสิ้นสุดเรียน");
 
   if (!formData.exam.midterm.date.trim()) errors.push("วันที่สอบกลางภาค");
-  if (!formData.exam.midterm.location.trim()) errors.push("สถานที่สอบกลางภาค");
   if (!formData.exam.midterm.startTime.trim()) errors.push("เวลาเริ่มสอบกลางภาค");
   if (!formData.exam.midterm.endTime.trim()) errors.push("เวลาสิ้นสุดสอบกลางภาค");
 
   if (!formData.exam.final.date.trim()) errors.push("วันที่สอบปลายภาค");
-  if (!formData.exam.final.location.trim()) errors.push("สถานที่สอบปลายภาค");
+
   if (!formData.exam.final.startTime.trim()) errors.push("เวลาเริ่มสอบปลายภาค");
   if (!formData.exam.final.endTime.trim()) errors.push("เวลาสิ้นสุดสอบปลายภาค");
 
