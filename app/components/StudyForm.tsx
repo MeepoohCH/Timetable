@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Add from "../components/Add";
-import Calendar from "./Calendar";
+import Calendar from "./TeacherCalendar";
 import Delete from "../components/Delete";
 import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
-import ScheduleTable from "./ui/ScheduleTable";
+import ScheduleTable from "./ui/StudentScheduleTable";
 import { ClassItem } from "./ClassItem";
 import ExamForm from "./ExamForm";
 
@@ -53,7 +53,7 @@ const handleDeleteEvent = () => {
 
 
   return (
-    <div className="">
+    <div className=" ">
       <div id="form-section" className="scroll-mt-20 pt-6">
         <div id="form-section" className="flex justify-start   gap-2 px-6 pt-4font-kanit ">
           {(["add", "edit", "delete"] as const).map((tab) => (

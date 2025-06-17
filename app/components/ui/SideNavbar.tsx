@@ -91,7 +91,7 @@ export default function SideNavbar() {
             <NavItem
               icon="ph:student"
               label="เพิ่มตาราง"
-              href="/AddTable"
+              href="/addTable"
               onClick={() => setIsOpen(false)}
             />
             <NavItem
@@ -110,7 +110,7 @@ export default function SideNavbar() {
 
 
           <div className="flex flex-col">
-            <label className="mb-2 text-sm font-medium text-gray-600">ตารางเรียน</label>
+            <label className="mb-2 text-sm font-medium text-gray-600">ตาราง</label>
             <NavItem
               icon="ph:student"
               label="นักศึกษา"

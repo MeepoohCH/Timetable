@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import StudentCalendar from "./StudentCalendar";
+import TeacherCalendar from "./TeacherCalendar";
 import DetailPanel from "../components/DetailPanel";
-import StudentScheduleTable from "./ui/StudentScheduleTable";
+import TeacherScheduleTable from "./ui/TeacherSchedule";
 import { ClassItem } from "./ClassItem";
 
-export default function StudentOutput() { 
+export default function TeacherOutput() { 
   const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
@@ -23,7 +23,7 @@ export default function StudentOutput() {
             <div
             className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2"
             >
-            <StudentScheduleTable
+            <TeacherScheduleTable
                 classes={Array.isArray(events) ? events : []}
                 selectedEvent={selectedEvent}
                 setSelectedEvent={(event) => {
@@ -42,7 +42,7 @@ export default function StudentOutput() {
             <div
             className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2"
             >
-            <StudentCalendar
+            <TeacherCalendar
                 selectedEvent={selectedEvent}
                 setSelectedEvent={(event) => {
                 setSelectedEvent(event);
@@ -63,7 +63,7 @@ export default function StudentOutput() {
             <div
             className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2"
             >
-            <StudentCalendar
+            <TeacherCalendar
                 selectedEvent={selectedEvent}
                 setSelectedEvent={(event) => {
                 setSelectedEvent(event);

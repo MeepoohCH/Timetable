@@ -6,7 +6,7 @@ type Props = {
   setSelectedEvent: (event: ClassItem) => void;
 };
 
-export default function ScheduleTable({ 
+export default function TeacherScheduleTable({ 
   classes, 
   selectedEvent, 
   setSelectedEvent 

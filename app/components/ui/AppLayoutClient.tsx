@@ -8,7 +8,9 @@ export default function AppLayoutClient({ children }: { children: React.ReactNod
   const pathname = usePathname();
 
   const hideNavbarPaths = ["/login","/"];
+  const hideTableNavbarPaths = ["/login","/","/addTable","/teacherData","/SubjectData"];
   const showNavbar = !hideNavbarPaths.includes(pathname || "");
+  const showTableNavbar = !hideTableNavbarPaths.includes(pathname || "");
 
   return (
     <>
@@ -19,7 +21,7 @@ export default function AppLayoutClient({ children }: { children: React.ReactNod
       )}
 
       <div className="flex flex-col w-full ">
-        {showNavbar && (
+        {showTableNavbar && (
           <div className="sticky top-0 z-[50]">
             <Navbar/>
           </div>
