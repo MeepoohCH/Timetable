@@ -170,12 +170,12 @@ const handleSubmit = (e: React.FormEvent) => {
 
 
   onAddEventAction(newEvent);
-  
+
 
   if (Number(formData.credit) <= 0) {
-  alert("กรุณากรอกหน่วยกิตมากกว่า 0");
-  return;
-}
+    alert("กรุณากรอกหน่วยกิตมากกว่า 0");
+    return;
+  }
 
   resetForm();
 };

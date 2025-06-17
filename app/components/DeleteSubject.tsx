@@ -135,7 +135,7 @@ useEffect(() => {
             <div>
               <label className="block mb-1">หน่วยกิต</label>
               <input
-                type="text"
+                type="number"
                 value={formData.credit}
                 className="box"
                 readOnly
