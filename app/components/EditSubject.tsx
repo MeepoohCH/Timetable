@@ -116,6 +116,11 @@ const handleSubmit = async (e: React.FormEvent) => {
     console.log("✅ แก้ไขวิชาสำเร็จ:", result);
       triggerRefresh();
 
+        if (Number(formData.credit) <= 0) {
+    alert("กรุณากรอกหน่วยกิตมากกว่า 0");
+    return;
+  }
+
     onEditEventAction(updatedEvent);
   } catch (error) {
     console.error("❌ เกิดข้อผิดพลาดในการแก้ไขวิชา:", error);
@@ -163,6 +168,7 @@ return (
                 value={formData.credit ?? ""}
                 onChange={handleChange}
                 className="box"
+                min="1"
                 required
               />
             </div>
