@@ -20,10 +20,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'Teacher already exists', duplicate: true }, { status: 200 });
         }
 
-        // 🆕 ดึง teacher_id ล่าสุด
-        const [rows] = await conn.query<RowDataPacket[]>(
-            `SELECT teacher_id FROM Teacher ORDER BY teacher_id DESC LIMIT 1`
-        );
+       const [rows] = await conn.query<RowDataPacket[]>(
+  `SELECT teacher_id FROM Teacher ORDER BY CAST(teacher_id AS UNSIGNED) DESC LIMIT 1`
+);
 
 
     let nextId: number;

@@ -7,9 +7,9 @@ export async function GET(req: NextRequest) {
     const conn = await pool.getConnection();
 
     try {
-        const [rows] = await conn.query(
-            `SELECT * FROM Teacher ORDER BY teacher_id ASC`
-        );
+    const [rows] = await conn.query(
+    `SELECT * FROM Teacher ORDER BY CONVERT(teacher_id, UNSIGNED INTEGER) ASC`
+);
         return NextResponse.json({ teachers: rows }, { status: 200 });
     } catch (error) {
         console.error(error);

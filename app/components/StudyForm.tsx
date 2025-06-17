@@ -56,13 +56,13 @@ const handleDeleteEvent = () => {
     filters.academicYear &&
     filters.degree;
 
-  if (!isReady) {
+ /* if (!isReady) {
     return (
       <p className="text-red-500 mt-20 text-center">
         ⚠ กรุณาเลือกข้อมูลจากด้านบนก่อน
       </p>
     );
-  }
+  }*/
 
 
   return (
