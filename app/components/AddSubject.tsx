@@ -170,6 +170,13 @@ const handleSubmit = (e: React.FormEvent) => {
 
 
   onAddEventAction(newEvent);
+  
+
+  if (Number(formData.credit) <= 0) {
+  alert("กรุณากรอกหน่วยกิตมากกว่า 0");
+  return;
+}
+
   resetForm();
 };
 
@@ -207,11 +214,12 @@ return (
             <div className="">
               <label className="block mb-1">หน่วยกิต</label>
               <input
-                type="text"
+                type="number"
                 name="credit"
                 value={formData.credit}
                 onChange={handleChange}
                 className="box"
+                min="1"
                 required
               />
             </div>
