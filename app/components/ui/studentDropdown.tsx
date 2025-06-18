@@ -77,7 +77,7 @@ useEffect(() => {
 
 
   return (
-    <div className="flex flex-wrap gap-6 items-end">
+    <div className="flex flex-wrap gap-6 items-end ">
       <Dropdown
         label="ชั้นปี"
         items={yearlevelItems}

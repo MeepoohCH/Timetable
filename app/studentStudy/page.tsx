@@ -28,11 +28,16 @@ export default function SchedulePage() {
               // เก็บไว้ใน state หรือ fetch api ต่อได้
             }}
           />
-          {filters && (
-            <StudentOutput
-              filters={filters}
-            />
-          )}
+          <div className="min-h-[400px] mt-4">
+    {filters ? (
+      <StudentOutput filters={filters} />
+    ) : (
+      <div className="text-center text-gray-400 py-10">
+        กรุณาเลือกข้อมูลด้านบนเพื่อแสดงตาราง
+      </div>
+    )}
+  </div>
+          
         </div>
       </div>
     </>

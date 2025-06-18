@@ -1,4 +1,4 @@
-import { ClassItem } from "../ClassItem";
+import { ClassItem } from "../ClassItem_getData";
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -18,6 +18,7 @@ export default function StudentScheduleTable({
   selectedEvent,
   setSelectedEvent
 }: Props) {
+  
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +38,7 @@ export default function StudentScheduleTable({
 
 
   useEffect(() => {
+    console.log("filters ใน StudentSchedule:", filters);
 
     if (!filters) return;
 
@@ -45,7 +47,7 @@ export default function StudentScheduleTable({
     setLoading(true);
     setError(null);
 
-    fetch(`/api/Timetable/studentSeach?yearLevel=${yearLevel}&semester=${semester}&academicYear=${academicYear}&degree=${degree}`)
+    fetch(`/api/Timetable/studentSearch?yearLevel=${yearLevel}&semester=${semester}&academicYear=${academicYear}&degree=${degree}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
@@ -110,8 +112,9 @@ export default function StudentScheduleTable({
                 {classes
                   .filter((c) => c.weekday === weekday)
                   .map((c, i) => {
-                    const start = parseTimeToFloat(c.study.startTime);
-                    const end = parseTimeToFloat(c.study.endTime);
+                    console.log(weekday);
+                    const start = parseTimeToFloat(c.startTime);
+                    const end = parseTimeToFloat(c.endTime);
                     const left = timeToSlot(start) * 19;
                     const width = (end - start) * 4 * 19;
                     const isSelected =

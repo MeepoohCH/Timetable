@@ -1,5 +1,3 @@
-// app/api/Timetable/studentSearch/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 import { RowDataPacket } from 'mysql2/promise';
@@ -20,17 +18,23 @@ interface TimetableItem extends RowDataPacket {
   midterm_id?: number | null;
   final_id?: number | null;
   teacher_id?: string | null;
+
+  // จาก Subject
+  subjectName: string;
+  credit: number;
+  creditType: string;
 }
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
+
     const yearLevel = searchParams.get('yearLevel');
     const semester = searchParams.get('semester');
     const academicYear = searchParams.get('academicYear');
     const degree = searchParams.get('degree');
 
-    // เช็คว่าพารามิเตอร์ครบไหม
+    // ตรวจสอบว่ามี filter ครบไหม
     if (!yearLevel || !semester || !academicYear || !degree) {
       return NextResponse.json(
         { error: 'Missing required query parameters' },
@@ -38,10 +42,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // ดึงข้อมูลจาก DB
+    // Query ดึงข้อมูล join กับ Subject
     const [rows] = await pool.query<TimetableItem[]>(
-      `SELECT * FROM Timetable
-       WHERE yearLevel = ? AND semester = ? AND academicYear = ? AND degree = ?`,
+      `SELECT t.*, s.subjectName, s.credit, s.creditType
+       FROM Timetable t
+       JOIN Subject s ON t.subject_id = s.subject_id
+       WHERE t.yearLevel = ? AND t.semester = ? AND t.academicYear = ? AND t.degree = ?`,
       [yearLevel, semester, academicYear, degree]
     );
 

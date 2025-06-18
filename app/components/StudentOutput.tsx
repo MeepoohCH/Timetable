@@ -4,7 +4,7 @@ import { useState } from "react";
 import StudentCalendar from "./StudentCalendar";
 import DetailPanel from "../components/DetailPanel";
 import StudentScheduleTable from "./ui/StudentScheduleTable";
-import { ClassItem } from "./ClassItem";
+import { ClassItem } from "./ClassItem_getData";
 
 type Props = {
   filters: {
