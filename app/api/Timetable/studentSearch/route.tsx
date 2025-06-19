@@ -15,14 +15,32 @@ interface TimetableItem extends RowDataPacket {
   startTime: string;
   endTime: string;
   location: string;
-  midterm_id?: number | null;
-  final_id?: number | null;
-  teacher_id?: string | null;
+  teacher_id: string | null;
 
-  // จาก Subject
   subjectName: string;
   credit: number;
   creditType: string;
+
+  midterm_exam_id?: number | null;
+  midterm_examType?: string | null;
+  midterm_date?: string | null;
+  midterm_startTime?: string | null;
+  midterm_endTime?: string | null;
+  midterm_location?: string | null;
+
+  final_exam_id?: number | null;
+  final_examType?: string | null;
+  final_date?: string | null;
+  final_startTime?: string | null;
+  final_endTime?: string | null;
+  final_location?: string | null;
+}
+
+interface TeacherItem extends RowDataPacket {
+  teacher_id: string;
+  role: string;
+  teacherName: string;
+  teacherSurname: string;
 }
 
 export async function GET(request: NextRequest) {
@@ -34,7 +52,6 @@ export async function GET(request: NextRequest) {
     const academicYear = searchParams.get('academicYear');
     const degree = searchParams.get('degree');
 
-    // ตรวจสอบว่ามี filter ครบไหม
     if (!yearLevel || !semester || !academicYear || !degree) {
       return NextResponse.json(
         { error: 'Missing required query parameters' },
@@ -42,21 +59,65 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Query ดึงข้อมูล join กับ Subject
+    // ✅ 1. ดึงข้อมูลตารางเรียน + วิชา + สอบ
     const [rows] = await pool.query<TimetableItem[]>(
-      `SELECT t.*, s.subjectName, s.credit, s.creditType
-       FROM Timetable t
-       JOIN Subject s ON t.subject_id = s.subject_id
-       WHERE t.yearLevel = ? AND t.semester = ? AND t.academicYear = ? AND t.degree = ?`,
+      `SELECT 
+        t.*, 
+        s.subjectName, s.credit, s.creditType,
+
+        -- Midterm Exam
+        mid.exam_id AS midterm_exam_id,
+        mid.examType AS midterm_examType,
+        mid.date AS midterm_date,
+        mid.startTime AS midterm_startTime,
+        mid.endTime AS midterm_endTime,
+        mid.location AS midterm_location,
+
+        -- Final Exam
+        final.exam_id AS final_exam_id,
+        final.examType AS final_examType,
+        final.date AS final_date,
+        final.startTime AS final_startTime,
+        final.endTime AS final_endTime,
+        final.location AS final_location
+
+      FROM Timetable t
+      JOIN Subject s ON t.subject_id = s.subject_id
+      LEFT JOIN Exam mid ON t.midterm_id = mid.exam_id
+      LEFT JOIN Exam final ON t.final_id = final.exam_id
+      WHERE t.yearLevel = ? AND t.semester = ? AND t.academicYear = ? AND t.degree = ?`,
       [yearLevel, semester, academicYear, degree]
     );
 
-    return NextResponse.json(rows, { status: 200 });
-  } catch (error) {
-    console.error('Database query error:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
+    // ✅ 2. ดึงข้อมูลอาจารย์ทั้งหมด
+    const [teachers] = await pool.query<TeacherItem[]>(
+      `SELECT teacher_id, role, teacherName, teacherSurname FROM Teacher`
     );
+
+    // ✅ 3. จัด array อาจารย์แยกแต่ละคน
+    const results = rows.map((item) => {
+      let teacherList: string[] = [];
+
+      if (item.teacher_id) {
+        const ids = item.teacher_id.split(",").map((id) => id.trim());
+
+        teacherList = ids.map((id) => {
+          const teacher = teachers.find((t) => t.teacher_id === id);
+          return teacher
+            ? `${teacher.role}${teacher.teacherName} ${teacher.teacherSurname}`
+            : id; // ถ้าไม่เจอ ใช้รหัสแทน
+        });
+      }
+
+      return {
+        ...item,
+        teacher: teacherList,
+      };
+    });
+
+    return NextResponse.json(results, { status: 200 });
+  } catch (error) {
+    console.error("Database query error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

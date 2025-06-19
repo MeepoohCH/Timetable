@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import TeacherCalendar from "./TeacherCalendar";
+import TeacherCalendar from "./TeacherMidtermCalendar";
 import DetailPanel from "../components/DetailPanel";
 import TeacherScheduleTable from "./ui/TeacherSchedule";
 import { ClassItem } from "./ClassItem";
 
-export default function TeacherOutput() { 
+
+export default function TeacherOutput(filters : any) { 
   const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
@@ -53,7 +54,7 @@ export default function TeacherOutput() {
                 events={events}
                 examType="midterm"
             />
-            <DetailPanel examType="midterm" selectedEvent={selectedEvent} />
+           <DetailPanel filters = {filters} examType="midterm" selectedEvent={selectedEvent} /> 
             </div>
 
             {/* ตารางสอบปลายภาค */}
@@ -74,7 +75,7 @@ export default function TeacherOutput() {
                 events={events}
                 examType="final"
             />
-            <DetailPanel examType="final" selectedEvent={selectedEvent} />
+            <DetailPanel filters = {filters} examType="final" selectedEvent={selectedEvent} />
             </div>
         </div>
     )

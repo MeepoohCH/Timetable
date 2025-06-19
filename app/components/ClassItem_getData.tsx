@@ -1,34 +1,38 @@
 export type ClassItem = {
   id: string;
-  subject_id: string,
-  subjectName: string,
-  sec: number | null;
-  academicYear: "",
-  teacher: string[],
-  weekday: string,
-  subjectType: string,
-  role: string,
-  teacher_id: string,
-  teacherName: string,
-  teacherSurname: string,
-  credit: number | null,
-  creditType: string,
-  location: string,
-  startTime: string,
-  endTime: string,
+  timetable_id: number;
+  subject_id: string;
+  subjectType: string;
+  yearLevel: number;
+  degree: number;
+  sec: number;
+  semester: number;
+  academicYear: number;
+  weekday: string;
+  startTime: string;
+  endTime: string;
+  location: string;
+  midterm_id?: number | null;
+  final_id?: number | null;
+  teacher_id?: string | null;
+  title?: string
 
-  exam: {
-    midterm: {
-      date: string,
-      location: string,
-      startTime: string,
-      endTime: string,
-    },
-    final: {
-      date: string,
-      location: string,
-      startTime: string,
-      endTime: string,
-    },
-  }
+  subjectName: string;
+  credit: number;
+  creditType: string;
+
+  // ✅ เพิ่มพวกนี้เข้าไปด้วย
+  midterm_exam_id?: number;
+  midterm_examType?: string;
+  midterm_date?: string;
+  midterm_startTime?: string;
+  midterm_endTime?: string;
+  midterm_location?: string;
+
+  final_exam_id?: number;
+  final_examType?: string;
+  final_date?: string;
+  final_startTime?: string;
+  final_endTime?: string;
+  final_location?: string;
 }

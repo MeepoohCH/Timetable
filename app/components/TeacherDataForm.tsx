@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import AddTeacher from "./AddTeacher";
-import Calendar from "./TeacherCalendar";
 import Delete from "./Delete";
 import DetailPanel from "./DetailPanel";
 import Edit from "./Edit";
@@ -83,7 +82,7 @@ async function fetchEvents() {
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
 
 
-  const [refreshKey, setRefreshKey] = useState(0);
+const [refreshKey, setRefreshKey] = useState(0);
   
 const triggerRefresh = () => {
   setRefreshKey(prev => prev + 1);

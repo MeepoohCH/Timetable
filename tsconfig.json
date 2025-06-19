@@ -24,6 +24,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/components/TeacherCalendar.tsx", "app/components/DetailPanel.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/components/TeacherMidtermCalendar.tsx", "app/components/DetailPanel.js"],
   "exclude": ["node_modules"]
 }

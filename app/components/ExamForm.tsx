@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Add from "../components/Add";
-import Calendar from "./TeacherCalendar";
+import Calendar from "./TeacherMidtermCalendar";
 import Delete from "../components/Delete";
 import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
@@ -86,7 +86,7 @@ export default function ExamForm() {
         />
         )}
 
-        <DetailPanel selectedEvent={selectedEvent} />
+       {/*  <DetailPanel selectedEvent={selectedEvent} />*/}
       </div>
     </div>
   );

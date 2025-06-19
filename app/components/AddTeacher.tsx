@@ -27,7 +27,13 @@ function isTimeOverlap(
   return start1 < end2 && start2 < end1;
 }
 
-
+type TeacherItem = {
+  id: string;
+  teacher: string[];
+  role: string;
+  teacherName: string;
+  teacherSurname: string;
+};
 
 
 export default function AddTeacher({
@@ -81,48 +87,21 @@ const handleSubmit = async (e: React.FormEvent) => {
   );
 
   if (!isTeacherValid) {
-      setErrorMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
+    setErrorMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
     return;
   }
+
   const isDuplicate = existingClasses.some(
-  (cls) =>
-    cls.teacherName.toLowerCase() === formData.teacherName.toLowerCase().trim() &&
-    cls.teacherSurname.toLowerCase() === formData.teacherSurname.toLowerCase().trim()
-);
+    (cls) =>
+      cls.teacherName.toLowerCase() === formData.teacherName.toLowerCase().trim() &&
+      cls.teacherSurname.toLowerCase() === formData.teacherSurname.toLowerCase().trim()
+  );
 
-if (isDuplicate) {
+  if (isDuplicate) {
     setErrorMessage("มีอาจารย์ชื่อ-นามสกุลนี้อยู่ในระบบแล้ว");
-  return;
-}
+    return;
+  }
 
-
-  const newEvent: ClassItem = {
-    id: uuidv4(),
-    subject_id: "",  
-    subjectName: "",
-    sec: null,
-    teacher_id: "",
-    teacher: [`${formData.teacherName} ${formData.teacherSurname}`],
-    role: formData.role,
-    teacherName: formData.teacherName,
-    teacherSurname: formData.teacherSurname,
-    weekday: "",
-    subjectType: "",
-    academicYear: "",
-    credit: null,
-    creditType: "",
-    study: {
-      location: "",
-      startTime: "",
-      endTime: "",
-    },
-    exam: {
-      midterm: { date: "", location: "", startTime: "", endTime: "" },
-      final: { date: "", location: "", startTime: "", endTime: "" },
-    },
-  };
-
-  // 🔧 เตรียมข้อมูลสำหรับส่งไป backend
   const dataToSend = {
     role: formData.role,
     teacherName: formData.teacherName,
@@ -145,15 +124,25 @@ if (isDuplicate) {
     const result = await response.json();
     console.log("✅ Success:", result);
 
+    const newEvent: TeacherItem = {
+      id: result.teacher_id || uuidv4(), // ถ้า backend return id มาให้ใช้, ไม่งั้นใช้ uuid
+      teacher: [`${formData.teacherName} ${formData.teacherSurname}`],
+      role: formData.role,
+      teacherName: formData.teacherName,
+      teacherSurname: formData.teacherSurname,
+    };
+
     onAddEventAction(newEvent);
     resetForm();
     triggerRefresh();
+    setErrorMessage(""); // clear error
 
   } catch (error) {
     console.error("❌ Error submitting form:", error);
+    setErrorMessage("เกิดข้อผิดพลาดในการส่งข้อมูล");
   }
-
 };
+
 
 return (
   <>

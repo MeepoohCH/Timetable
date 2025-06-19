@@ -1,5 +1,4 @@
 import { ClassItem } from "../ClassItem_getData";
-import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 type Props = {
@@ -53,17 +52,17 @@ export default function StudentScheduleTable({
         return res.json();
       })
       .then(data => {
-        console.log("📦 ข้อมูลที่ได้จาก API:", data); // 👈 log ตรงนี้
+        console.log("📦 ข้อมูลที่ได้จาก API หน้า Schedule:", data); // 👈 log ตรงนี้
         setClasses(data);
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
   }, [filters]);
 
-  if (!filters) return <p>กรุณาเลือกข้อมูลจาก dropdown</p>;
+  /*if (!filters) return <p>กรุณาเลือกข้อมูลจาก dropdown</p>;
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
-  if (classes.length === 0) return <p>ไม่พบข้อมูลตารางเรียน</p>;
+  if (classes.length === 0) return <p>ไม่พบข้อมูลตารางเรียน</p>;*/
 
 
 
