@@ -82,7 +82,7 @@ export default function DeleteTeacher({
           <label className="text-sm py-1">ข้อมูลอาจารย์</label>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
             <div>
-              <label className="block mb-1">ตำแหน่ง</label>
+              <label className="block mb-1">คำนำหน้า</label>
               <input type="text" value={formData.role} className="box" readOnly />
             </div>
 

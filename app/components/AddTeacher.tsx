@@ -91,17 +91,6 @@ const handleSubmit = async (e: React.FormEvent) => {
     return;
   }
 
-  const isDuplicate = existingClasses.some(
-    (cls) =>
-      cls.teacherName.toLowerCase() === formData.teacherName.toLowerCase().trim() &&
-      cls.teacherSurname.toLowerCase() === formData.teacherSurname.toLowerCase().trim()
-  );
-
-  if (isDuplicate) {
-    setErrorMessage("มีอาจารย์ชื่อ-นามสกุลนี้อยู่ในระบบแล้ว");
-    return;
-  }
-
   const dataToSend = {
     role: formData.role,
     teacherName: formData.teacherName,
@@ -153,7 +142,7 @@ return (
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
 
              <div className="">
-              <label className="block mb-1">ตำแหน่ง</label>
+              <label className="block mb-1">คำนำหน้า</label>
               <input
                 type="text"
                 name="role"

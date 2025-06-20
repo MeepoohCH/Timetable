@@ -1,4 +1,4 @@
-export type ClassItem = {
+export type ClassItemGet = {
   id: string;
   timetable_id: number;
   subject_id: string;

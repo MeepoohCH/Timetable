@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
+import { ClassItemGet } from "./ClassItem_getData";
 
 type DeleteProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
@@ -12,6 +13,7 @@ type DeleteProps = {
   onDeleteEventAction: (event: any) => void;
   selectedEvent: any | null;
   events: any[];
+   data?: ClassItemGet | null;
 };
 
 // แปลงวันที่แบบ local
@@ -33,6 +35,7 @@ export default function Delete({
   currentComponent,
   onDeleteEventAction,
   selectedEvent,
+  data,
 }: DeleteProps) {
   const pathname = usePathname();
 

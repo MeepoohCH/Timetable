@@ -35,8 +35,7 @@ const fetchTeachers = async () => {
 // เปลี่ยนเป็น trigger ด้วย refreshKey
 useEffect(() => {
   fetchTeachers();
-  }, []);
-//}, [refreshKey]);
+  }, [refreshKey]);
 
 
 

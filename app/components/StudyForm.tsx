@@ -8,12 +8,14 @@ import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
 import ScheduleTable from "./ui/StudentScheduleTable";
 import { ClassItem } from "./ClassItem";
+import { ClassItemGet } from "./ClassItem_getData";
 import { useStudentFilter } from "@/context/StudentFilterContext/page";
 
 export default function StudyForm() { 
   const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
+  const [selectedEventGet, setSelectedEventGet] = useState<ClassItemGet | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<ClassItem[]>([]);
 
@@ -101,7 +103,7 @@ const handleDeleteEvent = () => {
          currentComponent="edit"
          onEditEventAction={handleEditEvent}
          events={events}
-         selectedEvent={selectedEvent}
+         selectedEvent={selectedEventGet}
          existingClasses={existingClasses}
        />
 

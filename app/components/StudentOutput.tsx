@@ -4,8 +4,10 @@ import { useState } from "react";
 import StudentCalendar from "./StudentCalendar";
 import DetailPanel from "../components/DetailPanel";
 import StudentScheduleTable from "./ui/StudentScheduleTable";
-import { ClassItem } from "./ClassItem_getData";
+import { ClassItemGet } from "./ClassItem_getData";
 import { filter } from "framer-motion/dist/types/client";
+import { useRouter } from 'next/navigation';
+
 
 type Props = {
   filters: {
@@ -19,12 +21,23 @@ type Props = {
 
 
 export default function StudentOutput({ filters }: Props) {
-  const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
+  const [existingClasses, setExistingClasses] = useState<ClassItemGet[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
-  const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
+  const [selectedEvent, setSelectedEvent] = useState<ClassItemGet | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
   const [midtermCurrentMonth, setMidtermCurrentMonth] = useState(new Date());
   const [finalCurrentMonth, setFinalCurrentMonth] = useState(new Date());
-  const [events, setEvents] = useState<ClassItem[]>([]);
+  const [events, setEvents] = useState<ClassItemGet[]>([]);
+  const router = useRouter();
+  const handleClick = (event: ClassItemGet) => {
+  setSelectedEvent(event);                 // 1. เก็บ event ไว้
+  setCurrentComponent("edit");            // 2. เปลี่ยนโหมด
+  const formSection = document.getElementById("form-section");
+  formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  // 🔽 3. ใช้ timetable_id ไปทำอย่างอื่น (เช่น router.push หรือ fetch รายละเอียด)
+  // ตัวอย่างใช้ router.push
+  router.push(`/addTable/${event.timetable_id}`);
+};
 
 
   return (
@@ -40,12 +53,7 @@ export default function StudentOutput({ filters }: Props) {
         <StudentScheduleTable
           filters={filters}
           selectedEvent={selectedEvent}
-          setSelectedEvent={(event) => {
-            setSelectedEvent(event);
-            setCurrentComponent("edit");
-            const formSection = document.getElementById("form-section");
-            formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }}
+           setSelectedEvent={handleClick}
         />
       </div>
 

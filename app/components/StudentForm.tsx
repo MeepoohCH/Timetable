@@ -1,21 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Add from "../components/Add";
-import Calendar from "./TeacherMidtermCalendar";
 import Delete from "../components/Delete";
-import DetailPanel from "../components/DetailPanel";
 import Edit from "../components/Edit";
-import ScheduleTable from "./ui/StudentScheduleTable";
 import { ClassItem } from "./ClassItem";
-import ExamForm from "./ExamForm";
+import { ClassItemGet } from "./ClassItem_getData";
+
+type Props = {
+  timetable_id?: number | undefined; // หรือชนิดอื่น ๆ ที่เหมาะสม เช่น string | undefined
+  data?: ClassItemGet | null; // ✅ เพิ่ม prop นี้
+};
 
 
-export default function StudentForm() { 
+export default function StudentForm({ timetable_id, data }: Props) {
+  console.log("🔽 data ที่ส่งเข้ามาในStudentForm:", data);
   const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [selectedEventGet, setSelectedEventGet] = useState<ClassItemGet | null>(null); 
   const [events, setEvents] = useState<ClassItem[]>([]);
 
    const handleAddEvent = (newClass: ClassItem) => {
@@ -50,7 +53,11 @@ const handleDeleteEvent = () => {
   const isActive = (tab: "edit" | "delete" | "add") => currentComponent === tab;
   const switchComponent = (component: "add" | "edit" | "delete") => setCurrentComponent(component);
 
-
+  useEffect(() => {
+    if (timetable_id !== undefined) {
+      setCurrentComponent("edit");
+    }
+  }, [timetable_id]);
 
   return (
     <div className="">
@@ -88,8 +95,9 @@ const handleDeleteEvent = () => {
          currentComponent="edit"
          onEditEventAction={handleEditEvent}
          events={events}
-         selectedEvent={selectedEvent}
+         selectedEvent={selectedEventGet}
          existingClasses={existingClasses}
+        data={data}
        />
 
         )}
@@ -100,6 +108,7 @@ const handleDeleteEvent = () => {
           onDeleteEventAction={handleDeleteEvent}
           events={events}
           selectedEvent={selectedEvent} // เพิ่มตรงนี้✅ 
+          data={data}
         />
         )}
       </div>

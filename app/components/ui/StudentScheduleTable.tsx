@@ -1,5 +1,6 @@
-import { ClassItem } from "../ClassItem_getData";
+import { ClassItemGet } from "../ClassItem_getData";
 import { useEffect, useState } from "react"
+
 
 type Props = {
   filters: {
@@ -8,8 +9,8 @@ type Props = {
     academicYear: string;
     degree: string;
   } | null;
-  selectedEvent: ClassItem | null;
-  setSelectedEvent: (event: ClassItem) => void;
+  selectedEvent: ClassItemGet | null;
+  setSelectedEvent: (event: ClassItemGet) => void;
 };
 
 export default function StudentScheduleTable({
@@ -18,7 +19,7 @@ export default function StudentScheduleTable({
   setSelectedEvent
 }: Props) {
   
-  const [classes, setClasses] = useState<ClassItem[]>([]);
+  const [classes, setClasses] = useState<ClassItemGet[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

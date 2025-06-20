@@ -1,14 +1,18 @@
 export type ClassItem = {
   id: string;
+  timetable_id: number | null;
+  yearLevel: number | null;
+  degree: number | null;
+  semester: number | null;
   subject_id: string,
   subjectName: string,
   sec: number | null;
-  academicYear: "",
+  academicYear: string,
   teacher: string[],
   weekday: string,
   subjectType: string,
   role: string,
-  teacher_id: string,
+  teacher_id: string | null,
   teacherName: string,
   teacherSurname: string,
   credit: number | null,

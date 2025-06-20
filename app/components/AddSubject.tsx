@@ -79,75 +79,69 @@ export default function AddSubject({
       creditType: "",
     })}
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
+   const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-      const requiredFields = [
-        formData.subject_id,
-        formData.subjectName,
-        formData.credit,
-        formData.creditType,
-      ];
+  // เช็คฟิลด์ที่จำเป็นครบไหม
+  const requiredFields = [
+    formData.subject_id,
+    formData.subjectName,
+    formData.credit,
+    formData.creditType,
+  ];
 
-      const isSubjectValid = requiredFields.every(
-        (field) => typeof field === "string" && field.trim() !== ""
-      );
+  const isSubjectValid = requiredFields.every(
+    (field) => typeof field === "string" ? field.trim() !== "" : field !== null
+  );
 
-      if (!isSubjectValid) {
-        alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-        return;
-      }
+  if (!isSubjectValid) {
+    alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+    return;
+  }
 
-      const newSubject = {
-        subject_id: formData.subject_id.trim(),
-        subjectName: formData.subjectName.trim(),
-        credit: formData.credit ?? null,
-        creditType: formData.creditType.trim(),
-      };
+  if (formData.credit !== null && formData.credit <= 0) {
+    alert("กรุณากรอกหน่วยกิตมากกว่า 0");
+    return;
+  }
 
-      try {
-        const duplicateSubject = existingClasses.find(
-          (cls) => cls.subject_id === formData.subject_id.trim()
-        );
+  const newSubject = {
+    subject_id: formData.subject_id.trim(),
+    subjectName: formData.subjectName.trim(),
+    credit: formData.credit,
+    creditType: formData.creditType.trim(),
+  };
 
-        if (duplicateSubject) {
-          alert("มีรหัสวิชานี้อยู่ในระบบแล้ว");
-          return;
-        }
-        const response = await fetch("/api/Subject/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newSubject),
-        });
+  try {
+    const response = await fetch("/api/Subject/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newSubject),
+    });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          alert(`เกิดข้อผิดพลาด: ${errorData.message || errorData.error || response.statusText}`);
-          return;
-        }
+    const result = await response.json();
 
-        const result = await response.json();
-        console.log(result.message || "เพิ่มข้อมูลวิชาเรียบร้อยแล้ว");
-          triggerRefresh();
+    if (response.status === 200 && result.message === "Subject already exists") {
+      alert("มีรหัสวิชานี้อยู่ในระบบแล้ว");
+      return;
+    }
 
-        // เรียก callback เพื่ออัปเดตข้อมูลหน้าจอ (ถ้ามี)
-        onAddEventAction(newSubject);
+    if (!response.ok) {
+      alert(`เกิดข้อผิดพลาด: ${result.message || result.error || response.statusText}`);
+      return;
+    }
 
-          if (Number(formData.credit) <= 0) {
-  alert("กรุณากรอกหน่วยกิตมากกว่า 0");
-  return;
-}
+    console.log(result.message || "เพิ่มข้อมูลวิชาเรียบร้อยแล้ว");
+    triggerRefresh();
+    onAddEventAction(newSubject);
+    resetForm();
 
-        // รีเซ็ตฟอร์ม
-        resetForm();
-
-      } catch (error) {
-        console.error("❌ Error adding subject:", error);
-        alert("เกิดข้อผิดพลาดในการเพิ่มข้อมูลวิชา");
-      }
-    };
+  } catch (error) {
+    console.error("❌ Error adding subject:", error);
+    alert("เกิดข้อผิดพลาดในการเพิ่มข้อมูลวิชา");
+  }
+};
 
 
     return (

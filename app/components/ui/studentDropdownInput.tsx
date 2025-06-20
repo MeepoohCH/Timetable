@@ -3,8 +3,17 @@
 import { useState, useEffect } from "react"
 import Dropdown from "./dropdown"
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
+import { ClassItemGet } from "../ClassItem_getData"
 
-export default function StudentDropdown() {
+// StudentDropdownInput.tsx
+type Props = {
+  timetable_id?: number | undefined; // หรือชนิดอื่น ๆ ที่เหมาะสม เช่น string | undefined
+  data?: ClassItemGet | null; // ✅ เพิ่ม prop นี้
+};
+
+export default function StudentDropdown({ timetable_id,data }: Props) {
+    console.log("🔽 data ที่ส่งเข้ามาใน StudentDropdown:", data);
+
   const [yearlevel, setYearlevel] = useState<number | string | null>(null)
   const [semester, setSemester] = useState<number | string | null>(null)
   const [year, setYear] = useState<number | string | null>(null)
@@ -57,6 +66,16 @@ export default function StudentDropdown() {
       setHasError(true)
     }
   }, [yearlevel, semester, year, degree, setFilters])
+
+  useEffect(() => {
+  if (data) {
+    setYearlevel(data.yearLevel);
+    setSemester(data.semester);
+    setYear(data.academicYear);
+    setDegree(data.degree);
+    setHasError(false); // ล้าง error ถ้าเคยแจ้งเตือนก่อนหน้า
+  }
+}, [data]);
 
   return (
     <div className="flex flex-col gap-2">

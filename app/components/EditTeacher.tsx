@@ -36,7 +36,7 @@ export default function EditTeacher({
       console.log("🧪 selectedEvent:", selectedEvent);
   if (selectedEvent) {
     setFormData({
-      teacher_id: selectedEvent.teacher_id,
+      teacher_id: selectedEvent.teacher_id || "",
       teacherName: selectedEvent.teacherName || "",
       teacherSurname: selectedEvent.teacherSurname || "",
       role: selectedEvent.role || "",
@@ -62,24 +62,7 @@ export default function EditTeacher({
   e.preventDefault();
   if (!selectedEvent) return;
 
-  const fullName = `${formData.teacherName} ${formData.teacherSurname}`.trim();
 
-  const duplicateTeacher = existingClasses.find(
-    (cls) =>
-      cls.id !== formData.teacher_id &&
-      cls.teacherName.trim().toLowerCase() === formData.teacherName.trim().toLowerCase() &&
-      cls.teacherSurname.trim().toLowerCase() === formData.teacherSurname.trim().toLowerCase()
-  );
-
-  if (duplicateTeacher) {
-    const isExactDuplicate =
-      duplicateTeacher.role.trim().toLowerCase() === formData.role.trim().toLowerCase();
-
-    if (isExactDuplicate) {
-      alert("มีอาจารย์ชื่อ-นามสกุล-ตำแหน่งนี้อยู่ในระบบแล้ว");
-      return;
-    }
-  }
 
   const updatedEvent: ClassItem = {
     ...selectedEvent,
@@ -131,7 +114,7 @@ export default function EditTeacher({
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-2 text-sm">
 
             <div>
-              <label className="block mb-1">ตำแหน่ง</label>
+              <label className="block mb-1">คำนำหน้า</label>
               <input
                 type="text"
                 name="role"

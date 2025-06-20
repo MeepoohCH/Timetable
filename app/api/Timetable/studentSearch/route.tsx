@@ -43,8 +43,12 @@ interface TeacherItem extends RowDataPacket {
   teacherSurname: string;
 }
 
+
+
 export async function GET(request: NextRequest) {
+  let conn;
   try {
+    conn = await pool.getConnection();
     const { searchParams } = new URL(request.url);
 
     const yearLevel = searchParams.get('yearLevel');
@@ -59,8 +63,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // ✅ 1. ดึงข้อมูลตารางเรียน + วิชา + สอบ
-    const [rows] = await pool.query<TimetableItem[]>(
+    // ใช้ conn.query แทน pool.query
+    const [rows] = await conn.query<TimetableItem[]>(
       `SELECT 
         t.*, 
         s.subjectName, s.credit, s.creditType,
@@ -89,12 +93,10 @@ export async function GET(request: NextRequest) {
       [yearLevel, semester, academicYear, degree]
     );
 
-    // ✅ 2. ดึงข้อมูลอาจารย์ทั้งหมด
-    const [teachers] = await pool.query<TeacherItem[]>(
+    const [teachers] = await conn.query<TeacherItem[]>(
       `SELECT teacher_id, role, teacherName, teacherSurname FROM Teacher`
     );
 
-    // ✅ 3. จัด array อาจารย์แยกแต่ละคน
     const results = rows.map((item) => {
       let teacherList: string[] = [];
 
@@ -105,7 +107,7 @@ export async function GET(request: NextRequest) {
           const teacher = teachers.find((t) => t.teacher_id === id);
           return teacher
             ? `${teacher.role}${teacher.teacherName} ${teacher.teacherSurname}`
-            : id; // ถ้าไม่เจอ ใช้รหัสแทน
+            : id;
         });
       }
 
@@ -119,5 +121,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Database query error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  } finally {
+    if (conn) conn.release();
   }
 }

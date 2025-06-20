@@ -1,6 +1,5 @@
 "use client"
 
-import { div } from "framer-motion/client";
 import { useState, useRef, useEffect } from "react"
 import Dropdown from "./dropdown";
 import TeacherInput from "./teacherInput";
@@ -10,11 +9,10 @@ import { ClassItem } from "../ClassItem";
 type TeacherDropdownProps = {
   selectedEvent: ClassItem | null;
   setSelectedEvent: (event: ClassItem) => void;
-  refreshKey: number;
 };
 
 
-export default function TeacherDropdown({ selectedEvent, setSelectedEvent, refreshKey }: TeacherDropdownProps) {
+export default function TeacherDropdown({ selectedEvent, setSelectedEvent }: TeacherDropdownProps) {
 
   const [semester, setsemester] = useState<number | string | null>(null)
   const [year, setyear] = useState<number | string | null>(null)
@@ -22,23 +20,6 @@ export default function TeacherDropdown({ selectedEvent, setSelectedEvent, refre
 const [teacherList, setTeacherList] = useState<{ id: string | number; label: string }[]>([]);
 
 
-  const fetchTeachers = async () => {
-    try {
-      const res = await fetch("/api/Teacher/getData");
-      if (!res.ok) throw new Error("Failed to fetch");
-      const data = await res.json();
-
-      // สมมุติว่า data เป็น { teachers: [...] }
-      const formattedTeachers = data.teachers.map(
-        (teacher: any) =>
-          `${teacher.role}${teacher.teacherName} ${teacher.teacherSurname}`
-      );
-
-      setTeacherList(formattedTeachers);
-    } catch (error) {
-      console.error("Error fetching teachers:", error);
-    }
-  };
 
   const semesterlItems = [
     { id: "semester1", label: "1" },
