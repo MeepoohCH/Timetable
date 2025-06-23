@@ -103,6 +103,10 @@ export default function Edit({
   });
 
   useEffect(() => {
+  console.log("📝 formDataEdit updated:", formData);
+}, [formData]); 
+
+  useEffect(() => {
     if (selectedEvent) {
       // แปลงวันที่ midterm_date หรือ final_date เป็น Date object สำหรับ setDay
       const dateStr = selectedEvent.midterm_date || selectedEvent.final_date;
@@ -212,80 +216,59 @@ const handleChange = (
 ) => {
   const { name, value } = e.target;
 
-  if (["study_location", "startTime", "endTime"].includes(name)) {
-    setFormData((prev) => {
-      const updated = {
-        ...prev,
-        study: {
-          ...prev.study,
-          [name === "study_location" ? "location" : name]: value,
-        },
-      };
-      console.log("📚 updated formData (study):", updated);
-      return updated;
-    });
+  if (name === "study_location") {
+    // อัปเดต nested study.location
+    setFormData((prev) => ({
+      ...prev,
+      study: {
+        ...prev.study,
+        location: value,
+      },
+    }));
   } else if (
-    ["midterm_location", "midterm_date", "midterm_startTime", "midterm_endTime"].includes(name)
+    name === "subject_id" ||
+    name === "subjectType" ||
+    name === "sec" ||
+    name === "weekday"
   ) {
-    setFormData((prev) => {
-      const updated = {
-        ...prev,
-        exam: {
-          ...prev.exam,
-          midterm: {
-            ...prev.exam.midterm,
-            [name.replace("midterm_", "")]: value,
-          },
-        },
-      };
-      console.log("📝 updated formData (midterm):", updated);
-      return updated;
-    });
-  } else if (
-    ["final_location", "final_date", "final_startTime", "final_endTime"].includes(name)
-  ) {
-    setFormData((prev) => {
-      const updated = {
-        ...prev,
-        exam: {
-          ...prev.exam,
-          final: {
-            ...prev.exam.final,
-            [name.replace("final_", "")]: value,
-          },
-        },
-      };
-      console.log("📘 updated formData (final):", updated);
-      return updated;
-    });
+    // อัปเดตฟิลด์หลักโดยตรง
+    // สำหรับ sec ต้องแปลงเป็น number
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "sec" ? Number(value) : value,
+    }));
   } else {
-    setFormData((prev) => {
-      const updated = {
-        ...prev,
-        [name]: value,
-      };
-      console.log("📌 updated formData (other):", updated);
-      return updated;
-    });
+    console.warn("handleChange: ไม่รองรับฟิลด์นี้:", name);
   }
+
+  console.log("handleChange called:", name, value);
 };
 
 
 
-  const handleAddTeacher = () => {
-    if (newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())) {
-      const updated = [...teachers, newTeacher.trim()];
-      setTeachers(updated);
-      setFormData((prev) => ({ ...prev, teacher: updated }));
-      setNewTeacher("");
-    }
-  };
+
+  
+
+const handleAddTeacher = () => {
+  const trimmedTeacher = newTeacher.trim();
+  if (trimmedTeacher !== "" && !formData.teacher.includes(trimmedTeacher)) {
+    const updatedTeachers = [...formData.teacher, trimmedTeacher];
+    setFormData(prev => ({
+      ...prev,
+      teacher: updatedTeachers,
+    }));
+    setTeachers(updatedTeachers); // ถ้าใช้ state แยกเก็บ teachers
+    setNewTeacher("");
+  }
+};
+
 
   const handleRemoveTeacher = (index: number) => {
     const updated = teachers.filter((_, i) => i !== index);
     setTeachers(updated);
     setFormData((prev) => ({ ...prev, teacher: updated }));
   };
+
 
   const handleStartTimeChange = (date: Date | null) => {
     setStartTime(date);
@@ -303,22 +286,44 @@ const handleChange = (
     }));
   };
 
-  const handleFinalExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+const handleFinalExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+
+  if (name === "final_location") {
     setFormData((prev) => ({
       ...prev,
-      [name]: value,  // ถ้า name เช่น final_location, final_date, final_startTime, etc.
+      exam: {
+        ...prev.exam,
+        final: {
+          ...prev.exam.final,
+          location: value,
+        },
+      },
     }));
-  };
+  } else {
+    console.warn("handleFinalExamChange: ไม่รองรับฟิลด์นี้:", name);
+  }
+};
 
 
-  const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+
+  if (name === "midterm_location") {
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      exam: {
+        ...prev.exam,
+        midterm: {
+          ...prev.exam.midterm,
+          location: value,
+        },
+      },
     }));
-  };
+  } else {
+    console.warn("handleMidtermExamChange: ไม่รองรับฟิลด์นี้:", name);
+  }
+};
 
   const handleStudyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
