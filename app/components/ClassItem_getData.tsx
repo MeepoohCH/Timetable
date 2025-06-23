@@ -16,7 +16,7 @@ export type ClassItemGet = {
   final_id?: number | null;
   teacher_id?: string | null;
   title?: string
-
+teacher?: string[];
   subjectName: string;
   credit: number;
   creditType: string;
@@ -35,4 +35,12 @@ export type ClassItemGet = {
   final_startTime?: string;
   final_endTime?: string;
   final_location?: string;
+
+  
+    parsedTeachers?: {
+    role: string;
+    teacherName: string;
+    teacherSurname: string;
+  }[];
+
 }

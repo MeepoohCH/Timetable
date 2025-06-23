@@ -37,4 +37,8 @@ export type ClassItem = {
       endTime: string,
     },
   }
+  parsedTeachers?: {
+  teacherName: string;
+  teacherSurname: string;
+}[];
 }

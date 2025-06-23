@@ -148,48 +148,7 @@ export default function Edit({
         setEndTime(null);
       }
 
-      // ตั้งค่า formData จาก selectedEvent
-
-      setFormData({
-        id: selectedEvent.id || "",
-        timetable_id: selectedEvent.timetable_id,
-        subject_id: selectedEvent.subject_id,
-        subjectType: selectedEvent.subjectType,
-        yearLevel: selectedEvent.yearLevel,
-        degree: selectedEvent.degree,
-        sec: selectedEvent.sec,
-        semester: selectedEvent.semester,
-        academicYear: String(selectedEvent.academicYear),
-        weekday: selectedEvent.weekday,
-        study: {
-          startTime: selectedEvent.startTime || "",
-          endTime: selectedEvent.endTime || "",
-          location: selectedEvent.location || "",
-        },
-        exam: {
-          midterm: {
-            date: selectedEvent.midterm_date || "",
-            startTime: selectedEvent.midterm_startTime || "",
-            endTime: selectedEvent.midterm_endTime || "",
-            location: selectedEvent.midterm_location || "",
-          },
-          final: {
-            date: selectedEvent.final_date || "",
-            startTime: selectedEvent.final_startTime || "",
-            endTime: selectedEvent.final_endTime || "",
-            location: selectedEvent.final_location || "",
-          },
-        },
-        teacher: selectedEvent.teacher_id ? [selectedEvent.teacher_id] : [],
-        role: "", // ถ้ามีค่า default ให้ใส่
-        teacherName: "", // ถ้ามีข้อมูลจาก selectedEvent ก็ใส่ได้
-        teacherSurname: "",
-        subjectName: selectedEvent.subjectName,
-        teacher_id: selectedEvent.teacher_id || "",
-        credit: selectedEvent.credit,
-        creditType: selectedEvent.creditType,
-      });
-
+     
 
       // ตั้งค่าอาจารย์
       setTeachers(selectedEvent.teacher_id ? [selectedEvent.teacher_id] : []);
@@ -248,12 +207,70 @@ export default function Edit({
   }, [selectedEvent]);
 
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const { name, value } = e.target;
+
+  if (["study_location", "startTime", "endTime"].includes(name)) {
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        study: {
+          ...prev.study,
+          [name === "study_location" ? "location" : name]: value,
+        },
+      };
+      console.log("📚 updated formData (study):", updated);
+      return updated;
+    });
+  } else if (
+    ["midterm_location", "midterm_date", "midterm_startTime", "midterm_endTime"].includes(name)
+  ) {
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        exam: {
+          ...prev.exam,
+          midterm: {
+            ...prev.exam.midterm,
+            [name.replace("midterm_", "")]: value,
+          },
+        },
+      };
+      console.log("📝 updated formData (midterm):", updated);
+      return updated;
+    });
+  } else if (
+    ["final_location", "final_date", "final_startTime", "final_endTime"].includes(name)
+  ) {
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        exam: {
+          ...prev.exam,
+          final: {
+            ...prev.exam.final,
+            [name.replace("final_", "")]: value,
+          },
+        },
+      };
+      console.log("📘 updated formData (final):", updated);
+      return updated;
+    });
+  } else {
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        [name]: value,
+      };
+      console.log("📌 updated formData (other):", updated);
+      return updated;
+    });
+  }
+};
+
+
 
   const handleAddTeacher = () => {
     if (newTeacher.trim() !== "" && !teachers.includes(newTeacher.trim())) {
@@ -471,52 +488,107 @@ export default function Edit({
     resetForm()
   };
 
-  useEffect(() => {
-    if (data && !selectedEvent) {
-      setFormData({
-        id: data.id || "",
-        timetable_id: data.timetable_id,
-        subject_id: data.subject_id,
-        subjectName: data.subjectName,
-        sec: data.sec,
-        teacher: data.teacher_id ? [data.teacher_id] : [],
-        weekday: data.weekday,
-        subjectType: data.subjectType,
-        academicYear: String(data.academicYear), // แปลง number เป็น string
-        yearLevel: data.yearLevel,
-        degree: data.degree,
-        semester: data.semester,
-        teacher_id: data.teacher_id || "",
+  const handleAddTeachers = (names: string[]) => {
+  const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
+  if (newOnes.length > 0) {
+    const updated = [...teachers, ...newOnes];
+    setTeachers(updated);
+    setFormData(prev => ({ ...prev, teacher: updated }));
+  }
+};
 
-        role: "",
-        teacherName: "",
-        teacherSurname: "",
-        credit: data.credit,
-        creditType: data.creditType,
+ useEffect(() => {
+  if (data && !selectedEvent) {
+    // แปลงอาจารย์ทั้งหมด
+    const parsedTeachers = (data.teacher || []).map((full) => {
+      const parts = full.trim().split(" ");
+      let teacherName = "";
+      let teacherSurname = "";
 
-        study: {
-          location: data.location || "",
-          startTime: data.startTime || "",
-          endTime: data.endTime || "",
+      if (parts.length >= 2) {
+        teacherName = parts[parts.length - 2];
+        teacherSurname = parts[parts.length - 1];
+      } else if (parts.length === 2) {
+        teacherName = parts[0];
+        teacherSurname = parts[1];
+      } else if (parts.length === 1) {
+        teacherName = parts[0];
+      }
+
+      return { teacherName, teacherSurname };
+    });
+
+    const first = parsedTeachers[0] || { teacherName: "", teacherSurname: "" };
+
+    setFormData({
+      id: data.id || "",
+      timetable_id: data.timetable_id,
+      subject_id: data.subject_id,
+      subjectName: data.subjectName,
+      sec: data.sec,
+      teacher: data.teacher_id ? [data.teacher_id] : [],
+      weekday: data.weekday,
+      subjectType: data.subjectType,
+      academicYear: String(data.academicYear),
+      yearLevel: data.yearLevel,
+      degree: data.degree,
+      semester: data.semester,
+      teacher_id: data.teacher_id || "",
+
+      // เพิ่ม 3 ฟิลด์หลักจากคนแรก
+      role: "",
+      teacherName: first.teacherName,
+      teacherSurname: first.teacherSurname,
+
+      parsedTeachers, // ใส่อาจารย์ทั้งหมดแบบแยกชื่อ
+
+      credit: data.credit,
+      creditType: data.creditType,
+
+      study: {
+        location: data.location || "",
+        startTime: data.startTime || "",
+        endTime: data.endTime || "",
+      },
+
+      exam: {
+        midterm: {
+          date: data.midterm_date ? data.midterm_date.split('T')[0] : "",
+          location: data.midterm_location || "",
+          startTime: data.midterm_startTime || "",
+          endTime: data.midterm_endTime || "",
         },
-
-        exam: {
-          midterm: {
-            date: data.midterm_date || "",
-            location: data.midterm_location || "",
-            startTime: data.midterm_startTime || "",
-            endTime: data.midterm_endTime || "",
-          },
-          final: {
-            date: data.final_date || "",
-            location: data.final_location || "",
-            startTime: data.final_startTime || "",
-            endTime: data.final_endTime || "",
-          },
+        final: {
+          date: data.final_date ? data.final_date.split('T')[0] : "",
+          location: data.final_location || "",
+          startTime: data.final_startTime || "",
+          endTime: data.final_endTime || "",
         },
-      });
-    }
-  }, [data, selectedEvent]);
+      },
+    });
+
+      // ตั้งค่า input แสดงชื่อรวม (ตัดยศ)
+    const teacherString = (data.teacher || [])
+      .map((full) => {
+        const knownRoles = ["รศ.ดร.", "รศ.", "ผศ.", "ดร.", "ศ.", "ผศ.ดร.","นาย","นางสาว"];
+        let nameWithoutRole = full.trim();
+        for (const role of knownRoles) {
+          if (nameWithoutRole.startsWith(role)) {
+            nameWithoutRole = nameWithoutRole.slice(role.length).trim();
+            break;
+          }
+        }
+        return nameWithoutRole;
+      })
+      .join(", ");
+
+    setNewTeacher(teacherString);
+
+    // แยกชื่อเป็น array แล้วเพิ่มเข้าระบบ teachers state ด้วยเลย
+    const namesArray = teacherString.split(",").map((n) => n.trim()).filter(Boolean);
+    handleAddTeachers(namesArray);
+  }
+}, [data, selectedEvent]);
 
 
 
@@ -532,7 +604,7 @@ export default function Edit({
                 <input
                   type="text"
                   name="subject_id"
-                  value={formData.subject_id}
+                  value={formData.subject_id ?? ""}
                   onChange={handleChange}
                   className="box"
                   required
@@ -560,7 +632,7 @@ export default function Edit({
               <div>
                 <label className="block mb-1">กลุ่ม</label>
                 <input
-                  type="text"
+                  type="number"
                   name="sec"
                   value={formData.sec ?? ""}
                   onChange={handleChange}
@@ -643,8 +715,8 @@ export default function Edit({
                 <label className="block mb-1">สถานที่</label>
                 <input
                   type="text"
-                  name="location"
-                  value={formData.study.location}
+                  name="study_location"
+                  value={formData.study.location ?? ""}
                   onChange={handleChange}
                   className="box"
                   required
@@ -845,8 +917,8 @@ export default function Edit({
                 <label className="block mb-1">สถานที่</label>
                 <input
                   type="text"
-                  name="location"
-                  value={formData.exam.midterm.location}
+                  name="midterm_location"
+                  value={formData.exam.midterm.location ?? ""}
                   onChange={handleMidtermExamChange}
                   className="box"
                 />
@@ -980,8 +1052,8 @@ export default function Edit({
                 <label className="block mb-1">สถานที่</label>
                 <input
                   type="text"
-                  name="location"
-                  value={formData.exam.final.location}
+                  name="final_location"
+                  value={formData.exam.final.location ?? ""}
                   onChange={handleFinalExamChange}
                   className="box"
                 />
