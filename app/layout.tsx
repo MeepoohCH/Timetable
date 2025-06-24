@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import {  Kanit } from "next/font/google";
+import { Kanit } from "next/font/google";
 import "./globals.css";
 import AppLayoutClient from "./components/ui/AppLayoutClient";
 import { StudentFilterProvider } from '@/context/StudentFilterContext/page';
+import { TeacherFilterProvider } from '@/context/TeacherFilterContext/page';
 
 
 
@@ -25,13 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    
+
     <html lang="en">
       <body
         className={`${kanit.variable} antialiased bg-[#EFEFEF] flex min-h-screen`}
       >
         <StudentFilterProvider>
-        <AppLayoutClient>{children}</AppLayoutClient>
+          <TeacherFilterProvider>
+            <AppLayoutClient>{children}</AppLayoutClient>
+          </TeacherFilterProvider>
         </StudentFilterProvider>
       </body>
     </html>

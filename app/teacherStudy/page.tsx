@@ -10,7 +10,7 @@ import { useState } from 'react';
 export default function SchedulePage() {
   console.log("StudentPage loaded");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);
-  const [teacherList, setTeacherList] = useState<{ id: string | number; label: string }[]>([]);
+
 
 
   return (

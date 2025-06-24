@@ -1,9 +1,11 @@
 "use client";
 
-import ScheduleTable from '@/app/components/ui/StudentScheduleTable'
-import CourseCard from '../components/ui/courseCard';
 import MakeupDropdown from '../components/ui/MakeupDropdown';
+import { ClassItem } from '../components/ClassItem';
+import CourseCard from '../components/ui/courseCard';
 import ExportButton from '../components/ExportButton';
+import { useState,useEffect } from 'react';
+import { useTeacherFilter } from "@/context/TeacherFilterContext/page";
 
 type Course = {
   subject: string;
@@ -45,15 +47,38 @@ const courses: Course[] = [
   },
 ]
 
+type Props = {
+  selectedEvent: ClassItem | null;
+  setSelectedEvent: (event: ClassItem | null) => void;
+};
 
 export default function MakeupClassPage() {
   
+    const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);
+      const {
+    teacher,
+    semester,
+    year,
+    setTeacher,
+    setSemester,
+    setYear,
+  } = useTeacherFilter();
+
+    useEffect(() => {
+    console.log("👨‍🏫 teacher:", teacher);
+    console.log("📅 semester:", semester);
+    console.log("📆 year:", year);
+  }, [teacher, semester, year]);
+
   return (
     <>
       <div className="px-4 sm:px-6 py-4 sm:py-6 overflow-x-auto bg-[#EFEFEF] w-full">
         <h1 className="text-2xl font-medium mb-4">ตารางชดเชย</h1>
         <div className="mb-6">
-          <MakeupDropdown />
+                <MakeupDropdown
+                  selectedEvent={selectedEvent}
+                  setSelectedEvent={setSelectedEvent}
+                />
         </div>
         <div className="">
           <div className='mb-4'>

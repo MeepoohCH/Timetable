@@ -1,88 +1,100 @@
-"use client"
+"use client";
 
-import { useState, useRef,useEffect } from "react"
 import Dropdown from "./dropdown";
-import TeacherMakeUpInput from "./TeacherMakeUpInput";
+import DropdownTeacher from "./dropdownTeacher";
+import { useTeacherFilter } from "@/context/TeacherFilterContext/page";
+import React from "react";
+import { ClassItem } from "../ClassItem";
 
+type Props = {
+  selectedEvent: ClassItem | null;
+  setSelectedEvent: (event: ClassItem | null) => void;
+};
 
-export default function MakeupDropdown() {
-  const [teacher, setTeacher] = useState("")
-  const [day, setday] = useState<string | null>(null)
-  const [semester, setsemester] = useState<string | null>(null)
-  const [year, setyear] = useState<string | null>(null)
+export default function MakeupDropdown({ selectedEvent, setSelectedEvent }: Props) {
+  const {
+    teacher,
+    setTeacher,
+    semester,
+    setSemester,
+    year,
+    setYear,
+  } = useTeacherFilter();
 
-  const teacherList=[
-    "อาจารย์สมชาย",
-    "อาจารย์สมหญิง",
-    "ดร.วิภา",
-    "ดร.ปรัชญา",
-    "ผศ.ดร.จิตรา",
-  ]
+  const [teacherList, setTeacherList] = React.useState<{ id: string | number; label: string }[]>([]);
 
+  const semesterItems = [
+    { id: "1", label: "1" },
+    { id: "2", label: "2" },
+    { id: "3", label: "3" },
+  ];
 
-  const dayItems =[
-    {id: "Mon", label:"จันทร์"},
-    {id: "Tue", label:"อังคาร"},
-    {id: "Wed", label:"พุธ"},
-    {id: "Thr", label:"พฤหัส"},
-    {id: "Fri", label:"ศุกร์"},
-    {id: "Sat", label:"เสาร์"},
-    {id: "Sun", label:"อาทิตย์"},
-  ]
+  const currentYear = new Date().getFullYear() + 543;
+  const yearItems = Array.from({ length: 4 }, (_, i) => {
+    const y = currentYear - i;
+    return { id: y, label: y.toString() };
+  });
 
-    const semesterlItems =[
-    {id: "semester1", label:"1"},
-    {id: "semester2", label:"2"},
-    {id: "semester3", label:"3"},
-  ]
-
-      const yearlItems =[
-    {id: "2568", label:"2568"},
-    {id: "2567", label:"2567"},
-    {id: "2566", label:"2566"},
-    {id: "2565", label:"2565"},
-  ]
+  React.useEffect(() => {
+    async function fetchTeachers() {
+      try {
+        const res = await fetch("/api/Teacher/dropdown");
+        if (!res.ok) throw new Error("โหลดอาจารย์ล้มเหลว");
+        const data = await res.json();
+        const teachers = Array.isArray(data.teachers) ? data.teachers : [];
+        const formatted = teachers.map((t: any) => ({
+          id: t.teacher_id,
+          label: `${t.teacherName} ${t.teacherSurname}`,
+        }));
+        setTeacherList(formatted);
+      } catch (err) {
+        console.error(err);
+        setTeacherList([]);
+      }
+    }
+    fetchTeachers();
+  }, []);
 
   async function handleSearch() {
-    if (!day || !semester || !year) {
-      alert("กรุณาเลือกให้ครบ")
-      return
-    } try {
-      const res = await fetch("/api/api",{
-        method: "POST",
-        headers: {"Content-Type":"aplication/json"},
-        body: JSON.stringify({day, semester, year}),
-      })
-
-      if (!res.ok) throw new Error("API error")
-
-      const data = await res.json()
-      alert(`ผลลัพธ์: ${JSON.stringify(data)}`)
-    }catch (err) {
-      alert("เกิดข้อผิดพลาดในการเรียก API")
-      console.error(err)
+  console.log("🔍 Searching with filters:");
+  console.log("Teacher:", teacher);
+  console.log("Semester:", semester);
+  console.log("Year:", year);
+    if (!teacher || !semester || !year) {
+      alert("กรุณาเลือกให้ครบ");
+      return;
     }
   }
 
+  
+
+
   return (
     <div className="flex flex-wrap gap-6">
-      <TeacherMakeUpInput
-          label="อาจารย์"
-          teachers={teacherList}
-          selected={teacher}
-          setSelected={setTeacher}
+      <DropdownTeacher
+        label="อาจารย์"
+        items={teacherList}
+        selected={teacher ?? ""}
+        setSelected={setTeacher}
       />
-      <Dropdown label="วัน" items={dayItems} selected={day} setSelected={setday}/>
-      <Dropdown label="ภาคการศึกษา" items={semesterlItems} selected={semester} setSelected={setsemester}/>
-      <Dropdown label="ปีการศึกษา" items={yearlItems} selected={year} setSelected={setyear}/>
-
-          <button
-            className="mt-auto bg-[#F96D00] h-7 text-sm text-white px-4 rounded-15px transition hover:bg-white hover:text-[#F96D00]"
-            onClick={handleSearch}
-          >
-            ค้นหา
-          </button>
+      <Dropdown
+        label="ภาคการศึกษา"
+        items={semesterItems}
+        selected={semester ?? ""}
+        setSelected={setSemester}
+      />
+      <Dropdown
+        label="ปีการศึกษา"
+        items={yearItems}
+        selected={year ?? ""}
+        setSelected={setYear}
+      />
+      <button
+        className="mt-auto bg-[#F96D00] h-7 w-28 text-xs px-3 text-white sm:h-7 sm:text-sm sm:px-4 rounded-15px transition hover:bg-white hover:text-[#F96D00]"
+        onClick={handleSearch}
+      >
+        ค้นหา
+      </button>
     </div>
-  )
-
+  );
 }

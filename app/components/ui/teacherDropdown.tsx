@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react"
 import Dropdown from "./dropdown";
-import TeacherInput from "./teacherInput";
-
+import DropdownTeacher from "./dropdownTeacher";
+import { useTeacherFilter } from "@/context/TeacherFilterContext/page";
+import React from "react";
 import { ClassItem } from "../ClassItem";
 
 type TeacherDropdownProps = {
@@ -14,64 +15,83 @@ type TeacherDropdownProps = {
 
 export default function TeacherDropdown({ selectedEvent, setSelectedEvent }: TeacherDropdownProps) {
 
-  const [semester, setsemester] = useState<number | string | null>(null)
-  const [year, setyear] = useState<number | string | null>(null)
-  const [teacher, setTeacher] = useState<string | number>("");
-const [teacherList, setTeacherList] = useState<{ id: string | number; label: string }[]>([]);
+const {
+    teacher,
+    setTeacher,
+    semester,
+    setSemester,
+    year,
+    setYear,
+  } = useTeacherFilter();
 
+  const [teacherList, setTeacherList] = React.useState<{ id: string | number; label: string }[]>([]);
 
+  const semesterItems = [
+    { id: "1", label: "1" },
+    { id: "2", label: "2" },
+    { id: "3", label: "3" },
+  ];
 
-  const semesterlItems = [
-    { id: "semester1", label: "1" },
-    { id: "semester2", label: "2" },
-    { id: "semester3", label: "3" },
-  ]
-
-  const currentYear = new Date().getFullYear() + 543; // แปลง ค.ศ. เป็น พ.ศ.
-
+  const currentYear = new Date().getFullYear() + 543;
   const yearItems = Array.from({ length: 4 }, (_, i) => {
-    const year = currentYear - i;
-    return { id: year, label: year.toString() };
+    const y = currentYear - i;
+    return { id: y, label: y.toString() };
   });
 
-  const [classes, setClasses] = useState<ClassItem[]>([]);
-
-
-
-
+  React.useEffect(() => {
+    async function fetchTeachers() {
+      try {
+        const res = await fetch("/api/Teacher/dropdown");
+        if (!res.ok) throw new Error("โหลดอาจารย์ล้มเหลว");
+        const data = await res.json();
+        const teachers = Array.isArray(data.teachers) ? data.teachers : [];
+        const formatted = teachers.map((t: any) => ({
+          id: t.teacher_id,
+          label: `${t.teacherName} ${t.teacherSurname}`,
+        }));
+        setTeacherList(formatted);
+      } catch (err) {
+        console.error(err);
+        setTeacherList([]);
+      }
+    }
+    fetchTeachers();
+  }, []);
 
   async function handleSearch() {
+  console.log("🔍 Searching with filters:");
+  console.log("Teacher:", teacher);
+  console.log("Semester:", semester);
+  console.log("Year:", year);
     if (!teacher || !semester || !year) {
-      alert("กรุณาเลือกให้ครบ")
-      return
-    } try {
-      const res = await fetch("/api/api", {
-        method: "POST",
-        headers: { "Content-Type": "apllication/json" },
-        body: JSON.stringify({ teacher, semester, year }),
-      })
-
-      if (!res.ok) throw new Error("API error")
-
-      const data = await res.json()
-      alert(`ผลลัพธ์: ${JSON.stringify(data)}`)
-    } catch (err) {
-      alert("เกิดข้อผิดพลาดในการเรียก API")
-      console.error(err)
+      alert("กรุณาเลือกให้ครบ");
+      return;
     }
   }
 
+  
+
+
   return (
     <div className="flex flex-wrap gap-6">
-      <Dropdown
+      <DropdownTeacher
         label="อาจารย์"
-        items={teacherList} // แสดงชื่อที่แปลงแล้ว
-        selected={teacher}
+        items={teacherList}
+        selected={teacher ?? ""}
         setSelected={setTeacher}
       />
-      <Dropdown label="ภาคการศึกษา" items={semesterlItems} selected={semester} setSelected={setsemester} />
-      <Dropdown label="ปีการศึกษา" items={yearItems} selected={year} setSelected={setyear} />
-
+      <Dropdown
+        label="ภาคการศึกษา"
+        items={semesterItems}
+        selected={semester ?? ""}
+        setSelected={setSemester}
+      />
+      <Dropdown
+        label="ปีการศึกษา"
+        items={yearItems}
+        selected={year ?? ""}
+        setSelected={setYear}
+      />
       <button
         className="mt-auto bg-[#F96D00] h-7 w-28 text-xs px-3 text-white sm:h-7 sm:text-sm sm:px-4 rounded-15px transition hover:bg-white hover:text-[#F96D00]"
         onClick={handleSearch}
@@ -79,6 +99,5 @@ const [teacherList, setTeacherList] = useState<{ id: string | number; label: str
         ค้นหา
       </button>
     </div>
-  )
-
+  );
 }
