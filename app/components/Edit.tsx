@@ -6,8 +6,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 import { useSearchParams } from 'next/navigation';
-import { useStudentFilter } from "@/context/StudentFilterContext/page"
 import { ClassItemGet } from "./ClassItem_getData";
+import { useRouter } from "next/navigation";
 
 
 type EditProps = {
@@ -37,17 +37,15 @@ function formatDateToTimeString(date: Date): string {
 }
 
 export default function Edit({
-  onSwitchAction,
-  currentComponent,
   onEditEventAction,
   selectedEvent,
-  events,
   existingClasses,
   data,
 }: EditProps) {
 
 
   const searchParams = useSearchParams();
+  const router = useRouter();
   const timetableId = searchParams.get("timetable_id");
   const [day, setDay] = useState<Date | null>(null);
   const [teachers, setTeachers] = useState<string[]>([]);
@@ -103,8 +101,8 @@ export default function Edit({
   });
 
   useEffect(() => {
-  console.log("📝 formDataEdit updated:", formData);
-}, [formData]); 
+    console.log("📝 formDataEdit updated:", formData);
+  }, [formData]);
 
   useEffect(() => {
     if (selectedEvent) {
@@ -152,7 +150,7 @@ export default function Edit({
         setEndTime(null);
       }
 
-     
+
 
       // ตั้งค่าอาจารย์
       setTeachers(selectedEvent.teacher_id ? [selectedEvent.teacher_id] : []);
@@ -211,56 +209,56 @@ export default function Edit({
   }, [selectedEvent]);
 
 
-const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-) => {
-  const { name, value } = e.target;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
 
-  if (name === "study_location") {
-    // อัปเดต nested study.location
-    setFormData((prev) => ({
-      ...prev,
-      study: {
-        ...prev.study,
-        location: value,
-      },
-    }));
-  } else if (
-    name === "subject_id" ||
-    name === "subjectType" ||
-    name === "sec" ||
-    name === "weekday"
-  ) {
-    // อัปเดตฟิลด์หลักโดยตรง
-    // สำหรับ sec ต้องแปลงเป็น number
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "sec" ? Number(value) : value,
-    }));
-  } else {
-    console.warn("handleChange: ไม่รองรับฟิลด์นี้:", name);
-  }
+    if (name === "study_location") {
+      // อัปเดต nested study.location
+      setFormData((prev) => ({
+        ...prev,
+        study: {
+          ...prev.study,
+          location: value,
+        },
+      }));
+    } else if (
+      name === "subject_id" ||
+      name === "subjectType" ||
+      name === "sec" ||
+      name === "weekday"
+    ) {
+      // อัปเดตฟิลด์หลักโดยตรง
+      // สำหรับ sec ต้องแปลงเป็น number
+      setFormData((prev) => ({
+        ...prev,
+        [name]: name === "sec" ? Number(value) : value,
+      }));
+    } else {
+      console.warn("handleChange: ไม่รองรับฟิลด์นี้:", name);
+    }
 
-  console.log("handleChange called:", name, value);
-};
-
-
+    console.log("handleChange called:", name, value);
+  };
 
 
-  
 
-const handleAddTeacher = () => {
-  const trimmedTeacher = newTeacher.trim();
-  if (trimmedTeacher !== "" && !formData.teacher.includes(trimmedTeacher)) {
-    const updatedTeachers = [...formData.teacher, trimmedTeacher];
-    setFormData(prev => ({
-      ...prev,
-      teacher: updatedTeachers,
-    }));
-    setTeachers(updatedTeachers); // ถ้าใช้ state แยกเก็บ teachers
-    setNewTeacher("");
-  }
-};
+
+
+
+  const handleAddTeacher = () => {
+    const trimmedTeacher = newTeacher.trim();
+    if (trimmedTeacher !== "" && !formData.teacher.includes(trimmedTeacher)) {
+      const updatedTeachers = [...formData.teacher, trimmedTeacher];
+      setFormData(prev => ({
+        ...prev,
+        teacher: updatedTeachers,
+      }));
+      setTeachers(updatedTeachers); // ถ้าใช้ state แยกเก็บ teachers
+      setNewTeacher("");
+    }
+  };
 
 
   const handleRemoveTeacher = (index: number) => {
@@ -270,68 +268,46 @@ const handleAddTeacher = () => {
   };
 
 
-  const handleStartTimeChange = (date: Date | null) => {
-    setStartTime(date);
-    setFormData((prev) => ({
-      ...prev,
-      startTime: date ? formatDateToTimeString(date) : "",
-    }));
-  };
 
-  const handleEndTimeChange = (date: Date | null) => {
-    setEndTime(date);
-    setFormData((prev) => ({
-      ...prev,
-      endTime: date ? formatDateToTimeString(date) : "",
-    }));
-  };
-
-const handleFinalExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-
-  if (name === "final_location") {
-    setFormData((prev) => ({
-      ...prev,
-      exam: {
-        ...prev.exam,
-        final: {
-          ...prev.exam.final,
-          location: value,
-        },
-      },
-    }));
-  } else {
-    console.warn("handleFinalExamChange: ไม่รองรับฟิลด์นี้:", name);
-  }
-};
-
-
-const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-
-  if (name === "midterm_location") {
-    setFormData((prev) => ({
-      ...prev,
-      exam: {
-        ...prev.exam,
-        midterm: {
-          ...prev.exam.midterm,
-          location: value,
-        },
-      },
-    }));
-  } else {
-    console.warn("handleMidtermExamChange: ไม่รองรับฟิลด์นี้:", name);
-  }
-};
-
-  const handleStudyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFinalExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name === "final_location") {
+      setFormData((prev) => ({
+        ...prev,
+        exam: {
+          ...prev.exam,
+          final: {
+            ...prev.exam.final,
+            location: value,
+          },
+        },
+      }));
+    } else {
+      console.warn("handleFinalExamChange: ไม่รองรับฟิลด์นี้:", name);
+    }
   };
+
+
+  const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    if (name === "midterm_location") {
+      setFormData((prev) => ({
+        ...prev,
+        exam: {
+          ...prev.exam,
+          midterm: {
+            ...prev.exam.midterm,
+            location: value,
+          },
+        },
+      }));
+    } else {
+      console.warn("handleMidtermExamChange: ไม่รองรับฟิลด์นี้:", name);
+    }
+  };
+
 
   const resetForm = () => {
     setFormData({
@@ -387,11 +363,10 @@ const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     return teachers;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const allTeachers = getAllTeachers();
-
-
 
     const requiredFieldsStudy = [
       formData.subject_id,
@@ -416,7 +391,6 @@ const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       formData.exam.final.endTime,
     ];
 
-
     const isStudyValid = requiredFieldsStudy.every(
       (field) => typeof field === "string" && field.trim() !== ""
     );
@@ -429,24 +403,23 @@ const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       (field) => typeof field === "string" && field.trim() !== ""
     );
 
-
-    if (!isStudyValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของตารางเรียนให้ครบถ้วน");
-      return;
-    }
-
-    if (!isMidtermValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของสอบกลางภาคให้ครบถ้วน");
-      return;
-    }
-
-    if (!isFinalValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของสอบปลายภาคให้ครบถ้วน");
-      return;
-    }
+    /* if (!isStudyValid) {
+       alert("กรุณากรอกข้อมูลในส่วนของตารางเรียนให้ครบถ้วน");
+       return;
+     }
+   
+     if (!isMidtermValid) {
+       alert("กรุณากรอกข้อมูลในส่วนของสอบกลางภาคให้ครบถ้วน");
+       return;
+     }
+   
+     if (!isFinalValid) {
+       alert("กรุณากรอกข้อมูลในส่วนของสอบปลายภาคให้ครบถ้วน");
+       return;
+     }*/
 
     for (const cls of existingClasses || []) {
-      if (selectedEvent && cls.subject_id === selectedEvent.subject_id) continue; // ข้ามตัวเอง
+      if (selectedEvent && cls.subject_id === selectedEvent.subject_id) continue;
 
       const hasSameTeacher = cls.teacher.some((t) => allTeachers.includes(t));
       const sameDay = cls.weekday === formData.weekday;
@@ -468,14 +441,42 @@ const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       }
     }
 
+    // ✅ ส่งข้อมูลไปยัง API ด้วย PUT
+    try {
+      const res = await fetch('/api/Timetable/edit', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          teacher: allTeachers,
+        }),
+      });
 
-    onEditEventAction({
-      ...formData,
-      teacher: allTeachers
-    });
+      if (!res.ok) {
+        throw new Error(`การแก้ไขล้มเหลว: ${res.statusText}`);
+      }
 
-    resetForm()
+      const result = await res.json();
+      alert('✅ แก้ไขตารางสำเร็จ');
+
+
+
+      onEditEventAction({
+        ...formData,
+        teacher: allTeachers,
+      });
+
+      resetForm();
+      router.replace("/addTable");
+
+    } catch (err) {
+      console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
+      alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+    }
   };
+
 
   const handleOverwrite = () => {
     if (!conflictData) return;
@@ -494,106 +495,106 @@ const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 
   const handleAddTeachers = (names: string[]) => {
-  const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
-  if (newOnes.length > 0) {
-    const updated = [...teachers, ...newOnes];
-    setTeachers(updated);
-    setFormData(prev => ({ ...prev, teacher: updated }));
-  }
-};
+    const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
+    if (newOnes.length > 0) {
+      const updated = [...teachers, ...newOnes];
+      setTeachers(updated);
+      setFormData(prev => ({ ...prev, teacher: updated }));
+    }
+  };
 
- useEffect(() => {
-  if (data && !selectedEvent) {
-    // แปลงอาจารย์ทั้งหมด
-    const parsedTeachers = (data.teacher || []).map((full) => {
-      const parts = full.trim().split(" ");
-      let teacherName = "";
-      let teacherSurname = "";
+  useEffect(() => {
+    if (data && !selectedEvent) {
+      // แปลงอาจารย์ทั้งหมด
+      const parsedTeachers = (data.teacher || []).map((full) => {
+        const parts = full.trim().split(" ");
+        let teacherName = "";
+        let teacherSurname = "";
 
-      if (parts.length >= 2) {
-        teacherName = parts[parts.length - 2];
-        teacherSurname = parts[parts.length - 1];
-      } else if (parts.length === 2) {
-        teacherName = parts[0];
-        teacherSurname = parts[1];
-      } else if (parts.length === 1) {
-        teacherName = parts[0];
-      }
-
-      return { teacherName, teacherSurname };
-    });
-
-    const first = parsedTeachers[0] || { teacherName: "", teacherSurname: "" };
-
-    setFormData({
-      id: data.id || "",
-      timetable_id: data.timetable_id,
-      subject_id: data.subject_id,
-      subjectName: data.subjectName,
-      sec: data.sec,
-      teacher: data.teacher_id ? [data.teacher_id] : [],
-      weekday: data.weekday,
-      subjectType: data.subjectType,
-      academicYear: String(data.academicYear),
-      yearLevel: data.yearLevel,
-      degree: data.degree,
-      semester: data.semester,
-      teacher_id: data.teacher_id || "",
-
-      // เพิ่ม 3 ฟิลด์หลักจากคนแรก
-      role: "",
-      teacherName: first.teacherName,
-      teacherSurname: first.teacherSurname,
-
-      parsedTeachers, // ใส่อาจารย์ทั้งหมดแบบแยกชื่อ
-
-      credit: data.credit,
-      creditType: data.creditType,
-
-      study: {
-        location: data.location || "",
-        startTime: data.startTime || "",
-        endTime: data.endTime || "",
-      },
-
-      exam: {
-        midterm: {
-          date: data.midterm_date ? data.midterm_date.split('T')[0] : "",
-          location: data.midterm_location || "",
-          startTime: data.midterm_startTime || "",
-          endTime: data.midterm_endTime || "",
-        },
-        final: {
-          date: data.final_date ? data.final_date.split('T')[0] : "",
-          location: data.final_location || "",
-          startTime: data.final_startTime || "",
-          endTime: data.final_endTime || "",
-        },
-      },
-    });
-
-      // ตั้งค่า input แสดงชื่อรวม (ตัดยศ)
-    const teacherString = (data.teacher || [])
-      .map((full) => {
-        const knownRoles = ["รศ.ดร.", "รศ.", "ผศ.", "ดร.", "ศ.", "ผศ.ดร.","นาย","นางสาว"];
-        let nameWithoutRole = full.trim();
-        for (const role of knownRoles) {
-          if (nameWithoutRole.startsWith(role)) {
-            nameWithoutRole = nameWithoutRole.slice(role.length).trim();
-            break;
-          }
+        if (parts.length >= 2) {
+          teacherName = parts[parts.length - 2];
+          teacherSurname = parts[parts.length - 1];
+        } else if (parts.length === 2) {
+          teacherName = parts[0];
+          teacherSurname = parts[1];
+        } else if (parts.length === 1) {
+          teacherName = parts[0];
         }
-        return nameWithoutRole;
-      })
-      .join(", ");
 
-    setNewTeacher(teacherString);
+        return { teacherName, teacherSurname };
+      });
 
-    // แยกชื่อเป็น array แล้วเพิ่มเข้าระบบ teachers state ด้วยเลย
-    const namesArray = teacherString.split(",").map((n) => n.trim()).filter(Boolean);
-    handleAddTeachers(namesArray);
-  }
-}, [data, selectedEvent]);
+      const first = parsedTeachers[0] || { teacherName: "", teacherSurname: "" };
+
+      setFormData({
+        id: data.id || "",
+        timetable_id: data.timetable_id,
+        subject_id: data.subject_id,
+        subjectName: data.subjectName,
+        sec: data.sec,
+        teacher: data.teacher_id ? [data.teacher_id] : [],
+        weekday: data.weekday,
+        subjectType: data.subjectType,
+        academicYear: String(data.academicYear),
+        yearLevel: data.yearLevel,
+        degree: data.degree,
+        semester: data.semester,
+        teacher_id: data.teacher_id || "",
+
+        // เพิ่ม 3 ฟิลด์หลักจากคนแรก
+        role: "",
+        teacherName: first.teacherName,
+        teacherSurname: first.teacherSurname,
+
+        parsedTeachers, // ใส่อาจารย์ทั้งหมดแบบแยกชื่อ
+
+        credit: data.credit,
+        creditType: data.creditType,
+
+        study: {
+          location: data.location || "",
+          startTime: data.startTime || "",
+          endTime: data.endTime || "",
+        },
+
+        exam: {
+          midterm: {
+            date: data.midterm_date ? data.midterm_date.split('T')[0] : "",
+            location: data.midterm_location || "",
+            startTime: data.midterm_startTime || "",
+            endTime: data.midterm_endTime || "",
+          },
+          final: {
+            date: data.final_date ? data.final_date.split('T')[0] : "",
+            location: data.final_location || "",
+            startTime: data.final_startTime || "",
+            endTime: data.final_endTime || "",
+          },
+        },
+      });
+
+      const knownRoles = ["ผศ.ดร.", "รศ.ดร.", "รศ.", "ผศ.", "ดร.", "ศ.", "นาย", "นางสาว"];
+
+      const teacherString = (data.teacher || [])
+        .map((full) => {
+          let nameWithoutRole = full.trim();
+          for (const role of knownRoles) {
+            if (nameWithoutRole.startsWith(role)) {
+              nameWithoutRole = nameWithoutRole.slice(role.length).trim();
+              break;
+            }
+          }
+          return nameWithoutRole;
+        })
+        .join(", ");
+
+      setNewTeacher("");
+      console.log(teacherString);
+
+      const namesArray = teacherString.split(",").map((n) => n.trim()).filter(Boolean);
+      handleAddTeachers(namesArray);
+    }
+  }, [data, selectedEvent]);
 
 
 

@@ -21,6 +21,7 @@ export default function StudentDropdown({ timetable_id,data }: Props) {
 
   const [hasError, setHasError] = useState(false) // state สำหรับแจ้ง error
   const { setFilters } = useStudentFilter()
+  const { filters } = useStudentFilter();
 
   const yearlevelItems = [
     { id: 1, label: "1" },
@@ -76,6 +77,23 @@ export default function StudentDropdown({ timetable_id,data }: Props) {
     setHasError(false); // ล้าง error ถ้าเคยแจ้งเตือนก่อนหน้า
   }
 }, [data]);
+useEffect(() => {
+  // ถ้า context ถูกรีเซต (เช่นในหน้า add), reset dropdown ภายใน
+  if (
+    filters.yearLevel === null &&
+    filters.semester === null &&
+    filters.academicYear === null &&
+    filters.degree === null
+  ) {
+    setYearlevel(null);
+    setSemester(null);
+    setYear(null);
+    setDegree(null);
+    setHasError(false);
+  }
+}, [filters]);
+
+
 
   return (
     <div className="flex flex-col gap-2">

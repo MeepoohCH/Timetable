@@ -7,6 +7,7 @@ import Edit from "../components/Edit";
 import { ClassItem } from "./ClassItem";
 import { ClassItemGet } from "./ClassItem_getData";
 
+
 type Props = {
   timetable_id?: number | undefined; // หรือชนิดอื่น ๆ ที่เหมาะสม เช่น string | undefined
   data?: ClassItemGet | null; // ✅ เพิ่ม prop นี้
@@ -107,8 +108,9 @@ const handleDeleteEvent = () => {
           currentComponent="delete"
           onDeleteEventAction={handleDeleteEvent}
           events={events}
-          selectedEvent={selectedEvent} // เพิ่มตรงนี้✅ 
+          selectedEvent={selectedEventGet} // เพิ่มตรงนี้✅ 
           data={data}
+          existingClasses={existingClasses}
         />
         )}
       </div>

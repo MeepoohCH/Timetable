@@ -23,8 +23,9 @@ export default function StudyForm() {
     setExistingClasses(prev => [...prev, newClass]);
     setEvents(prev => [...prev, newClass]);  
   };
-const handleDeleteEvent = () => {
-      if (!selectedEvent) return;
+
+  const handleDeleteEvent = () => {
+    if (!selectedEvent) return;
 
     setEvents((prev) =>
       prev.filter((ev) =>
@@ -35,8 +36,9 @@ const handleDeleteEvent = () => {
       )
     );
 
-    setSelectedEvent(null); // clear class ที่ถูกเลือกหลังลบ
+    setSelectedEvent(null); // ล้าง selection หลังลบ
   };
+
   const handleEditEvent = (updatedEvent: any) => {
     setEvents((prev) =>
       prev.map((ev) =>
@@ -114,7 +116,8 @@ const handleDeleteEvent = () => {
           currentComponent="delete"
           onDeleteEventAction={handleDeleteEvent}
           events={events}
-          selectedEvent={selectedEvent} // เพิ่มตรงนี้✅ 
+          selectedEvent={selectedEventGet} 
+          existingClasses={existingClasses}
         />
         )}
       </div>

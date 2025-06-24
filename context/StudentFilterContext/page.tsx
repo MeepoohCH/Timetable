@@ -12,6 +12,7 @@ type StudentFilter = {
 type StudentFilterContextType = {
   filters: StudentFilter;
   setFilters: (filters: StudentFilter) => void;
+  resetFilters: () => void;
 };
 
 const StudentFilterContext = createContext<StudentFilterContextType | undefined>(undefined);
@@ -24,8 +25,17 @@ export const StudentFilterProvider = ({ children }: { children: ReactNode }) => 
     degree: null,
   });
 
+    const resetFilters = () => {
+    setFilters({
+      yearLevel: null,
+      semester: null,
+      academicYear: null,
+      degree: null,
+    });
+  };
+
   return (
-    <StudentFilterContext.Provider value={{ filters, setFilters }}>
+    <StudentFilterContext.Provider value={{ filters, setFilters, resetFilters }}>
       {children}
     </StudentFilterContext.Provider>
   );

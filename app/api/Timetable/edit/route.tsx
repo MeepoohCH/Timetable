@@ -3,7 +3,7 @@ import { pool } from '@/lib/db';
 import { getOrCreateExamId } from '@/lib/exam';
 import { getTeacherIdsByNames } from '@/lib/teacher';
 import { updateTimetable, findTimetableIdByFields } from '@/lib/timetable';
-import { RowDataPacket } from 'mysql2/promise';
+
 
 export async function PUT(req: NextRequest) {
   let conn = null;

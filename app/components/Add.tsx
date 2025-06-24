@@ -80,16 +80,16 @@ export default function Add({
   console.log("Updated filtersAdd:", filters);
 
   useEffect(() => {
-  if (filters.yearLevel && filters.semester && filters.academicYear) {
-    setFormData((prev) => ({
-      ...prev,
-      yearLevel: filters.yearLevel,
-      semester: filters.semester,
-      academicYear: filters.academicYear,
-      degree: filters.degree ?? null, // เผื่อ degree ยังไม่เลือก
-    }))
-  }
-}, [filters])
+    if (filters.yearLevel && filters.semester && filters.academicYear) {
+      setFormData((prev) => ({
+        ...prev,
+        yearLevel: filters.yearLevel,
+        semester: filters.semester,
+        academicYear: filters.academicYear,
+        degree: filters.degree ?? null, // เผื่อ degree ยังไม่เลือก
+      }))
+    }
+  }, [filters])
 
   interface Filters {
     yearLevel?: number | string | null;
@@ -302,133 +302,137 @@ export default function Add({
 
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const allTeachers = getAllTeachers();
+    const allTeachers = getAllTeachers();
 
     // ตรวจสอบทีละช่อง
-  const errors: string[] = [];
+    const errors: string[] = [];
 
-  if (!formData.subject_id.trim()) errors.push("รหัสวิชา");
-  if (!formData.sec) errors.push("กลุ่มเรียน (Sec)");
-  if (!formData.study.location.trim()) errors.push("สถานที่เรียน");
-  if (!formData.weekday.trim()) errors.push("วันเรียน");
-  if (!formData.study.startTime.trim()) errors.push("เวลาเริ่มเรียน");
-  if (!formData.study.endTime.trim()) errors.push("เวลาสิ้นสุดเรียน");
+    if (!formData.subject_id.trim()) errors.push("รหัสวิชา");
+    if (!formData.sec) errors.push("กลุ่มเรียน (Sec)");
+    if (!formData.study.location.trim()) errors.push("สถานที่เรียน");
+    if (!formData.weekday.trim()) errors.push("วันเรียน");
+    if (!formData.study.startTime.trim()) errors.push("เวลาเริ่มเรียน");
+    if (!formData.study.endTime.trim()) errors.push("เวลาสิ้นสุดเรียน");
 
-  if (!formData.exam.midterm.date.trim()) errors.push("วันที่สอบกลางภาค");
-  if (!formData.exam.midterm.startTime.trim()) errors.push("เวลาเริ่มสอบกลางภาค");
-  if (!formData.exam.midterm.endTime.trim()) errors.push("เวลาสิ้นสุดสอบกลางภาค");
+    if (!formData.exam.midterm.date.trim()) errors.push("วันที่สอบกลางภาค");
+    if (!formData.exam.midterm.startTime.trim()) errors.push("เวลาเริ่มสอบกลางภาค");
+    if (!formData.exam.midterm.endTime.trim()) errors.push("เวลาสิ้นสุดสอบกลางภาค");
 
-  if (!formData.exam.final.date.trim()) errors.push("วันที่สอบปลายภาค");
+    if (!formData.exam.final.date.trim()) errors.push("วันที่สอบปลายภาค");
 
-  if (!formData.exam.final.startTime.trim()) errors.push("เวลาเริ่มสอบปลายภาค");
-  if (!formData.exam.final.endTime.trim()) errors.push("เวลาสิ้นสุดสอบปลายภาค");
+    if (!formData.exam.final.startTime.trim()) errors.push("เวลาเริ่มสอบปลายภาค");
+    if (!formData.exam.final.endTime.trim()) errors.push("เวลาสิ้นสุดสอบปลายภาค");
 
-  if (errors.length > 0) {
-    alert("กรุณากรอกข้อมูลให้ครบถ้วนในช่องต่อไปนี้:\n- " + errors.join("\n- "));
-    return;
-  }
+    if (errors.length > 0) {
+      alert("กรุณากรอกข้อมูลให้ครบถ้วนในช่องต่อไปนี้:\n- " + errors.join("\n- "));
+      return;
+    }
 
-  /*const requiredFieldsStudy = [
-    formData.subject_id,
-    formData.sec,
-    formData.study.location,
-    formData.weekday,
-    formData.study.startTime,
-    formData.study.endTime,
-  ];
+    /*const requiredFieldsStudy = [
+      formData.subject_id,
+      formData.sec,
+      formData.study.location,
+      formData.weekday,
+      formData.study.startTime,
+      formData.study.endTime,
+    ];
+  
+    const requiredFieldsExamMid = [
+      formData.exam.midterm.date,
+      formData.exam.midterm.location,
+      formData.exam.midterm.startTime,
+      formData.exam.midterm.endTime,
+    ];
+  
+    const requiredFieldsExamFinal = [
+      formData.exam.final.date,
+      formData.exam.final.location,
+      formData.exam.final.startTime,
+      formData.exam.final.endTime,
+    ];
+  
+    const isStudyValid = requiredFieldsStudy.every(
+      (field) => typeof field === "string" && field.trim() !== ""
+    );
+  
+    const isMidtermValid = requiredFieldsExamMid.every(
+      (field) => typeof field === "string" && field.trim() !== ""
+    );
+  
+    const isFinalValid = requiredFieldsExamFinal.every(
+      (field) => typeof field === "string" && field.trim() !== ""
+    );
+  
+    if (!isStudyValid) {
+      alert("กรุณากรอกข้อมูลในส่วนของตารางเรียนให้ครบถ้วน");
+      return;
+    }
+  
+    if (!isMidtermValid) {
+      alert("กรุณากรอกข้อมูลในส่วนของสอบกลางภาคให้ครบถ้วน");
+      return;
+    }
+  
+    if (!isFinalValid) {
+      alert("กรุณากรอกข้อมูลในส่วนของสอบปลายภาคให้ครบถ้วน");
+      return;
+    }*/
 
-  const requiredFieldsExamMid = [
-    formData.exam.midterm.date,
-    formData.exam.midterm.location,
-    formData.exam.midterm.startTime,
-    formData.exam.midterm.endTime,
-  ];
+    // ตรวจสอบเวลาเรียนซ้อน
+    for (const cls of existingClasses || []) {
+      const hasSameTeacher = cls.teacher.some((t) => allTeachers.includes(t));
+      const sameDay = cls.weekday === formData.weekday;
 
-  const requiredFieldsExamFinal = [
-    formData.exam.final.date,
-    formData.exam.final.location,
-    formData.exam.final.startTime,
-    formData.exam.final.endTime,
-  ];
-
-  const isStudyValid = requiredFieldsStudy.every(
-    (field) => typeof field === "string" && field.trim() !== ""
-  );
-
-  const isMidtermValid = requiredFieldsExamMid.every(
-    (field) => typeof field === "string" && field.trim() !== ""
-  );
-
-  const isFinalValid = requiredFieldsExamFinal.every(
-    (field) => typeof field === "string" && field.trim() !== ""
-  );
-
-  if (!isStudyValid) {
-    alert("กรุณากรอกข้อมูลในส่วนของตารางเรียนให้ครบถ้วน");
-    return;
-  }
-
-  if (!isMidtermValid) {
-    alert("กรุณากรอกข้อมูลในส่วนของสอบกลางภาคให้ครบถ้วน");
-    return;
-  }
-
-  if (!isFinalValid) {
-    alert("กรุณากรอกข้อมูลในส่วนของสอบปลายภาคให้ครบถ้วน");
-    return;
-  }*/
-
-  // ตรวจสอบเวลาเรียนซ้อน
-  for (const cls of existingClasses || []) {
-    const hasSameTeacher = cls.teacher.some((t) => allTeachers.includes(t));
-    const sameDay = cls.weekday === formData.weekday;
-
-    if (hasSameTeacher && sameDay) {
-      if (
-        isTimeOverlap(
-          cls.study.startTime,
-          cls.study.endTime,
-          formData.study.startTime,
-          formData.study.endTime
-        )
-      ) {
-        console.log("Conflict detected with:", cls);
-        setConflictData(cls);
-        setShowConflictWarning(true);
-        return;
+      if (hasSameTeacher && sameDay) {
+        if (
+          isTimeOverlap(
+            cls.study.startTime,
+            cls.study.endTime,
+            formData.study.startTime,
+            formData.study.endTime
+          )
+        ) {
+          console.log("Conflict detected with:", cls);
+          setConflictData(cls);
+          setShowConflictWarning(true);
+          return;
+        }
       }
     }
-  }
 
-  // เตรียมข้อมูลสำหรับส่ง
-  const dataToSend = {
-    ...formData,
-    teacher: allTeachers,
-  };
+    // เตรียมข้อมูลสำหรับส่ง
+    const dataToSend = {
+      ...formData,
+      teacher: allTeachers,
+    };
 
-  try {
-    const response = await fetch("/api/Timetable/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dataToSend),
-    });
+    try {
+      const response = await fetch("/api/Timetable/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+
+      }
+
+      const result = await response.json();
+      alert("✅ เพิ่มตารางสำเร็จ");
+
+      resetForm(filters);
+      onSwitchAction("add");      // ✅ กลับไปโหมดเพิ่ม
+      onAddEventAction(dataToSend); // ✅ เพิ่มเข้า state ภายนอก
+
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
-
-    const result = await response.json();
-    console.log("Success:", result);
-
-    resetForm(filters);
-  } catch (error) {
-    console.error("Error submitting form:", error);
-  }
-};
+  };
 
   const handleOverwrite = () => {
     if (!conflictData) return;
@@ -907,7 +911,7 @@ export default function Add({
             </div>
 
 
-            <button type="submit" className="buttonSub" onClick={ handleAddTeacher}>
+            <button type="submit" className="buttonSub" onClick={handleAddTeacher}>
               เพิ่ม
             </button>
 
