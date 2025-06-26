@@ -16,7 +16,7 @@ const CustomDateInput = React.forwardRef<HTMLInputElement, any>(
       onClick={onClick}
       ref={ref}
       value={value}
-      placeholder="เลือกวันที่"
+      placeholder="เลือก..."
       readOnly
     />
   )
