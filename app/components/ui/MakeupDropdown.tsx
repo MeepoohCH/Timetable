@@ -136,7 +136,7 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
           setSelected={(val) => setWeekday(String(val))}
         />
         <div>
-          <label className="block mb-1 text-sm">วันที่ชดเชย</label>
+          <label className="block mb-1 text-sm">วันที่</label>
           <div className="flex items-center">
             <DatePicker
         selected={selectedDate}
