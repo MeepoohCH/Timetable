@@ -4,6 +4,7 @@ import "./globals.css";
 import AppLayoutClient from "./components/ui/AppLayoutClient";
 import { StudentFilterProvider } from '@/context/StudentFilterContext/page';
 import { TeacherFilterProvider } from '@/context/TeacherFilterContext/page';
+import { MakeupFilterProvider } from "@/context/MakeupFilterContext/page";
 
 
 
@@ -33,7 +34,9 @@ export default function RootLayout({
       >
         <StudentFilterProvider>
           <TeacherFilterProvider>
+             <MakeupFilterProvider>
             <AppLayoutClient>{children}</AppLayoutClient>
+            </MakeupFilterProvider>
           </TeacherFilterProvider>
         </StudentFilterProvider>
       </body>

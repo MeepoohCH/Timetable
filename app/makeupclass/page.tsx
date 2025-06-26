@@ -5,7 +5,7 @@ import { ClassItem } from '../components/ClassItem';
 import CourseCard from '../components/ui/courseCard';
 import ExportButton from '../components/ExportButton';
 import { useState, useEffect } from 'react';
-import { useTeacherFilter } from "@/context/TeacherFilterContext/page";
+import { useMakeupFilter } from '@/context/MakeupFilterContext/page';
 import { ClassItemGet } from '../components/ClassItem_getData';
 
 type Course = {
@@ -35,15 +35,23 @@ export default function MakeupClassPage() {
     teacher,
     semester,
     academicYear,
+    weekday, 
+    date,
     setTeacher,
     setSemester,
     setacademicYear,
-  } = useTeacherFilter();
-  const [filters, setFilters] = useState<{
-    teacher: string;
-    semester: string;
-    academicYear: string;
-  } | null>(null);
+    setWeekday,  
+    setDate,
+  } = useMakeupFilter();
+  
+ const [filters, setFilters] = useState<{
+  teacher: string;
+  semester: string;
+  academicYear: string;
+  day?: string;
+  date?: string;
+} | null>(null);
+
 
   const [events, setEvents] = useState<ClassItemGet[]>([]);
   const [loading, setLoading] = useState(false);
@@ -52,7 +60,7 @@ export default function MakeupClassPage() {
   useEffect(() => {
     if (!filters) return;
 
-    const { teacher, semester, academicYear } = filters;
+    const { teacher, semester, academicYear, day,date } = filters;
 
     setLoading(true);
     setError(null);
@@ -70,21 +78,14 @@ export default function MakeupClassPage() {
       .finally(() => setLoading(false));
   }, [filters]);
 
-  if (loading) return <div className="text-center  text-gray-400  p-4">กำลังโหลดข้อมูล...</div>;
 
-  if (error)
-    return (
-      <div className="text-center p-4 text-red-600">
-        เกิดข้อผิดพลาด: {error}
-      </div>
-    );
 
 
   return (
     <>
-      <div className="px-4 sm:px-6 py-4 sm:py-6 overflow-x-auto bg-[#EFEFEF] w-full">
+      <div className="px-4 sm:px-6 py-4 sm:py-6 overflow-visible bg-[#EFEFEF] w-full">
         <h1 className="text-2xl font-medium mb-4">ตารางชดเชย</h1>
-        <div className="mb-6">
+        <div className="mb-6  relative z-50">
           <MakeupDropdown
             selectedEvent={selectedEvent}
             setSelectedEvent={setSelectedEvent}
@@ -94,36 +95,41 @@ export default function MakeupClassPage() {
             }}
           />
         </div>
-        <div className="">
-          <div className="mb-4">
-            <ExportButton
-              data={events.map((e) => ({
-                subject: e.subjectName,
-                subjectid: e.subject_id,
-                subjecttype: e.subjectType,
-                year: e.yearLevel?.toString() ?? "-",
-                sec: e.sec.toString(),
-                credits: e.credit || "-",
-                teacher: Array.isArray(e.parsedTeachers) && e.parsedTeachers.length > 0
-                  ? e.parsedTeachers
-                    .map((t) => {
-                      const name = `${t.teacherName ?? ""} ${t.teacherSurname ?? ""}`.trim();
-                      return name || "-";
-                    })
-                    .join(", ")
-                  : "-",
-                starttime: e.startTime,
-                endtime: e.endTime,
-                weekday: e.weekday,
-              }))}
-              fileName="ตารางชดเชย"
-            />
+        {/* ✅ ถ้า loading หรือ error ให้แสดงข้อความแทนเนื้อหา */}
+        {loading ? (
+          <div className="text-center text-gray-400 p-4">กำลังโหลดข้อมูล...</div>
+        ) : error ? (
+          <div className="text-center p-4 text-red-600">
+            เกิดข้อผิดพลาด: {error}
           </div>
+        ) : (
+          <div className="">
+            <div className="mb-4">
+              <ExportButton
+                data={events.map((e) => ({
+                  subject: e.subjectName,
+                  subjectid: e.subject_id,
+                  subjecttype: e.subjectType,
+                  year: e.yearLevel?.toString() ?? "-",
+                  sec: e.sec.toString(),
+                  credits: e.credit || "-",
+                  teacher: Array.isArray(e.parsedTeachers) && e.parsedTeachers.length > 0
+                    ? e.parsedTeachers
+                      .map((t) => {
+                        const name = `${t.teacherName ?? ""} ${t.teacherSurname ?? ""}`.trim();
+                        return name || "-";
+                      })
+                      .join(", ")
+                    : "-",
+                  starttime: e.startTime,
+                  endtime: e.endTime,
+                  weekday: e.weekday,
+                }))}
+                fileName="ตารางชดเชย"
+              />
+            </div>
 
-          {events.map((e, i) => {
-            console.log("🔎 parsedTeachers:", e.parsedTeachers); // ✅ ใส่ใน block function ก่อน return
-
-            return (
+            {events.map((e, i) => (
               <CourseCard
                 key={i}
                 course={{
@@ -141,10 +147,10 @@ export default function MakeupClassPage() {
                   weekday: e.weekday,
                 }}
               />
-            );
-          })}
-        </div>
+            ))}
 
+          </div>
+        )}
       </div>
     </>
   );

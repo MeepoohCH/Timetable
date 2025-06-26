@@ -80,7 +80,7 @@ export default function DropdownTeacher({
       </button>
 
       {open && !loading && (
-        <div className="absolute z-50 mt-1 w-full bg-white border text-sm rounded shadow max-h-60 overflow-auto">
+        <div className="absolute z-[9999]  mt-1 w-full bg-white border text-sm rounded shadow max-h-60 overflow-auto">
           {/* input สำหรับพิมพ์ค้นหา */}
           <input
             type="text"

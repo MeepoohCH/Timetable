@@ -44,25 +44,6 @@ export default function TeacherDropdown({ selectedEvent, setSelectedEvent, onSea
     return { id: y, label: y.toString() };
   });
 
-  React.useEffect(() => {
-    async function fetchTeachers() {
-      try {
-        const res = await fetch("/api/Teacher/dropdown");
-        if (!res.ok) throw new Error("โหลดอาจารย์ล้มเหลว");
-        const data = await res.json();
-        const teachers = Array.isArray(data.teachers) ? data.teachers : [];
-        const formatted = teachers.map((t: any) => ({
-          id: t.teacher_id,
-          label: `${t.teacherName} ${t.teacherSurname}`,
-        }));
-        setTeacherList(formatted);
-      } catch (err) {
-        console.error(err);
-        setTeacherList([]);
-      }
-    }
-    fetchTeachers();
-  }, []);
 
 
   async function handleSearch() {
