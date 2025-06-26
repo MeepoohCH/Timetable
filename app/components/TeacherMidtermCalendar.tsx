@@ -13,7 +13,25 @@ import {
   subMonths,
   subDays,
 } from "date-fns";
-import { th } from "date-fns/locale";
+import { th } from "date-fns/locale"; const now = new Date();
+import { ClassItemGet } from "./ClassItem_getData";
+import { useEffect, useState } from "react"
+
+interface TeacherCalendarProps {
+  selectedEvent: any | null;
+  setSelectedEvent: (event: any | null) => void;
+  currentMonth: Date;
+  setCurrentMonth: (date: Date) => void;
+  events?: any[];
+  examType?: "final" | "midterm";
+  filters: {
+    teacher: string;
+    semester: string;
+    academicYear: string;
+  } | null;
+};
+
+
 
 const COLORS = [
   "#F87171", // red
@@ -37,6 +55,7 @@ function getColorFromString(str: string): string {
   return COLORS[index];
 }
 
+
 export default function TeacherMidtermCalendar({
   selectedEvent,
   setSelectedEvent,
@@ -44,14 +63,11 @@ export default function TeacherMidtermCalendar({
   setCurrentMonth,
   events,
   examType,
-}: {
-  selectedEvent: any | null;
-  setSelectedEvent: (event: any | null) => void;
-  currentMonth: Date;
-  setCurrentMonth: (date: Date) => void;
-  events: any[] | undefined;
-  examType?: "final" | "midterm"
-}) {
+  filters,
+
+
+}: TeacherCalendarProps) {
+
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -59,6 +75,64 @@ export default function TeacherMidtermCalendar({
 
   const handlePrev = () => setCurrentMonth(subMonths(currentMonth, 1));
   const handleNext = () => setCurrentMonth(addMonths(currentMonth, 1));
+  const displayYear = currentMonth.getFullYear() + 543;
+  const displayMonthYear = `${format(currentMonth, "MMMM", { locale: th })} ${displayYear}`;
+
+  const [classes, setClasses] = useState<ClassItemGet[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log("filters ใน TeacherSchedule:", filters);
+
+    if (!filters) return;
+
+    const { teacher, semester, academicYear } = filters;
+
+    setLoading(true);
+    setError(null);
+
+    fetch(`/api/Timetable/teacherSearch?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then(data => {
+        console.log("📦 ข้อมูลที่ได้จาก API หน้า TeacherCalendar:", data); // 👈 log ตรงนี้
+        setClasses(data);
+        // หาเดือนแรกของประเภทสอบที่ต้องการ
+        let examDates: Date[] = [];
+        console.log("📍 examType:", examType);
+        if (examType === "midterm") {
+          examDates = data
+            .filter((item: any) => item.midterm_date && !isNaN(new Date(item.midterm_date).getTime()))
+            .map((item: any) => new Date(item.midterm_date));
+        } else if (examType === "final") {
+          examDates = data
+            .filter((item: any) => item.final_date && !isNaN(new Date(item.final_date).getTime()))
+            .map((item: any) => new Date(item.final_date));
+
+        } else {
+          // ถ้าไม่มี examType กำหนด default หาเดือนแรกของทุก examType
+          examDates = data.flatMap((item: any) => {
+            const dates: Date[] = [];
+            if (item.midterm_date) dates.push(new Date(item.midterm_date));
+            if (item.final_date) dates.push(new Date(item.final_date));
+            return dates;
+          });
+        }
+
+        if (examDates.length > 0) {
+          const firstExamDate = examDates.reduce(
+            (earliest: Date, current: Date) => (current < earliest ? current : earliest)
+          );
+          setCurrentMonth(startOfMonth(firstExamDate));
+        }
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [filters, examType]);
+
 
   const renderCells = () => {
     const rows = [];
@@ -69,18 +143,19 @@ export default function TeacherMidtermCalendar({
       for (let i = 0; i < 7; i++) {
         const formattedDate = format(day, "d");
 
-        const dayEvents = Array.isArray(events)
-          ? events.filter((e) => {
-              if (examType === "final") {
-                if (!e.exam.final.date) return false;
-                return isSameDay(new Date(e.exam.final.date), subDays(day, 1));
-              } else if (examType === "midterm") {
-                if (!e.exam.midterm.date) return false;
-                return isSameDay(new Date(e.exam.midterm.date), subDays(day, 1));
-              }
-              return false;
-            })
+        const dayEvents = Array.isArray(classes)
+          ? classes.filter((e) => {
+            if (examType === "final") {
+              if (!e.final_date) return false;
+              return isSameDay(new Date(e.final_date), day); // ไม่ลบ 1 วัน
+            } else if (examType === "midterm") {
+              if (!e.midterm_date) return false;
+              return isSameDay(new Date(e.midterm_date), day); // ไม่ลบ 1 วัน
+            }
+            return false;
+          })
           : [];
+
 
         const maxVisible = 2;
         const visibleEvents = dayEvents.slice(0, maxVisible);
@@ -90,7 +165,7 @@ export default function TeacherMidtermCalendar({
           <div
             key={day.toString()}
             className={`flex flex-col items-start p-2 h-24 m-1.5 rounded-lg cursor-pointer text-sm bg-white 
-              ${!isSameMonth(day, currentMonth) ? "text-gray-400" : ""}`}
+               ${!isSameMonth(day, currentMonth) ? "text-gray-400" : ""}`}
           >
             <span className="text-sm self-end">{formattedDate}</span>
 
@@ -101,14 +176,14 @@ export default function TeacherMidtermCalendar({
                 <div
                   key={idx}
                   className={`w-full mt-1 rounded px-1 text-xs truncate cursor-pointer text-white
-                    ${isSelected ? "ring-2 ring-orange-500" : ""}`}
+                     ${isSelected ? "ring-2 ring-orange-500" : ""}`}
                   style={{
                     backgroundColor: bgColor,
                     filter: isSelected ? "none" : "none",
                   }}
                   onClick={() => setSelectedEvent(event)}
                 >
-                  {event.subjectName || event.title || "ไม่มีชื่อกิจกรรม"}
+                  {event.subjectName || "ไม่มีชื่อกิจกรรม"}
                 </div>
               );
             })}
@@ -142,7 +217,7 @@ export default function TeacherMidtermCalendar({
     <div className="flex-1 w-[70%] p-4 rounded-lg shadow bg-[#F3F4F6] border-4 border-white">
       <div className="flex items-center justify-center gap-5 mb-2 text-[#616161] font-kanit">
         <button onClick={handlePrev}>&lt;</button>
-        <h2 className="text-xl">{format(currentMonth, "MMMM", { locale: th })}</h2>
+        <h2 className="text-xl">{displayMonthYear}</h2>
         <button onClick={handleNext}>&gt;</button>
       </div>
 

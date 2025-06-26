@@ -19,7 +19,7 @@ import { th } from "date-fns/locale";
 
 
 const now = new Date();
-import { ClassItem } from "./ClassItem_getData";
+import { ClassItemGet } from "./ClassItem_getData";
 import { useEffect, useState } from "react"
 
 type StudentCalendarProps = {
@@ -81,7 +81,7 @@ export default function StudentCalendar({
   const displayYear = currentMonth.getFullYear() + 543;
   const displayMonthYear = `${format(currentMonth, "MMMM", { locale: th })} ${displayYear}`;
 
-  const [classes, setClasses] = useState<ClassItem[]>([]);
+  const [classes, setClasses] = useState<ClassItemGet[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

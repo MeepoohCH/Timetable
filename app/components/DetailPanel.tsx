@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ClassItem } from "./ClassItem_getData";
+import { ClassItemGet } from "./ClassItem_getData";
 
 type DetailPanelProps = {
   selectedEvent: any | null;
@@ -19,7 +19,7 @@ export default function DetailPanel({
   examType,
   filters,
 }: DetailPanelProps) {
-  const [classes, setClasses] = useState<ClassItem[]>([]);
+  const [classes, setClasses] = useState<ClassItemGet[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

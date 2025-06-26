@@ -10,18 +10,24 @@ import { ClassItem } from "../ClassItem";
 type TeacherDropdownProps = {
   selectedEvent: ClassItem | null;
   setSelectedEvent: (event: ClassItem) => void;
+  onSearch: (filters: {
+    teacher: string;
+    semester: string;
+    academicYear: string;
+  }) => void;
 };
 
 
-export default function TeacherDropdown({ selectedEvent, setSelectedEvent }: TeacherDropdownProps) {
 
-const {
+export default function TeacherDropdown({ selectedEvent, setSelectedEvent, onSearch, }: TeacherDropdownProps) {
+
+  const {
     teacher,
     setTeacher,
     semester,
     setSemester,
-    year,
-    setYear,
+    academicYear,
+    setacademicYear,
   } = useTeacherFilter();
 
   const [teacherList, setTeacherList] = React.useState<{ id: string | number; label: string }[]>([]);
@@ -58,22 +64,27 @@ const {
     fetchTeachers();
   }, []);
 
+
   async function handleSearch() {
-  console.log("🔍 Searching with filters:");
-  console.log("Teacher:", teacher);
-  console.log("Semester:", semester);
-  console.log("Year:", year);
-    if (!teacher || !semester || !year) {
+
+    if (!teacher || !semester || !academicYear) {
       alert("กรุณาเลือกให้ครบ");
       return;
     }
+    console.log("กดปุ่มค้นหา, ส่งค่าไป parent:", { teacher, semester, academicYear });
+    onSearch({
+      teacher: String(teacher),
+      semester: String(semester),
+      academicYear: String(academicYear),
+    });
+
   }
 
-  
+
 
 
   return (
-    <div className="flex flex-wrap gap-6">
+    <div className="flex flex-wrap gap-6 items-end ">
       <DropdownTeacher
         label="อาจารย์"
         items={teacherList}
@@ -89,8 +100,8 @@ const {
       <Dropdown
         label="ปีการศึกษา"
         items={yearItems}
-        selected={year ?? ""}
-        setSelected={setYear}
+        selected={academicYear ?? ""}
+        setSelected={setacademicYear}
       />
       <button
         className="mt-auto bg-[#F96D00] h-7 w-28 text-xs px-3 text-white sm:h-7 sm:text-sm sm:px-4 rounded-15px transition hover:bg-white hover:text-[#F96D00]"

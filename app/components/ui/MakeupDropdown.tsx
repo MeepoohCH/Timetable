@@ -17,8 +17,8 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent }: Prop
     setTeacher,
     semester,
     setSemester,
-    year,
-    setYear,
+    academicYear,
+    setacademicYear,
   } = useTeacherFilter();
 
   const [teacherList, setTeacherList] = React.useState<{ id: string | number; label: string }[]>([]);
@@ -56,11 +56,8 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent }: Prop
   }, []);
 
   async function handleSearch() {
-  console.log("🔍 Searching with filters:");
-  console.log("Teacher:", teacher);
-  console.log("Semester:", semester);
-  console.log("Year:", year);
-    if (!teacher || !semester || !year) {
+  
+    if (!teacher || !semester || !academicYear) {
       alert("กรุณาเลือกให้ครบ");
       return;
     }
@@ -86,8 +83,8 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent }: Prop
       <Dropdown
         label="ปีการศึกษา"
         items={yearItems}
-        selected={year ?? ""}
-        setSelected={setYear}
+        selected={academicYear ?? ""}
+        setSelected={setacademicYear}
       />
       <button
         className="mt-auto bg-[#F96D00] h-7 w-28 text-xs px-3 text-white sm:h-7 sm:text-sm sm:px-4 rounded-15px transition hover:bg-white hover:text-[#F96D00]"

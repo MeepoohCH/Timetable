@@ -1,6 +1,6 @@
 "use client";
 
-import MakeupDropdown from '../components/ui/MakeupDropdown';
+import TeacherDropdown from '../components/ui/teacherDropdown';
 import { ClassItem } from '../components/ClassItem';
 import CourseCard from '../components/ui/courseCard';
 import ExportButton from '../components/ExportButton';
@@ -52,33 +52,43 @@ type Props = {
   setSelectedEvent: (event: ClassItem | null) => void;
 };
 
+const [filters, setFilters] = useState<{
+    teacher: string;
+    semester: string;
+    academicYear: string;
+  } | null>(null); // 👈 เก็บ filter ที่ได้จาก Dropdown
+
 export default function MakeupClassPage() {
   
     const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);
       const {
     teacher,
     semester,
-    year,
+    academicYear,
     setTeacher,
     setSemester,
-    setYear,
+    setacademicYear,
   } = useTeacherFilter();
 
     useEffect(() => {
     console.log("👨‍🏫 teacher:", teacher);
     console.log("📅 semester:", semester);
-    console.log("📆 year:", year);
-  }, [teacher, semester, year]);
+    console.log("📆 year:", academicYear);
+  }, [teacher, semester, academicYear]);
 
   return (
     <>
       <div className="px-4 sm:px-6 py-4 sm:py-6 overflow-x-auto bg-[#EFEFEF] w-full">
         <h1 className="text-2xl font-medium mb-4">ตารางชดเชย</h1>
         <div className="mb-6">
-                <MakeupDropdown
-                  selectedEvent={selectedEvent}
-                  setSelectedEvent={setSelectedEvent}
-                />
+                <TeacherDropdown
+                           selectedEvent={selectedEvent}
+                           setSelectedEvent={setSelectedEvent}
+                           onSearch={(filters) => {
+                             console.log("📌 Filters ที่ได้จาก Dropdown:", filters);
+                             setFilters(filters);
+                           }}
+                         />
         </div>
         <div className="">
           <div className='mb-4'>

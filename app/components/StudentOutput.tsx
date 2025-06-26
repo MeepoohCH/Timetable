@@ -5,7 +5,6 @@ import StudentCalendar from "./StudentCalendar";
 import DetailPanel from "../components/DetailPanel";
 import StudentScheduleTable from "./ui/StudentScheduleTable";
 import { ClassItemGet } from "./ClassItem_getData";
-import { filter } from "framer-motion/dist/types/client";
 import { useRouter } from 'next/navigation';
 
 
@@ -21,7 +20,6 @@ type Props = {
 
 
 export default function StudentOutput({ filters }: Props) {
-  const [existingClasses, setExistingClasses] = useState<ClassItemGet[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItemGet | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
   const [midtermCurrentMonth, setMidtermCurrentMonth] = useState(new Date());

@@ -19,7 +19,7 @@ export default function StudentDropdown({ timetable_id,data }: Props) {
   const [year, setYear] = useState<number | string | null>(null)
   const [degree, setDegree] = useState<number | string | null>(null)
 
-  const [hasError, setHasError] = useState(false) // state สำหรับแจ้ง error
+  const [hasError, setHasError] = useState(true) // state สำหรับแจ้ง error
   const { setFilters } = useStudentFilter()
   const { filters } = useStudentFilter();
 
@@ -47,38 +47,53 @@ export default function StudentDropdown({ timetable_id,data }: Props) {
     { id: 2, label: "2 ปริญญา" },
   ]
 
-  useEffect(() => {
-    if (yearlevel && semester && year && degree) {
-      // ล้าง error ถ้าเลือกครบ
-      setHasError(false)
+  
 
-      // ส่งค่า filter
-      setFilters({
-        yearLevel: yearlevel,
-        semester,
-        academicYear: year,
-        degree,
-      })
+ // แสดง error ตอนเปิดหน้า ถ้ายังไม่เลือกอะไรเลย
+useEffect(() => {
+  if (
+    yearlevel === null &&
+    semester === null &&
+    year === null &&
+    degree === null
+  ) {
+    setHasError(true);
+  }
+}, []);
 
-      const formSection = document.getElementById("form-section")
-      formSection?.scrollIntoView({ behavior: "smooth", block: "start" })
-    } else {
-      // แจ้งเตือนถ้ายังเลือกไม่ครบ
-      setHasError(true)
-    }
-  }, [yearlevel, semester, year, degree, setFilters])
+// ตรวจสอบทุกครั้งที่ค่า dropdown เปลี่ยน
+useEffect(() => {
+  const isAllFilled =
+    yearlevel !== null &&
+    semester !== null &&
+    year !== null &&
+    degree !== null;
 
-  useEffect(() => {
+  setHasError(!isAllFilled);
+
+  if (isAllFilled) {
+    setFilters({
+      yearLevel: yearlevel,
+      semester,
+      academicYear: year,
+      degree,
+    });
+  }
+}, [yearlevel, semester, year, degree, setFilters]);
+
+// เมื่อมี data มาจาก props
+useEffect(() => {
   if (data) {
     setYearlevel(data.yearLevel);
     setSemester(data.semester);
     setYear(data.academicYear);
     setDegree(data.degree);
-    setHasError(false); // ล้าง error ถ้าเคยแจ้งเตือนก่อนหน้า
+    setHasError(false);
   }
 }, [data]);
+
+// ถ้า filters จาก context ถูกรีเซตเป็น null
 useEffect(() => {
-  // ถ้า context ถูกรีเซต (เช่นในหน้า add), reset dropdown ภายใน
   if (
     filters.yearLevel === null &&
     filters.semester === null &&
@@ -89,7 +104,7 @@ useEffect(() => {
     setSemester(null);
     setYear(null);
     setDegree(null);
-    setHasError(false);
+    setHasError(true);  // แก้ตรงนี้ให้ error ขึ้นใหม่ด้วย
   }
 }, [filters]);
 

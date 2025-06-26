@@ -7,8 +7,8 @@ type FilterContextType = {
   setTeacher: (val: string | number) => void;
   semester: string | number;
   setSemester: (val: string | number) => void;
-  year: string | number;
-  setYear: (val: string | number) => void;
+  academicYear: string | number;
+  setacademicYear: (val: string | number) => void;
 };
 
 const TeacherFilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -16,11 +16,11 @@ const TeacherFilterContext = createContext<FilterContextType | undefined>(undefi
 export const TeacherFilterProvider = ({ children }: { children: ReactNode }) => {
   const [teacher, setTeacher] = useState<string | number>("");
   const [semester, setSemester] = useState<string | number>("");
-  const [year, setYear] = useState<string | number>("");
+  const [academicYear, setacademicYear] = useState<string | number>("");
 
   return (
     <TeacherFilterContext.Provider
-      value={{ teacher, setTeacher, semester, setSemester, year, setYear }}
+      value={{ teacher, setTeacher, semester, setSemester, academicYear, setacademicYear }}
     >
       {children}
     </TeacherFilterContext.Provider>

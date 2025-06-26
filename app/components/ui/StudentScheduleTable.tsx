@@ -133,7 +133,7 @@ export default function StudentScheduleTable({
                         title={`${c.subjectName} (${c.subject_id})`}
                       >
                         <span className="font-medium">{c.subjectName}</span>
-                        <div style={{ fontSize: '10px' }}>{c.subject_id} ({c.subjectType}) ปี {c.academicYear} กลุ่ม {c.sec}</div>
+                        <div style={{ fontSize: '10px' }}>{c.subject_id} ({c.subjectType}) กลุ่ม {c.sec}</div>
                       </div>
                     );
                   })}
