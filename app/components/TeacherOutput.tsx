@@ -16,13 +16,12 @@ type Filters = {
 export default function TeacherOutput({ filters }: { filters: Filters }) {
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItemGet | null>(null);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<ClassItemGet[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [midtermCurrentMonth, setMidtermCurrentMonth] = useState(new Date());
   const [finalCurrentMonth, setFinalCurrentMonth] = useState(new Date());
- 
+
   // ดึงค่าจาก context (ถ้าอยากใช้ก็ใช้ แต่ตอนนี้ props.filters เป็นตัวหลัก)
   // const { teacher, semester, year } = useTeacherFilter();
 
@@ -57,15 +56,15 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
 
   const router = useRouter();
   const handleClick = (event: ClassItemGet) => {
-  setSelectedEvent(event);                 // 1. เก็บ event ไว้
-  setCurrentComponent("edit");            // 2. เปลี่ยนโหมด
-  const formSection = document.getElementById("form-section");
-  formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setSelectedEvent(event);                 // 1. เก็บ event ไว้
+    setCurrentComponent("edit");            // 2. เปลี่ยนโหมด
+    const formSection = document.getElementById("form-section");
+    formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  // 🔽 3. ใช้ timetable_id ไปทำอย่างอื่น (เช่น router.push หรือ fetch รายละเอียด)
-  // ตัวอย่างใช้ router.push
-  router.push(`/addTable/${event.timetable_id}`);
-};
+    // 🔽 3. ใช้ timetable_id ไปทำอย่างอื่น (เช่น router.push หรือ fetch รายละเอียด)
+    // ตัวอย่างใช้ router.push
+    router.push(`/addTable/${event.timetable_id}`);
+  };
 
 
   return (
@@ -82,9 +81,9 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
           </div>
           <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2">
             <TeacherScheduleTable
-             filters={filters}
-            selectedEvent={selectedEvent}
-           setSelectedEvent={handleClick}
+              filters={filters}
+              selectedEvent={selectedEvent}
+              setSelectedEvent={handleClick}
             />
           </div>
 
@@ -94,14 +93,14 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
           </div>
           <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2">
             <TeacherCalendar
-             filters={filters}
+              filters={filters}
               selectedEvent={selectedEvent}
               setSelectedEvent={(event) => {
                 setSelectedEvent(event);
                 setCurrentComponent("edit");
               }}
-              currentMonth={currentMonth}
-              setCurrentMonth={setCurrentMonth}
+              currentMonth={midtermCurrentMonth}
+              setCurrentMonth={setMidtermCurrentMonth}
               events={events}
               examType="midterm"
             />
@@ -114,14 +113,14 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
           </div>
           <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2">
             <TeacherCalendar
-             filters={filters}
+              filters={filters}
               selectedEvent={selectedEvent}
               setSelectedEvent={(event) => {
                 setSelectedEvent(event);
                 setCurrentComponent("edit");
               }}
-              currentMonth={currentMonth}
-              setCurrentMonth={setCurrentMonth}
+              currentMonth={finalCurrentMonth}
+              setCurrentMonth={setFinalCurrentMonth}
               events={events}
               examType="final"
             />

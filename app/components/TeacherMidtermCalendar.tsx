@@ -64,8 +64,6 @@ export default function TeacherMidtermCalendar({
   events,
   examType,
   filters,
-
-
 }: TeacherCalendarProps) {
 
   const monthStart = startOfMonth(currentMonth);
@@ -81,57 +79,64 @@ export default function TeacherMidtermCalendar({
   const [classes, setClasses] = useState<ClassItemGet[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasSetMonth, setHasSetMonth] = useState(false);
 
   useEffect(() => {
-    console.log("filters ใน TeacherSchedule:", filters);
+  console.log("🔥 useEffect fired");
+  console.log("filters:", filters);
+  console.log("examType:", examType);
+  
+  if (!filters) return;
 
-    if (!filters) return;
+  const { teacher, semester, academicYear } = filters;
 
-    const { teacher, semester, academicYear } = filters;
+  setLoading(true);
+  setError(null);
 
-    setLoading(true);
-    setError(null);
+  fetch(`/api/Timetable/teacherSearch?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`)
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    })
+    .then(data => {
+      console.log("📦 ข้อมูลที่ได้จาก API หน้า TeacherCalendar:", data);
+      setClasses(data);
 
-    fetch(`/api/Timetable/teacherSearch?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`)
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch");
-        return res.json();
-      })
-      .then(data => {
-        console.log("📦 ข้อมูลที่ได้จาก API หน้า TeacherCalendar:", data); // 👈 log ตรงนี้
-        setClasses(data);
-        // หาเดือนแรกของประเภทสอบที่ต้องการ
-        let examDates: Date[] = [];
-        console.log("📍 examType:", examType);
-        if (examType === "midterm") {
-          examDates = data
-            .filter((item: any) => item.midterm_date && !isNaN(new Date(item.midterm_date).getTime()))
-            .map((item: any) => new Date(item.midterm_date));
-        } else if (examType === "final") {
-          examDates = data
-            .filter((item: any) => item.final_date && !isNaN(new Date(item.final_date).getTime()))
-            .map((item: any) => new Date(item.final_date));
+      let examDates: Date[] = [];
+      console.log("📍 examType:", examType);
+      if (examType === "midterm") {
+        examDates = data
+          .filter((item: any) => item.midterm_date && !isNaN(new Date(item.midterm_date).getTime()))
+          .map((item: any) => new Date(item.midterm_date));
+      } else if (examType === "final") {
+        examDates = data
+          .filter((item: any) => item.final_date && !isNaN(new Date(item.final_date).getTime()))
+          .map((item: any) => new Date(item.final_date));
+      } else {
+        examDates = data.flatMap((item: any) => {
+          const dates: Date[] = [];
+          if (item.midterm_date) dates.push(new Date(item.midterm_date));
+          if (item.final_date) dates.push(new Date(item.final_date));
+          return dates;
+        });
+      }
 
-        } else {
-          // ถ้าไม่มี examType กำหนด default หาเดือนแรกของทุก examType
-          examDates = data.flatMap((item: any) => {
-            const dates: Date[] = [];
-            if (item.midterm_date) dates.push(new Date(item.midterm_date));
-            if (item.final_date) dates.push(new Date(item.final_date));
-            return dates;
-          });
-        }
+      if (examDates.length > 0 && !hasSetMonth) {
+        const firstExamDate = examDates.reduce(
+          (earliest: Date, current: Date) => (current < earliest ? current : earliest)
+        );
+        setCurrentMonth(startOfMonth(firstExamDate));
+        setHasSetMonth(true); // ✅ set แล้วกันไม่ให้ทำอีก
+      }
+    })
+    .catch(err => setError(err.message))
+    .finally(() => setLoading(false));
+}, [filters, examType, hasSetMonth]);
 
-        if (examDates.length > 0) {
-          const firstExamDate = examDates.reduce(
-            (earliest: Date, current: Date) => (current < earliest ? current : earliest)
-          );
-          setCurrentMonth(startOfMonth(firstExamDate));
-        }
-      })
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [filters, examType]);
+  useEffect(() => {
+    setHasSetMonth(false);
+  }, [filters]);
+
 
 
   const renderCells = () => {

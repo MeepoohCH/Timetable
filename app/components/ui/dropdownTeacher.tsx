@@ -1,18 +1,22 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 
 export default function DropdownTeacher({
   label,
-  items,
   selected,
   setSelected,
 }: {
   label: string;
-  items: { id: number | string; label: string }[];
   selected: number | string | null;
   setSelected: (val: number | string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [items, setItems] = useState<{ id: string; label: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,6 +29,30 @@ export default function DropdownTeacher({
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
+  // Fetch teacher data once on mount
+  useEffect(() => {
+    async function fetchTeachers() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/Teacher/dropdown");
+        if (!res.ok) throw new Error("โหลดอาจารย์ล้มเหลว");
+        const data = await res.json();
+        const teachers = Array.isArray(data.teachers) ? data.teachers : [];
+        const formatted = teachers.map((t: any) => ({
+          id: t.teacher_id,
+          label: `${t.teacherName} ${t.teacherSurname}`,
+        }));
+        setItems(formatted);
+      } catch (err: any) {
+        setError(err.message || "เกิดข้อผิดพลาด");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchTeachers();
+  }, []);
+
   // กรอง items ตาม searchText (ไม่สนใจตัวพิมพ์ใหญ่/เล็ก)
   const filteredItems = items.filter((item) =>
     item.label.toLowerCase().includes(searchText.toLowerCase())
@@ -33,12 +61,14 @@ export default function DropdownTeacher({
   return (
     <div className="relative w-full max-w-xs sm:max-w-[190px]" ref={ref}>
       <label className="text-sm"> {label} </label>
+
       <button
         className="flex items-center justify-between border border-gray-300 rounded-[10px] w-48 bg-white text-sm px-2 py-1"
         onClick={() => setOpen((o) => !o)}
+        disabled={loading}
       >
         <span className={`truncate ${selected ? "text-black" : "text-gray-400"}`}>
-          {selected ? items.find((i) => i.id === selected)?.label : "เลือก..."}
+          {loading ? "กำลังโหลด..." : selected ? items.find((i) => i.id === selected)?.label : "เลือก..."}
         </span>
         <svg className="ml-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
           <path
@@ -49,7 +79,7 @@ export default function DropdownTeacher({
         </svg>
       </button>
 
-      {open && (
+      {open && !loading && (
         <div className="absolute z-50 mt-1 w-full bg-white border text-sm rounded shadow max-h-60 overflow-auto">
           {/* input สำหรับพิมพ์ค้นหา */}
           <input
@@ -83,6 +113,8 @@ export default function DropdownTeacher({
           )}
         </div>
       )}
+
+      {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
     </div>
   );
 }

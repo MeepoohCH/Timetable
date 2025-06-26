@@ -1,17 +1,26 @@
-"use client";
+"use client"
 
+import { useState, useRef, useEffect } from "react"
 import Dropdown from "./dropdown";
 import DropdownTeacher from "./dropdownTeacher";
 import { useTeacherFilter } from "@/context/TeacherFilterContext/page";
 import React from "react";
 import { ClassItem } from "../ClassItem";
 
-type Props = {
+type TeacherDropdownProps = {
   selectedEvent: ClassItem | null;
-  setSelectedEvent: (event: ClassItem | null) => void;
+  setSelectedEvent: (event: ClassItem) => void;
+  onSearch: (filters: {
+    teacher: string;
+    semester: string;
+    academicYear: string;
+  }) => void;
 };
 
-export default function MakeupDropdown({ selectedEvent, setSelectedEvent }: Props) {
+
+
+export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSearch, }: TeacherDropdownProps) {
+
   const {
     teacher,
     setTeacher,
@@ -55,22 +64,29 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent }: Prop
     fetchTeachers();
   }, []);
 
+
   async function handleSearch() {
-  
+
     if (!teacher || !semester || !academicYear) {
       alert("กรุณาเลือกให้ครบ");
       return;
     }
+    console.log("กดปุ่มค้นหา, ส่งค่าไป parent:", { teacher, semester, academicYear });
+    onSearch({
+      teacher: String(teacher),
+      semester: String(semester),
+      academicYear: String(academicYear),
+    });
+
   }
 
-  
+
 
 
   return (
-    <div className="flex flex-wrap gap-6">
+    <div className="flex flex-wrap gap-6 items-end ">
       <DropdownTeacher
         label="อาจารย์"
-        items={teacherList}
         selected={teacher ?? ""}
         setSelected={setTeacher}
       />

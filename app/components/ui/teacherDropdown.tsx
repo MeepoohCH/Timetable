@@ -87,7 +87,6 @@ export default function TeacherDropdown({ selectedEvent, setSelectedEvent, onSea
     <div className="flex flex-wrap gap-6 items-end ">
       <DropdownTeacher
         label="อาจารย์"
-        items={teacherList}
         selected={teacher ?? ""}
         setSelected={setTeacher}
       />
