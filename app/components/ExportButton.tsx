@@ -14,37 +14,43 @@ const ExportButton: React.FC<ExportButtonProps> = ({ data, fileName = "export" }
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
-  const exportToExcel = async () => {
-    setIsDownloading(true);
-    setDownloaded(false);
+const exportToExcel = async () => {
+  setIsDownloading(true);
+  setDownloaded(false);
 
-    try {
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet("Sheet1");
+  try {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Sheet1");
 
-      if (data.length > 0) {
-        // สร้าง header จาก keys ของ object แถวแรก
-        const columns = Object.keys(data[0]).map((key) => ({ header: key, key }));
-        worksheet.columns = columns;
+    if (data.length > 0) {
+      const columns = Object.keys(data[0]).map((key) => ({ header: key, key }));
+      worksheet.columns = columns;
 
-        // เติมข้อมูลแถว
-        data.forEach((item) => {
-          worksheet.addRow(item);
+      data.forEach((item) => {
+        const row = worksheet.addRow(item);
+
+        Object.entries(item).forEach(([key, value], colIndex) => {
+          if (typeof value === "string" && value.includes("\n")) {
+            const cell = row.getCell(colIndex + 1);
+            cell.alignment = { wrapText: true };
+          }
         });
-      }
-
-      const buffer = await workbook.xlsx.writeBuffer();
-      const blob = new Blob([buffer], { type: "application/octet-stream" });
-      saveAs(blob, `${fileName}.xlsx`);
-
-      setDownloaded(true);
-    } catch (error) {
-      console.error("Export Excel failed:", error);
-    } finally {
-      setIsDownloading(false);
-      setTimeout(() => setDownloaded(false), 2000);
+      });
     }
-  };
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/octet-stream" });
+    saveAs(blob, `${fileName}.xlsx`);
+
+    setDownloaded(true);
+  } catch (error) {
+    console.error("Export Excel failed:", error);
+  } finally {
+    setIsDownloading(false);
+    setTimeout(() => setDownloaded(false), 2000);
+  }
+};
+
 
   return (
     <div className="relative inline-block">

@@ -93,7 +93,7 @@ export default function TeacherMidtermCalendar({
   setLoading(true);
   setError(null);
 
-  fetch(`/api/Timetable/teacherSearch?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`)
+  fetch(`/api/Timetable/teacherGet?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`)
     .then(res => {
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();

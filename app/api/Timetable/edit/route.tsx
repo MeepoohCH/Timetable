@@ -3,6 +3,16 @@ import { pool } from '@/lib/db';
 import { getOrCreateExamId } from '@/lib/exam';
 import { getTeacherIdsByNames } from '@/lib/teacher';
 import { updateTimetable, findTimetableIdByFields } from '@/lib/timetable';
+import { RowDataPacket } from 'mysql2/promise';
+
+
+    // ✅ ดึงข้อมูลอาจารย์ทั้งหมดเพื่อเรียงตามชื่อจริง
+interface TeacherRow extends RowDataPacket {
+  teacher_id: string;
+  role: string;
+  teacherName: string;
+  teacherSurname: string;
+}
 
 
 export async function PUT(req: NextRequest) {
@@ -56,6 +66,26 @@ export async function PUT(req: NextRequest) {
     const teacherIds = await getTeacherIdsByNames(conn, teacher || []);
     console.log('Teacher IDs:', teacherIds);
 
+
+const [allTeachers] = await conn.query<TeacherRow[]>(
+  'SELECT teacher_id, role, teacherName, teacherSurname FROM Teacher'
+);
+
+// ✅ จับคู่และเรียง
+const sortedTeacherIds = teacherIds
+  .map((id) => {
+    const t = allTeachers.find((x) => x.teacher_id === id);
+    return {
+      id,
+      fullName: t ? `${t.teacherName} ${t.teacherSurname}` : id,
+    };
+  })
+  .sort((a, b) => a.fullName.localeCompare(b.fullName))
+  .map((t) => t.id);
+
+console.log('🔤 Sorted teacher IDs:', sortedTeacherIds);
+
+
     // ✅ ดึง/สร้าง midterm/final exam id
     const midterm_id = await getOrCreateExamId(conn, {
       examType: 'midterm',
@@ -85,7 +115,7 @@ export async function PUT(req: NextRequest) {
       academicYear,
       weekday,
       study,
-      teacherIds,
+      teacherIds: sortedTeacherIds,
       midterm_id,
       final_id,
     });

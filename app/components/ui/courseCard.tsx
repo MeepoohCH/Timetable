@@ -4,10 +4,11 @@ type Course = {
     subject: string
     subjectid: string
     subjecttype: string
-    year: string
+    yearLevel: string
     sec: string
     credit: number
     teacher: string
+    creditType: string
     starttime: string
     endtime: string
     weekday: string;
@@ -19,9 +20,9 @@ export default function CourseCard({course} : {course:Course}) {
   <div className="text-xl mb-2">{course.subject}</div>
 
   <div className="grid grid-cols-2 gap-x-10 gap-y-1 text-[#616161]">
-    <div>{course.subjectid} ({course.subjecttype}) ปี {course.year} กลุ่ม {course.sec}</div>
+    <div>{course.subjectid} ({course.subjecttype}) ปี {course.yearLevel} กลุ่ม {course.sec}</div>
     <div>เวลาเริ่ม {course.starttime}</div>
-    <div>หน่วยกิต {course.credit}</div>
+    <div>หน่วยกิต {course.credit}({course.creditType})</div>
     <div>เวลาจบ {course.endtime}</div>
     <div>อาจารย์ {course.teacher}</div>
   </div>

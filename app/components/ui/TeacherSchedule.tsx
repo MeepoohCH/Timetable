@@ -52,7 +52,7 @@ export default function TeacherScheduleTable({
 
 
         fetch(
-            `/api/Timetable/teacherSearch?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`
+            `/api/Timetable/teacherGet?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`
         )
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch");

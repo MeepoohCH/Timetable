@@ -12,9 +12,10 @@ type Course = {
   subject: string;
   subjectid: string;
   subjecttype: string;
-  year: string;
+  yearLevel: string;
   sec: string;
   credit: number;
+  creditType: string;
   teacher: string;
   starttime: string;
   endtime: string;
@@ -35,22 +36,22 @@ export default function MakeupClassPage() {
     teacher,
     semester,
     academicYear,
-    weekday, 
+    weekday,
     date,
     setTeacher,
     setSemester,
     setacademicYear,
-    setWeekday,  
+    setWeekday,
     setDate,
   } = useMakeupFilter();
-  
- const [filters, setFilters] = useState<{
-  teacher: string;
-  semester: string;
-  academicYear: string;
-  day?: string;
-  date?: string;
-} | null>(null);
+
+  const [filters, setFilters] = useState<{
+    teacher: string;
+    semester: string;
+    academicYear: string;
+    weekday?: string;
+    date?: string;
+  } | null>(null);
 
 
   const [events, setEvents] = useState<ClassItemGet[]>([]);
@@ -60,12 +61,12 @@ export default function MakeupClassPage() {
   useEffect(() => {
     if (!filters) return;
 
-    const { teacher, semester, academicYear, day,date } = filters;
+    const { teacher, semester, academicYear, weekday, date } = filters;
 
     setLoading(true);
     setError(null);
 
-    fetch(`/api/Timetable/teacherSearch?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`)
+    fetch(`/api/Makeup?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}&weekday=${weekday}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch data");
         return res.json();
@@ -107,27 +108,26 @@ export default function MakeupClassPage() {
             <div className="mb-4">
               <ExportButton
                 data={events.map((e) => ({
-                  subject: e.subjectName,
-                  subjectid: e.subject_id,
-                  subjecttype: e.subjectType,
-                  year: e.yearLevel?.toString() ?? "-",
-                  sec: e.sec.toString(),
-                  credits: e.credit || "-",
-                  teacher: Array.isArray(e.parsedTeachers) && e.parsedTeachers.length > 0
+                  'รหัสวิชา': e.subject_id,
+                  'ชื่อวิชา': e.subjectName,
+                  'ท/ป': e.subjectType,
+                  'ชั้นปี/กลุ่ม': `ปี${e.yearLevel?.toString() ?? "-"}\nกลุ่ม ${e.sec.toString()}`,  // แยกบรรทัดได้ด้วย \n
+                  'อาจารย์ผู้สอน': Array.isArray(e.parsedTeachers) && e.parsedTeachers.length > 0
                     ? e.parsedTeachers
                       .map((t) => {
-                        const name = `${t.teacherName ?? ""} ${t.teacherSurname ?? ""}`.trim();
+                        const name = `อ.${t.teacherName ?? ""} ${t.teacherSurname ?? ""}`.trim();
                         return name || "-";
                       })
-                      .join(", ")
+                      .join("\n")   // <-- ใช้ \n แทน , เพื่อขึ้นบรรทัดใหม่
                     : "-",
-                  starttime: e.startTime,
-                  endtime: e.endTime,
-                  weekday: e.weekday,
+                  'เวลา': `${e.startTime ?? ""}-${e.endTime ?? ""}`,
+                  'วัน/เดือน/ปี': e.weekday,
                 }))}
                 fileName="ตารางชดเชย"
               />
             </div>
+
+
 
             {events.map((e, i) => (
               <CourseCard
@@ -136,9 +136,10 @@ export default function MakeupClassPage() {
                   subject: e.subjectName,
                   subjectid: e.subject_id,
                   subjecttype: e.subjectType,
-                  year: e.yearLevel?.toString() ?? "-",
+                  yearLevel: e.yearLevel?.toString() ?? "-",
                   sec: e.sec.toString(),
                   credit: e.credit || 0,
+                  creditType: e.creditType || "",
                   teacher: e.parsedTeachers
                     ? e.parsedTeachers.map(t => `${t.teacherName} ${t.teacherSurname}`).join(", ")
                     : "-",

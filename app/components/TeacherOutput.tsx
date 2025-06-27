@@ -33,7 +33,7 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
     setLoading(true);
     setError(null);
 
-    fetch(`/api/Timetable/teacherSearch?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`)
+    fetch(`/api/Timetable/teacherGet?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch data");
         return res.json();

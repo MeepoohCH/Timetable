@@ -46,6 +46,7 @@ interface TeacherItem extends RowDataPacket {
 
 
 export async function GET(request: NextRequest) {
+     console.log('เรียก API /api/Timetable/studentSearch');
   let conn;
   try {
     conn = await pool.getConnection();
@@ -96,26 +97,48 @@ export async function GET(request: NextRequest) {
     const [teachers] = await conn.query<TeacherItem[]>(
       `SELECT teacher_id, role, teacherName, teacherSurname FROM Teacher`
     );
+const results = rows.map((item) => {
+  let teacherList: string[] = [];
+  let sortedTeacherIds: string[] = [];
 
-    const results = rows.map((item) => {
-      let teacherList: string[] = [];
+  if (item.teacher_id) {
+    const ids = item.teacher_id.split(",").map((id) => id.trim());
 
-      if (item.teacher_id) {
-        const ids = item.teacher_id.split(",").map((id) => id.trim());
-
-        teacherList = ids.map((id) => {
-          const teacher = teachers.find((t) => t.teacher_id === id);
-          return teacher
-            ? `${teacher.role}${teacher.teacherName} ${teacher.teacherSurname}`
-            : id;
-        });
-      }
-
-      return {
-        ...item,
-        teacher: teacherList,
-      };
+    // จับคู่ id กับ object
+    const matched = ids.map((id) => {
+      const teacher = teachers.find((t) => t.teacher_id === id);
+      return teacher
+        ? {
+            id,
+            fullName: `${teacher.teacherName} ${teacher.teacherSurname}`,
+            displayName: `${teacher.role}${teacher.teacherName} ${teacher.teacherSurname}`,
+          }
+        : {
+            id,
+            fullName: id,
+            displayName: id,
+          };
     });
+
+    // 🔤 เรียงตามเลข teacher_id (แปลง id เป็นตัวเลขก่อนเปรียบเทียบ)
+    const sorted = matched.sort((a, b) => {
+      const numA = parseInt(a.id, 10);
+      const numB = parseInt(b.id, 10);
+      return numA - numB;
+    });
+
+    // สร้างผลลัพธ์
+    teacherList = sorted.map((t) => t.displayName);
+    sortedTeacherIds = sorted.map((t) => t.id);
+  }
+
+  return {
+    ...item,
+    teacher: teacherList,
+    teacher_id: sortedTeacherIds.join(","), // คืนแบบเรียงตามเลขไอดี
+  };
+});
+
 
     return NextResponse.json(results, { status: 200 });
   } catch (error) {

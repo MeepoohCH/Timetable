@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
+import DropdownTeacher from "./ui/dropdownTeacher";
 
 
 type AddProps = {
@@ -680,7 +681,7 @@ export default function Add({
                     onClickOutside={() => setIsMidtermOpen(false)}
                     dateFormat="dd/MM/yyyy"
                     customInput={<input ref={midtermDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
-                    readOnly
+                    
                   />
                   <button
                     type="button"
@@ -810,7 +811,6 @@ export default function Add({
                     onClickOutside={() => setIsFinalOpen(false)}
                     dateFormat="dd/MM/yyyy"
                     customInput={<input ref={finalDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
-                    readOnly
                   />
                   <button
                     type="button"

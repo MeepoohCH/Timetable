@@ -1,6 +1,6 @@
 "use client"
 
-import React,{ useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Dropdown from "./dropdown";
 import DropdownTeacher from "./dropdownTeacher";
 import { useMakeupFilter } from "@/context/MakeupFilterContext/page";
@@ -50,9 +50,9 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
 
 
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const dateInputRef = useRef<HTMLInputElement>(null);
- 
+
   const semesterItems = [
     { id: "1", label: "1" },
     { id: "2", label: "2" },
@@ -60,13 +60,13 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
   ];
 
   const weekdayItems = [
-    { id: "Monday", label: "จันทร์" },
-    { id: "Tuesday", label: "อังคาร" },
-    { id: "Wednesday", label: "พุธ" },
-    { id: "Thursday", label: "พฤหัสบดี" },
-    { id: "Friday", label: "ศุกร์" },
-    { id: "Saturday", label: "เสาร์" },
-    { id: "Sunday", label: "อาทิตย์" },
+    { id: "จันทร์", label: "จันทร์" },
+    { id: "อังคาร", label: "อังคาร" },
+    { id: "พุธ", label: "พุธ" },
+    { id: "พฤหัสบดี", label: "พฤหัสบดี" },
+    { id: "ศุกร์", label: "ศุกร์" },
+    { id: "เสาร์", label: "เสาร์" },
+    { id: "อาทิตย์", label: "อาทิตย์" },
   ];
 
   const currentYear = new Date().getFullYear() + 543;
@@ -94,7 +94,27 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
     setIsDatePickerOpen(false);
   }
 
+  function convertWeekdayToThai(weekday: string): string {
+    const map: { [key: string]: string } = {
+      Sunday: "อาทิตย์",
+      Monday: "จันทร์",
+      Tuesday: "อังคาร",
+      Wednesday: "พุธ",
+      Thursday: "พฤหัสบดี",
+      Friday: "ศุกร์",
+      Saturday: "เสาร์",
+    };
+    return map[weekday] || weekday;
+  }
+
+
   async function handleSearch() {
+    console.log("🔍 ค่าที่จะใช้ค้นหา:");
+    console.log("👨‍🏫 teacher:", teacher);
+    console.log("📘 semester:", semester);
+    console.log("📅 academicYear:", academicYear);
+    console.log("🗓️ weekday:", weekday);
+    console.log("📆 date:", date);
     if (!teacher || !semester || !academicYear || !weekday || !date) {
       alert("กรุณาเลือกให้ครบ อาจารย์, ภาคการศึกษา, ปีการศึกษา, วันม วันที่");
       return;
@@ -139,39 +159,52 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
           <label className="block mb-1 text-sm">วันที่</label>
           <div className="flex items-center">
             <DatePicker
-        selected={selectedDate}
-        onChange={(date: Date | null) => {
-          setSelectedDate(date);
-          setIsDatePickerOpen(false); // ปิดเมื่อเลือก
-        }}
-        open={isDatePickerOpen}
-        onClickOutside={() => setIsDatePickerOpen(false)}
-        dateFormat="dd/MM/yyyy"
-        customInput={<CustomDateInput />}
-      />
+              selected={selectedDate}
+              onChange={(date: Date | null) => {
+                setSelectedDate(date);
+                setIsDatePickerOpen(false);
 
-      <button
-        type="button"
-        onClick={() => setIsDatePickerOpen(true)}
-        className="ml-2 text-gray-500 hover:text-gray-700"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          viewBox="0 0 24 24"
-        >
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-          <line x1="16" y1="2" x2="16" y2="6" />
-          <line x1="8" y1="2" x2="8" y2="6" />
-          <line x1="3" y1="10" x2="21" y2="10" />
-        </svg>
-      </button>
+                if (date) {
+                  const weekdayEn = date.toLocaleDateString("en-US", { weekday: "long" });
+                  const weekdayTh = convertWeekdayToThai(weekdayEn);  // แปลงเป็นภาษาไทย
+                  setWeekday(weekdayTh);
+                  const formatted = date.toISOString().split("T")[0];
+                  setDate(formatted);
+                } else {
+                  setWeekday("");
+                  setDate("");
+                }
+              }}
+
+              open={isDatePickerOpen}
+              onClickOutside={() => setIsDatePickerOpen(false)}
+              dateFormat="dd/MM/yyyy"
+              customInput={<CustomDateInput />}
+            />
+
+
+            <button
+              type="button"
+              onClick={() => setIsDatePickerOpen(true)}
+              className="ml-2 text-gray-500 hover:text-gray-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+            </button>
 
           </div>
         </div>

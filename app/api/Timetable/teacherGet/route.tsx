@@ -43,91 +43,97 @@ interface TeacherItem extends RowDataPacket {
   teacherSurname: string;
 }
 
-
-
 export async function GET(request: NextRequest) {
+   console.log('เรียก API /api/Timetable/teacherGet');
   let conn;
   try {
     conn = await pool.getConnection();
     const { searchParams } = new URL(request.url);
 
     const teacher = searchParams.get('teacher');
-    const semester = searchParams.get('semester');
-    const academicYear = searchParams.get('academicYear');
+    const semesterRaw = searchParams.get('semester');
+    const academicYearRaw = searchParams.get('academicYear');
 
-    if (!teacher || !semester || !academicYear ) {
-      return NextResponse.json(
-        { error: 'Missing required query parameters' },
-        { status: 400 }
-      );
+    console.log("📌 Received params:", { teacher, semesterRaw, academicYearRaw });
+
+    const semester = semesterRaw ? Number(semesterRaw) : NaN;
+    const academicYear = academicYearRaw ? Number(academicYearRaw) : NaN;
+
+    console.log("📌 Parsed params:", { teacher, semester, academicYear });
+
+    if (!teacher || isNaN(semester) || isNaN(academicYear)) {
+      console.log("❌ Invalid parameters");
+      return NextResponse.json({ error: 'Invalid or missing parameters' }, { status: 400 });
     }
 
-    // ใช้ conn.query แทน pool.query
     const [rows] = await conn.query<TimetableItem[]>(
       `SELECT 
         t.*, 
-        s.subjectName, s.credit, s.creditType, 
-
-        -- Midterm Exam
+        s.subjectName, s.credit, s.creditType,
         mid.exam_id AS midterm_exam_id,
         mid.examType AS midterm_examType,
         mid.date AS midterm_date,
         mid.startTime AS midterm_startTime,
         mid.endTime AS midterm_endTime,
         mid.location AS midterm_location,
-
-        -- Final Exam
         final.exam_id AS final_exam_id,
         final.examType AS final_examType,
         final.date AS final_date,
         final.startTime AS final_startTime,
         final.endTime AS final_endTime,
         final.location AS final_location
-
       FROM Timetable t
       JOIN Subject s ON t.subject_id = s.subject_id
       LEFT JOIN Exam mid ON t.midterm_id = mid.exam_id
       LEFT JOIN Exam final ON t.final_id = final.exam_id
-      WHERE t.teacher_id = ? AND t.semester = ? AND t.academicYear = ?`,
-      [teacher, semester, academicYear]
+      WHERE FIND_IN_SET(?, REPLACE(t.teacher_id, ' ', '')) > 0
+        AND t.semester = ?
+        AND t.academicYear = ?`,
+      [teacher.trim(), semester, academicYear]
     );
 
-    const [teachers] = await conn.query<TeacherItem[]>(
-      `SELECT teacher_id, role, teacherName, teacherSurname FROM Teacher`
-    );
-    
+    console.log("📌 Query results count:", rows.length);
+
+   const [teachers] = await conn.query<TeacherItem[]>(
+  `SELECT teacher_id, role, teacherName, teacherSurname FROM Teacher`
+);
 
 const results = rows.map((item) => {
   let teacherList: string[] = [];
-  let parsedTeachers: TeacherItem[] = [];
+  let sortedTeacherIds: string[] = [];
 
   if (item.teacher_id) {
-    const ids = item.teacher_id.split(",").map((id) => id.trim());
+    const ids = item.teacher_id.split(',').map((id) => id.trim());
 
-    teacherList = ids.map((id) => {
+    const matched = ids.map((id) => {
       const teacher = teachers.find((t) => t.teacher_id === id);
       return teacher
-        ? `${teacher.role}${teacher.teacherName} ${teacher.teacherSurname}`
-        : id;
+        ? {
+            id,
+            fullName: `${teacher.teacherName} ${teacher.teacherSurname}`,
+            displayName: `${teacher.role}${teacher.teacherName} ${teacher.teacherSurname}`,
+          }
+        : { id, fullName: id, displayName: id };
     });
 
-    parsedTeachers = ids
-      .map((id) => teachers.find((t) => t.teacher_id === id))
-      .filter((t): t is TeacherItem => !!t); // filter null
+    const sorted = matched.sort((a, b) => parseInt(a.id, 10) - parseInt(b.id, 10));
+    teacherList = sorted.map((t) => t.displayName);
+    sortedTeacherIds = sorted.map((t) => t.id);
   }
 
   return {
     ...item,
     teacher: teacherList,
-    parsedTeachers, // ✅ เพิ่มตรงนี้
+    teacher_id: sortedTeacherIds.join(','),
   };
 });
 
+console.log('📌 Result data:', results);
+return NextResponse.json(results, { status: 200 });
 
-    return NextResponse.json(results, { status: 200 });
   } catch (error) {
-    console.error("Database query error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    console.error('Database query error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   } finally {
     if (conn) conn.release();
   }

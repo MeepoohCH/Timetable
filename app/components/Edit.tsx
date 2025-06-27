@@ -72,6 +72,7 @@ export default function Edit({
 
   const [conflictData, setConflictData] = useState<ClassItem | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
+  const [originalTeachers, setOriginalTeachers] = useState<string[]>([]);
 
   const [formData, setFormData] = useState<ClassItem>({
     id: "",
@@ -166,7 +167,12 @@ export default function Edit({
 
 
       // ตั้งค่าอาจารย์
-      setTeachers(selectedEvent.teacher_id ? [selectedEvent.teacher_id] : []);
+      const teacherIdArray = selectedEvent.teacher_id
+        ? [selectedEvent.teacher_id]
+        : [];
+
+      handleAddTeachers(teacherIdArray);
+      setOriginalTeachers(teacherIdArray); // ✅ เก็บไว้ใช้ตรวจสอบซ้ำ
       setNewTeacher("");
 
     } else {
@@ -260,18 +266,18 @@ export default function Edit({
 
 
 
-  const handleAddTeacher = () => {
-    const trimmedTeacher = newTeacher.trim();
-    if (trimmedTeacher !== "" && !formData.teacher.includes(trimmedTeacher)) {
-      const updatedTeachers = [...formData.teacher, trimmedTeacher];
-      setFormData(prev => ({
-        ...prev,
-        teacher: updatedTeachers,
-      }));
-      setTeachers(updatedTeachers); // ถ้าใช้ state แยกเก็บ teachers
-      setNewTeacher("");
-    }
-  };
+const handleAddTeacher = () => {
+  const trimmedTeacher = newTeacher.trim();
+  if (trimmedTeacher !== "" && !teachers.includes(trimmedTeacher)) {
+    const updatedTeachers = [...teachers, trimmedTeacher]; // ✅ ใช้ `teachers` ไม่ใช่ `formData.teacher`
+    setTeachers(updatedTeachers);
+    setFormData(prev => ({
+      ...prev,
+      teacher: updatedTeachers,
+    }));
+    setNewTeacher("");
+  }
+};
 
 
   const handleRemoveTeacher = (index: number) => {
@@ -434,7 +440,11 @@ export default function Edit({
     for (const cls of existingClasses || []) {
       if (selectedEvent && cls.subject_id === selectedEvent.subject_id) continue;
 
-      const hasSameTeacher = cls.teacher.some((t) => allTeachers.includes(t));
+      const hasSameTeacher = cls.teacher.some((t) =>
+        // เปรียบเทียบกับอาจารย์ใหม่ที่เปลี่ยนจากเดิม
+        allTeachers.includes(t) && !originalTeachers.includes(t)
+      );
+
       const sameDay = cls.weekday === formData.weekday;
 
       if (hasSameTeacher && sameDay) {
@@ -464,6 +474,7 @@ export default function Edit({
         body: JSON.stringify({
           ...formData,
           teacher: allTeachers,
+          originalTeachers,
         }),
       });
 
@@ -507,14 +518,15 @@ export default function Edit({
     resetForm()
   };
 
-  const handleAddTeachers = (names: string[]) => {
-    const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
-    if (newOnes.length > 0) {
-      const updated = [...teachers, ...newOnes];
-      setTeachers(updated);
-      setFormData(prev => ({ ...prev, teacher: updated }));
-    }
-  };
+ const handleAddTeachers = (names: string[]) => {
+  const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
+  if (newOnes.length > 0) {
+    const updated = [...teachers, ...newOnes];
+    setTeachers(updated);
+    setFormData(prev => ({ ...prev, teacher: updated }));
+  }
+};
+
 
   useEffect(() => {
     if (data && !selectedEvent) {
@@ -606,6 +618,7 @@ export default function Edit({
 
       const namesArray = teacherString.split(",").map((n) => n.trim()).filter(Boolean);
       handleAddTeachers(namesArray);
+      setOriginalTeachers(namesArray);
     }
   }, [data, selectedEvent]);
 
@@ -680,29 +693,29 @@ export default function Edit({
                 </select>
               </div>
 
-            <div className="">
-              <label className="block mb-1">เวลาเริ่ม</label>
-              <DatePicker
-                selected={startTime}
-                value={formData.study.startTime}
-                onChange={(date: Date | null) => {
-                  setStartTime(date);
-                  setFormData((prev) => ({
-                    ...prev,
-                    study: {
-                      ...prev.study,
-                      startTime: date ? formatDateToTimeString(date) : "",
-                    },
-                  }));
-                }}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="เวลา"
-                dateFormat="HH:mm"
-                customInput={<input ref={studyStartTimeRef} className="boxT pl-4" />}
-              />
-            </div>
+              <div className="">
+                <label className="block mb-1">เวลาเริ่ม</label>
+                <DatePicker
+                  selected={startTime}
+                  value={formData.study.startTime}
+                  onChange={(date: Date | null) => {
+                    setStartTime(date);
+                    setFormData((prev) => ({
+                      ...prev,
+                      study: {
+                        ...prev.study,
+                        startTime: date ? formatDateToTimeString(date) : "",
+                      },
+                    }));
+                  }}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="เวลา"
+                  dateFormat="HH:mm"
+                  customInput={<input ref={studyStartTimeRef} className="boxT pl-4" />}
+                />
+              </div>
 
 
               <div className="col-span-1 text-sm">
@@ -838,7 +851,6 @@ export default function Edit({
                     onClickOutside={() => setIsMidtermOpen(false)}
                     dateFormat="dd/MM/yyyy"
                     customInput={<input ref={midtermDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
-                    readOnly
                   />
                   <button
                     type="button"
@@ -865,7 +877,7 @@ export default function Edit({
                 </div>
               </div>
 
-              
+
               <div>
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
@@ -973,7 +985,6 @@ export default function Edit({
                     onClickOutside={() => setIsFinalOpen(false)}
                     dateFormat="dd/MM/yyyy"
                     customInput={<input ref={finalDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
-                    readOnly
                   />
                   <button
                     type="button"
@@ -1000,7 +1011,7 @@ export default function Edit({
                 </div>
               </div>
 
-             <div>
+              <div>
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
                   selected={
