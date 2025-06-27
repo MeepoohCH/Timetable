@@ -8,7 +8,7 @@ export default function AppLayoutClient({ children }: { children: React.ReactNod
   const pathname = usePathname();
 
   const hideNavbarPaths = ["/login","/"];
-  const hideTableNavbarPaths = ["/login","/","/addTable","/teacherData","/SubjectData"];
+  const hideTableNavbarPaths = ["/login","/","/addTable","/teacherData","/SubjectData", "/makeupclass" ];
   const showNavbar = !hideNavbarPaths.includes(pathname || "");
   const showTableNavbar = !hideTableNavbarPaths.includes(pathname || "");
 

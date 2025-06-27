@@ -278,7 +278,6 @@ export default function Add({
     setTeachers([]);
     setNewTeacher("");
     setDay(null);
-    setNewTeacher("");
     setStartTime(null);
     setEndTime(null);
     setWeekday("");
@@ -680,7 +679,8 @@ export default function Add({
                     open={isMidtermOpen}
                     onClickOutside={() => setIsMidtermOpen(false)}
                     dateFormat="dd/MM/yyyy"
-                    customInput={<input ref={midtermDateRef} className="boxT" />}
+                    customInput={<input ref={midtermDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
+                    readOnly
                   />
                   <button
                     type="button"
@@ -809,7 +809,8 @@ export default function Add({
                     open={isFinalOpen}
                     onClickOutside={() => setIsFinalOpen(false)}
                     dateFormat="dd/MM/yyyy"
-                    customInput={<input ref={finalDateRef} className="boxT" />}
+                    customInput={<input ref={finalDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
+                    readOnly
                   />
                   <button
                     type="button"

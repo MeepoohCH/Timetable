@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
@@ -56,6 +56,19 @@ export default function Edit({
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
   const [weekday, setWeekday] = useState<string>("");
+
+  const midtermDateRef = useRef<HTMLInputElement>(null);
+  const finalDateRef = useRef<HTMLInputElement>(null);
+  const [isMidtermOpen, setIsMidtermOpen] = useState(false);
+  const [isFinalOpen, setIsFinalOpen] = useState(false);
+
+  const studyStartTimeRef = useRef<HTMLInputElement>(null);
+  const midtermStartTimeRef = useRef<HTMLInputElement>(null);
+  const finalStartTimeRef = useRef<HTMLInputElement>(null);
+
+  const studyEndTimeRef = useRef<HTMLInputElement>(null);
+  const midtermEndTimeRef = useRef<HTMLInputElement>(null);
+  const finalEndTimeRef = useRef<HTMLInputElement>(null);
 
   const [conflictData, setConflictData] = useState<ClassItem | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
@@ -667,30 +680,29 @@ export default function Edit({
                 </select>
               </div>
 
-              <div className="">
-                <label className="block mb-1">เวลาเริ่ม</label>
-                <DatePicker
-                  selected={startTime}
-                  value={formData.study.startTime}
-                  onChange={(date: Date | null) => {
-                    setStartTime(date);
-                    setFormData((prev) => ({
-                      ...prev,
-                      study: {
-                        ...prev.study,
-                        startTime: date ? formatDateToTimeString(date) : "",
-                      },
-                    }));
-
-                  }}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeIntervals={15}
-                  timeCaption="เวลา"
-                  dateFormat="HH:mm"
-                  className="box pl-4"
-                />
-              </div>
+            <div className="">
+              <label className="block mb-1">เวลาเริ่ม</label>
+              <DatePicker
+                selected={startTime}
+                value={formData.study.startTime}
+                onChange={(date: Date | null) => {
+                  setStartTime(date);
+                  setFormData((prev) => ({
+                    ...prev,
+                    study: {
+                      ...prev.study,
+                      startTime: date ? formatDateToTimeString(date) : "",
+                    },
+                  }));
+                }}
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={15}
+                timeCaption="เวลา"
+                dateFormat="HH:mm"
+                customInput={<input ref={studyStartTimeRef} className="boxT pl-4" />}
+              />
+            </div>
 
 
               <div className="col-span-1 text-sm">
@@ -713,7 +725,7 @@ export default function Edit({
                   timeIntervals={15}
                   timeCaption="เวลา"
                   dateFormat="HH:mm"
-                  className="box pl-4"
+                  customInput={<input ref={studyEndTimeRef} className="boxT pl-4" />}
                 />
               </div>
 
@@ -805,37 +817,33 @@ export default function Edit({
               <div className="">
                 <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
-                  <div className="boxT">
-                    <DatePicker
-                      selected={midtermDate}
-                      value={formData.exam.midterm.date}
-                      onChange={(date: Date | null) => {
-                        setMidtermDate(date);
-                        setFormData((prev) => ({
-                          ...prev,
-                          exam: {
-                            ...prev.exam,
-                            midterm: {
-                              ...prev.exam.midterm,
-                              date: date ? date.toISOString().split("T")[0] : "",
-                            },
+                  <DatePicker
+                    selected={midtermDate}
+                    value={formData.exam.midterm.date}
+                    onChange={(date: Date | null) => {
+                      setMidtermDate(date);
+                      setFormData((prev) => ({
+                        ...prev,
+                        exam: {
+                          ...prev.exam,
+                          midterm: {
+                            ...prev.exam.midterm,
+                            date: date ? date.toISOString().split("T")[0] : "",
                           },
-                        }));
-                      }}
-                      dateFormat="dd/MM/yyyy"
-                      className="outline-none w-full bg-transparent"
-                    />
-                  </div>
+                        },
+                      }));
+                      setIsMidtermOpen(false);
+                    }}
+                    open={isMidtermOpen}
+                    onClickOutside={() => setIsMidtermOpen(false)}
+                    dateFormat="dd/MM/yyyy"
+                    customInput={<input ref={midtermDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
+                    readOnly
+                  />
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
-                    onClick={() =>
-                      document
-                        .querySelector<HTMLInputElement>(
-                          ".react-datepicker__input-container input"
-                        )
-                        ?.focus()
-                    }
+                    onClick={() => setIsMidtermOpen(true)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -857,6 +865,7 @@ export default function Edit({
                 </div>
               </div>
 
+              
               <div>
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
@@ -865,6 +874,7 @@ export default function Edit({
                       ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
                       : null
                   }
+                  value={formData.exam.midterm.startTime}
                   onChange={(date: Date | null) => {
                     setFormData((prev) => ({
                       ...prev,
@@ -878,13 +888,14 @@ export default function Edit({
                         },
                       },
                     }));
+
                   }}
                   showTimeSelect
                   showTimeSelectOnly
                   timeIntervals={15}
                   timeCaption="เวลา"
                   dateFormat="HH:mm"
-                  className="box pl-4"
+                  customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
                 />
               </div>
 
@@ -896,6 +907,7 @@ export default function Edit({
                       ? new Date(`1970-01-01T${formData.exam.midterm.endTime}`)
                       : null
                   }
+                  value={formData.exam.midterm.endTime}
                   onChange={(date: Date | null) => {
                     setFormData((prev) => ({
                       ...prev,
@@ -915,7 +927,7 @@ export default function Edit({
                   timeIntervals={15}
                   timeCaption="เวลา"
                   dateFormat="HH:mm"
-                  className="box pl-4"
+                  customInput={<input ref={midtermEndTimeRef} className="boxT pl-4" />}
                 />
               </div>
 
@@ -940,37 +952,33 @@ export default function Edit({
               <div className="">
                 <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
-                  <div className="boxT">
-                    <DatePicker
-                      selected={finalDate}
-                      value={formData.exam.final.date}
-                      onChange={(date: Date | null) => {
-                        setFinalDate(date);
-                        setFormData((prev) => ({
-                          ...prev,
-                          exam: {
-                            ...prev.exam,
-                            final: {
-                              ...prev.exam.final,
-                              date: date ? date.toISOString().split("T")[0] : "",
-                            },
+                  <DatePicker
+                    selected={finalDate}
+                    value={formData.exam.final.date}
+                    onChange={(date: Date | null) => {
+                      setFinalDate(date);
+                      setFormData((prev) => ({
+                        ...prev,
+                        exam: {
+                          ...prev.exam,
+                          final: {
+                            ...prev.exam.final,
+                            date: date ? date.toISOString().split("T")[0] : "",
                           },
-                        }));
-                      }}
-                      dateFormat="dd/MM/yyyy"
-                      className="outline-none w-full bg-transparent"
-                    />
-                  </div>
+                        },
+                      }));
+                      setIsFinalOpen(false);
+                    }}
+                    open={isFinalOpen}
+                    onClickOutside={() => setIsFinalOpen(false)}
+                    dateFormat="dd/MM/yyyy"
+                    customInput={<input ref={finalDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
+                    readOnly
+                  />
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
-                    onClick={() =>
-                      document
-                        .querySelector<HTMLInputElement>(
-                          ".react-datepicker__input-container input"
-                        )
-                        ?.focus()
-                    }
+                    onClick={() => setIsFinalOpen(true)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -992,7 +1000,7 @@ export default function Edit({
                 </div>
               </div>
 
-              <div>
+             <div>
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
                   selected={
@@ -1000,6 +1008,7 @@ export default function Edit({
                       ? new Date(`1970-01-01T${formData.exam.final.startTime}`)
                       : null
                   }
+                  value={formData.exam.final.startTime}
                   onChange={(date: Date | null) => {
                     setFormData((prev) => ({
                       ...prev,
@@ -1019,7 +1028,7 @@ export default function Edit({
                   timeIntervals={15}
                   timeCaption="เวลา"
                   dateFormat="HH:mm"
-                  className="box pl-4"
+                  customInput={<input ref={finalStartTimeRef} className="boxT pl-4" />}
                 />
               </div>
 
@@ -1031,6 +1040,7 @@ export default function Edit({
                       ? new Date(`1970-01-01T${formData.exam.final.endTime}`)
                       : null
                   }
+                  value={formData.exam.final.endTime}
                   onChange={(date: Date | null) => {
                     setFormData((prev) => ({
                       ...prev,
@@ -1050,7 +1060,7 @@ export default function Edit({
                   timeIntervals={15}
                   timeCaption="เวลา"
                   dateFormat="HH:mm"
-                  className="box pl-4"
+                  customInput={<input ref={finalEndTimeRef} className="boxT pl-4" />}
                 />
               </div>
 
