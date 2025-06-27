@@ -561,8 +561,7 @@ export default function Add({
                     open={isMidtermOpen}
                     onClickOutside={() => setIsMidtermOpen(false)}
                     dateFormat="dd/MM/yyyy"
-                    customInput={<input ref={midtermDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
-                    readOnly
+                    customInput={<input ref={midtermDateRef} className="boxT" />}
                   />
                   <button
                     type="button"
@@ -691,8 +690,7 @@ export default function Add({
                     open={isFinalOpen}
                     onClickOutside={() => setIsFinalOpen(false)}
                     dateFormat="dd/MM/yyyy"
-                    customInput={<input ref={finalDateRef} className="boxT outline-none focus:outline-none focus:ring-0" />}
-                    readOnly
+                    customInput={<input ref={finalDateRef} className="boxT" />}
                   />
                   <button
                     type="button"
