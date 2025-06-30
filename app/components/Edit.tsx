@@ -8,7 +8,7 @@ import { ClassItem } from "./ClassItem";
 import { useSearchParams } from 'next/navigation';
 import { ClassItemGet } from "./ClassItem_getData";
 import { useRouter } from "next/navigation";
-
+import Teacherbox from "./Teacherbox";
 
 type EditProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
@@ -262,22 +262,34 @@ export default function Edit({
   };
 
 
-
-
-
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
 
 const handleAddTeacher = () => {
-  const trimmedTeacher = newTeacher.trim();
-  if (trimmedTeacher !== "" && !teachers.includes(trimmedTeacher)) {
-    const updatedTeachers = [...teachers, trimmedTeacher]; // ✅ ใช้ `teachers` ไม่ใช่ `formData.teacher`
+  if (selectedTeachers.length > 0) {
+    // กรอง selectedTeachers ที่ยังไม่มีใน teachers เพื่อไม่ให้ซ้ำ
+    const newTeachers = selectedTeachers.filter(
+      (teacher) => !teachers.includes(teacher)
+    );
+
+    if (newTeachers.length === 0) {
+      // ไม่มีชื่อใหม่เพิ่ม
+      setSelectedTeachers([]);
+      return;
+    }
+
+    const updatedTeachers = [...teachers, ...newTeachers];
+
     setTeachers(updatedTeachers);
-    setFormData(prev => ({
-      ...prev,
+    setSelectedTeachers([]);
+
+    setFormData({
+      ...formData,
       teacher: updatedTeachers,
-    }));
-    setNewTeacher("");
+    });
   }
 };
+
+
 
 
   const handleRemoveTeacher = (index: number) => {
@@ -518,14 +530,14 @@ const handleAddTeacher = () => {
     resetForm()
   };
 
- const handleAddTeachers = (names: string[]) => {
-  const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
-  if (newOnes.length > 0) {
-    const updated = [...teachers, ...newOnes];
-    setTeachers(updated);
-    setFormData(prev => ({ ...prev, teacher: updated }));
-  }
-};
+  const handleAddTeachers = (names: string[]) => {
+    const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
+    if (newOnes.length > 0) {
+      const updated = [...teachers, ...newOnes];
+      setTeachers(updated);
+      setFormData(prev => ({ ...prev, teacher: updated }));
+    }
+  };
 
 
   useEffect(() => {
@@ -758,12 +770,9 @@ const handleAddTeacher = () => {
               <div>
                 <label className="block mb-1">อาจารย์</label>
                 <div className="flex items-center">
-                  <input
-                    type="text"
-                    name="teacher"
-                    value={newTeacher}
-                    onChange={(e) => setNewTeacher(e.target.value)}
-                    className="boxT"
+                  <Teacherbox
+                    selectedTeachers={selectedTeachers}
+                    setSelectedTeachers={setSelectedTeachers}
                   />
                   <button
                     type="button"
@@ -781,7 +790,7 @@ const handleAddTeacher = () => {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-gray-600 hover:text-gray-800 cursor-pointer"
+                      className="text-gray-500 hover:text-gray-800 cursor-pointer"
                     >
                       <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="8" x2="12" y2="16" />
@@ -797,6 +806,7 @@ const handleAddTeacher = () => {
                     >
                       <span>{teacher}</span>
                       <button
+                        type="button"
                         onClick={() => handleRemoveTeacher(index)}
                         className="ml-2 text-gray-700 hover:text-red-500"
                         title="ลบอาจารย์"

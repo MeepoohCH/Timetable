@@ -8,7 +8,7 @@ import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
 import DropdownTeacher from "./ui/dropdownTeacher";
-
+import Teacherbox from "./Teacherbox";
 
 type AddProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
@@ -59,6 +59,7 @@ export default function Add({
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
   const [subjectType, setSubjectType] = useState<string>("");
+    const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
 
 
   // เพิ่ม ref ให้ DatePicker รู้
@@ -134,7 +135,7 @@ export default function Add({
     subject_id: "",
     subjectName: "",
     sec: null,
-    teacher: [] as string[],
+    teacher: [""],
     weekday: "",
     subjectType: "",
     yearLevel: filters.yearLevel || null,
@@ -170,14 +171,31 @@ export default function Add({
   const [conflictData, setConflictData] = useState<ClassItem | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
 
-  const handleAddTeacher = () => {
-    if (newTeacher.trim() !== "") {
-      const updatedTeachers = [...teachers, newTeacher.trim()];
-      setTeachers(updatedTeachers);
-      setNewTeacher("");
-      setFormData({ ...formData, teacher: updatedTeachers });
+const handleAddTeacher = () => {
+  if (selectedTeachers.length > 0) {
+    // กรองเฉพาะชื่อที่ยังไม่มีใน teachers
+    const newTeachers = selectedTeachers.filter(
+      (t) => !teachers.includes(t)
+    );
+
+    // ถ้าไม่มีชื่อใหม่เลย ไม่ต้องทำอะไร
+    if (newTeachers.length === 0) {
+      setSelectedTeachers([]);
+      return;
     }
-  };
+
+    const updatedTeachers = [...teachers, ...newTeachers];
+
+    setTeachers(updatedTeachers);
+    setSelectedTeachers([]);
+
+    setFormData({
+      ...formData,
+      teacher: updatedTeachers,
+    });
+  }
+};
+
 
 
   const handleRemoveTeacher = (index: number) => {
@@ -249,7 +267,7 @@ export default function Add({
       subject_id: "",
       subjectName: "",
       sec: null,
-      teacher: [],
+      teacher: [""],
       weekday: "",
       subjectType: "",
       yearLevel: filters.yearLevel || null,
@@ -593,6 +611,10 @@ export default function Add({
                 <label className="block mb-1">อาจารย์</label>
 
                 <div className="flex items-center">
+                  <Teacherbox
+                    selectedTeachers={selectedTeachers}
+                    setSelectedTeachers={setSelectedTeachers}
+                  />
                   
                   <button type="button" onClick={handleAddTeacher} className="px-2 rounded hover:bg-gray-100">
                     <svg
@@ -605,7 +627,7 @@ export default function Add({
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-gray-600 hover:text-gray-800 cursor-pointer"
+                      className="text-gray-500 hover:text-gray-800 cursor-pointer"
                     >
                       <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="8" x2="12" y2="16" />
@@ -619,6 +641,7 @@ export default function Add({
                     <div key={index} className="flex items-center bg-[#FFE5CC] text-sm px-2 py-1 rounded">
                       <span>{teacher}</span>
                       <button
+                        type="button"
                         onClick={() => handleRemoveTeacher(index)}
                         className="ml-2 text-gray-700 hover:text-red-500"
                       >
