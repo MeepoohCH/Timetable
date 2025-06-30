@@ -1,0 +1,87 @@
+"use client";
+
+import { Button } from "./ui/button";
+
+import {
+    Command,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+} from "./ui/command";
+
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "./ui/popover";
+import { Check, ChevronDown } from "lucide-react";
+import * as React from "react";
+import "../components/DesignForm.css";
+type TeacherOption = {
+  value: string;
+  label: string;
+};
+
+const teacherOptions: TeacherOption[] = [
+  { value: "ครูA", label: "ครูA" },
+  { value: "ครูB", label: "ครูB" },
+  { value: "ครูC", label: "ครูC" },
+];
+
+export default function TeacherMultiSelect({
+  selectedTeachers,
+  setSelectedTeachers,
+}: {
+  selectedTeachers: string[];
+  setSelectedTeachers: (value: string[]) => void;
+
+}) {
+  const [open, setOpen] = React.useState(false);
+
+  const toggleTeacher = (teacher: string) => {
+    if (selectedTeachers.includes(teacher)) {
+      setSelectedTeachers(selectedTeachers.filter((t) => t !== teacher));
+    } else {
+      setSelectedTeachers([...selectedTeachers, teacher]);
+    }
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          className="boxT h-[29.46px] justify-between"
+        >
+          <span style={{ color: "#11181C", fontWeight: "normal" }}>
+            {selectedTeachers.length > 0
+              ? ${selectedTeachers} 
+              : "เลือกอาจารย์"}
+          </span>
+
+          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <Command>
+          <CommandInput placeholder="ค้นหา..." />
+          <CommandGroup>
+            {teacherOptions.map((teacher) => (
+              <CommandItem
+                key={teacher.value}
+                onSelect={() => toggleTeacher(teacher.value)}
+                className="flex items-center justify-between"
+              >
+                <span>{teacher.label}</span>
+                {selectedTeachers.includes(teacher.value) && (
+                  <Check className="h-4 w-4 text-primary" />
+                )}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}

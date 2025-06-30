@@ -593,16 +593,7 @@ export default function Add({
                 <label className="block mb-1">อาจารย์</label>
 
                 <div className="flex items-center">
-                  <input
-                    type="text"
-                    name="teacher"
-                    value={formData.teacher}
-                    onChange={(e) => {
-                      handleChange(e);
-                      setNewTeacher(e.target.value);
-                    }}
-                    className="boxT"
-                  />
+                  
                   <button type="button" onClick={handleAddTeacher} className="px-2 rounded hover:bg-gray-100">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
