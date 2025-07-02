@@ -15,11 +15,16 @@ type TeacherDropdownProps = {
     semester: string;
     academicYear: string;
   }) => void;
+  initialFilters?: {
+    teacher?: string;
+    semester?: string;
+    academicYear?: string;
+  };
 };
 
 
 
-export default function TeacherDropdown({ selectedEvent, setSelectedEvent, onSearch, }: TeacherDropdownProps) {
+export default function TeacherDropdown({ selectedEvent, setSelectedEvent, onSearch, initialFilters }: TeacherDropdownProps) {
 
   const {
     teacher,
@@ -30,7 +35,6 @@ export default function TeacherDropdown({ selectedEvent, setSelectedEvent, onSea
     setacademicYear,
   } = useTeacherFilter();
 
-  const [teacherList, setTeacherList] = React.useState<{ id: string | number; label: string }[]>([]);
 
   const semesterItems = [
     { id: "1", label: "1" },
@@ -43,7 +47,6 @@ export default function TeacherDropdown({ selectedEvent, setSelectedEvent, onSea
     const y = currentYear - i;
     return { id: y, label: y.toString() };
   });
-
 
 
   async function handleSearch() {

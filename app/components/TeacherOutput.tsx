@@ -21,6 +21,7 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
   const [error, setError] = useState<string | null>(null);
   const [midtermCurrentMonth, setMidtermCurrentMonth] = useState(new Date());
   const [finalCurrentMonth, setFinalCurrentMonth] = useState(new Date());
+  const [data, setData] = useState<ClassItemGet[]>([]);
 
   // ดึงค่าจาก context (ถ้าอยากใช้ก็ใช้ แต่ตอนนี้ props.filters เป็นตัวหลัก)
   // const { teacher, semester, year } = useTeacherFilter();
@@ -61,9 +62,13 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
     const formSection = document.getElementById("form-section");
     formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    // 🔽 3. ใช้ timetable_id ไปทำอย่างอื่น (เช่น router.push หรือ fetch รายละเอียด)
-    // ตัวอย่างใช้ router.push
-    router.push(`/addTable/${event.timetable_id}`);
+    const fromTeacher = filters.teacher;
+    const timetableId = event.timetable_id;
+
+    const query = new URLSearchParams({ fromTeacher }).toString();
+   router.push(`/addTable/${timetableId}?type=teacher&timetable_id=${timetableId}`);
+
+
   };
 
 
@@ -81,9 +86,9 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
           </div>
           <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2">
             <TeacherScheduleTable
-              filters={filters}
               selectedEvent={selectedEvent}
               setSelectedEvent={handleClick}
+               data={events}
             />
           </div>
 
@@ -93,18 +98,19 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
           </div>
           <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2">
             <TeacherCalendar
-              filters={filters}
+              data={events}
               selectedEvent={selectedEvent}
               setSelectedEvent={(event) => {
                 setSelectedEvent(event);
                 setCurrentComponent("edit");
+                
               }}
               currentMonth={midtermCurrentMonth}
               setCurrentMonth={setMidtermCurrentMonth}
               events={events}
               examType="midterm"
             />
-            <DetailPanel filters={filters} examType="midterm" selectedEvent={selectedEvent} />
+            <DetailPanel  data={events} examType="midterm" selectedEvent={selectedEvent} />
           </div>
 
           {/* ตารางสอบปลายภาค */}
@@ -113,7 +119,7 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
           </div>
           <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl justify-center mt-2 mx-2">
             <TeacherCalendar
-              filters={filters}
+              data={events}
               selectedEvent={selectedEvent}
               setSelectedEvent={(event) => {
                 setSelectedEvent(event);
@@ -124,7 +130,7 @@ export default function TeacherOutput({ filters }: { filters: Filters }) {
               events={events}
               examType="final"
             />
-            <DetailPanel filters={filters} examType="final" selectedEvent={selectedEvent} />
+            <DetailPanel  data={events} examType="final" selectedEvent={selectedEvent} />
           </div>
         </div>
       )}

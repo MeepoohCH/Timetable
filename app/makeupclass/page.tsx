@@ -29,6 +29,7 @@ type Props = {
 };
 
 
+
 export default function MakeupClassPage() {
 
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);
@@ -53,6 +54,7 @@ export default function MakeupClassPage() {
     date?: string;
   } | null>(null);
 
+  
 
   const [events, setEvents] = useState<ClassItemGet[]>([]);
   const [loading, setLoading] = useState(false);
@@ -79,6 +81,21 @@ export default function MakeupClassPage() {
       .finally(() => setLoading(false));
   }, [filters]);
 
+  function formatThaiDate(dateStr: string) {
+    if (!dateStr) return "-";
+
+    const date = new Date(dateStr);
+
+    const days = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
+    const months = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+
+    const dayName = days[date.getDay()];
+    const dayNum = date.getDate().toString().padStart(2, "0");
+    const monthName = months[date.getMonth()];
+    const yearBE = (date.getFullYear() + 543).toString().slice(-2);
+
+    return `${dayName} ${dayNum} ${monthName} ${yearBE}`;
+  }
 
 
 
@@ -108,20 +125,19 @@ export default function MakeupClassPage() {
             <div className="mb-4">
               <ExportButton
                 data={events.map((e) => ({
-                  'รหัสวิชา': e.subject_id,
-                  'ชื่อวิชา': e.subjectName,
-                  'ท/ป': e.subjectType,
-                  'ชั้นปี/กลุ่ม': `ปี${e.yearLevel?.toString() ?? "-"}\nกลุ่ม ${e.sec.toString()}`,  // แยกบรรทัดได้ด้วย \n
-                  'อาจารย์ผู้สอน': Array.isArray(e.parsedTeachers) && e.parsedTeachers.length > 0
-                    ? e.parsedTeachers
-                      .map((t) => {
-                        const name = `อ.${t.teacherName ?? ""} ${t.teacherSurname ?? ""}`.trim();
-                        return name || "-";
-                      })
-                      .join("\n")   // <-- ใช้ \n แทน , เพื่อขึ้นบรรทัดใหม่
+                  subject_id: e.subject_id,
+                  subjectName: e.subjectName,
+                  subjectType: e.subjectType,
+                  yearLevelSec: `ปี${e.yearLevel?.toString() ?? "-"}\nกลุ่ม ${e.sec.toString()}`,
+                  teachDate: formatThaiDate(date ? date.toString() : ""),
+                  teachTime: `${e.startTime ?? ""}-${e.endTime ?? ""}`,
+                  makeupDate: "",
+                  makeupTime: `${e.startTime ?? ""}-${e.endTime ?? ""}`,
+                  holiday: "",
+                  teachers: Array.isArray(e.parsedTeachers) && e.parsedTeachers.length > 0
+                    ? e.parsedTeachers.map((t) => `อ.${t.teacherName ?? ""} ${t.teacherSurname ?? ""}`.trim()).join("\n")
                     : "-",
-                  'เวลา': `${e.startTime ?? ""}-${e.endTime ?? ""}`,
-                  'วัน/เดือน/ปี': e.weekday,
+                  remark: "",
                 }))}
                 fileName="ตารางชดเชย"
               />

@@ -24,11 +24,7 @@ interface TeacherCalendarProps {
   setCurrentMonth: (date: Date) => void;
   events?: any[];
   examType?: "final" | "midterm";
-  filters: {
-    teacher: string;
-    semester: string;
-    academicYear: string;
-  } | null;
+  data: ClassItemGet[];
 };
 
 
@@ -63,7 +59,7 @@ export default function TeacherMidtermCalendar({
   setCurrentMonth,
   events,
   examType,
-  filters,
+  data
 }: TeacherCalendarProps) {
 
   const monthStart = startOfMonth(currentMonth);
@@ -81,61 +77,54 @@ export default function TeacherMidtermCalendar({
   const [error, setError] = useState<string | null>(null);
   const [hasSetMonth, setHasSetMonth] = useState(false);
 
-  useEffect(() => {
-  console.log("🔥 useEffect fired");
-  console.log("filters:", filters);
-  console.log("examType:", examType);
   
-  if (!filters) return;
-
-  const { teacher, semester, academicYear } = filters;
-
-  setLoading(true);
-  setError(null);
-
-  fetch(`/api/Timetable/teacherGet?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`)
-    .then(res => {
-      if (!res.ok) throw new Error("Failed to fetch");
-      return res.json();
-    })
-    .then(data => {
-      console.log("📦 ข้อมูลที่ได้จาก API หน้า TeacherCalendar:", data);
-      setClasses(data);
-
-      let examDates: Date[] = [];
-      console.log("📍 examType:", examType);
-      if (examType === "midterm") {
-        examDates = data
-          .filter((item: any) => item.midterm_date && !isNaN(new Date(item.midterm_date).getTime()))
-          .map((item: any) => new Date(item.midterm_date));
-      } else if (examType === "final") {
-        examDates = data
-          .filter((item: any) => item.final_date && !isNaN(new Date(item.final_date).getTime()))
-          .map((item: any) => new Date(item.final_date));
-      } else {
-        examDates = data.flatMap((item: any) => {
-          const dates: Date[] = [];
-          if (item.midterm_date) dates.push(new Date(item.midterm_date));
-          if (item.final_date) dates.push(new Date(item.final_date));
-          return dates;
-        });
-      }
-
-      if (examDates.length > 0 && !hasSetMonth) {
-        const firstExamDate = examDates.reduce(
-          (earliest: Date, current: Date) => (current < earliest ? current : earliest)
-        );
-        setCurrentMonth(startOfMonth(firstExamDate));
-        setHasSetMonth(true); // ✅ set แล้วกันไม่ให้ทำอีก
-      }
-    })
-    .catch(err => setError(err.message))
-    .finally(() => setLoading(false));
-}, [filters, examType, hasSetMonth]);
-
   useEffect(() => {
-    setHasSetMonth(false);
-  }, [filters]);
+  if (!data || data.length === 0) return;
+
+  setClasses(data); // <-- เพิ่มตรงนี้เพื่อให้ข้อมูล data ถูกเซตใน classes ที่ใช้แสดงบนปฏิทิน
+
+  let examDates: Date[] = [];
+  if (examType === "midterm") {
+    examDates = data
+      .filter(
+        (item) =>
+          item.midterm_date != null &&
+          !isNaN(new Date(item.midterm_date).getTime())
+      )
+      .map((item) => new Date(item.midterm_date!));
+  } else if (examType === "final") {
+    examDates = data
+      .filter(
+        (item) =>
+          item.final_date != null &&
+          !isNaN(new Date(item.final_date).getTime())
+      )
+      .map((item) => new Date(item.final_date!));
+  } else {
+    examDates = data.flatMap((item) => {
+      const dates: Date[] = [];
+      if (
+        item.midterm_date != null &&
+        !isNaN(new Date(item.midterm_date).getTime())
+      )
+        dates.push(new Date(item.midterm_date!));
+      if (
+        item.final_date != null &&
+        !isNaN(new Date(item.final_date).getTime())
+      )
+        dates.push(new Date(item.final_date!));
+      return dates;
+    });
+  }
+  if (examDates.length > 0 && !hasSetMonth) {
+    const firstExamDate = examDates.reduce((earliest, current) =>
+      current < earliest ? current : earliest
+    );
+    setCurrentMonth(startOfMonth(firstExamDate));
+    setHasSetMonth(true);
+  }
+}, [data, examType, hasSetMonth, setCurrentMonth]);
+
 
 
 

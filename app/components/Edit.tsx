@@ -10,6 +10,8 @@ import { ClassItemGet } from "./ClassItem_getData";
 import { useRouter } from "next/navigation";
 import Teacherbox from "./Teacherbox";
 
+
+
 type EditProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
   currentComponent: "edit" | "delete" | "add";
@@ -46,7 +48,8 @@ export default function Edit({
 
   const searchParams = useSearchParams();
   const router = useRouter();
-  const timetableId = searchParams.get("timetable_id");
+  const type = searchParams.get("type");
+  const isTeacherDropdown = type === "teacher"; 
   const [day, setDay] = useState<Date | null>(null);
   const [teachers, setTeachers] = useState<string[]>([]);
   const [newTeacher, setNewTeacher] = useState<string>("");
@@ -476,43 +479,48 @@ const handleAddTeacher = () => {
       }
     }
 
-    // ✅ ส่งข้อมูลไปยัง API ด้วย PUT
-    try {
-      const res = await fetch('/api/Timetable/edit', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          teacher: allTeachers,
-          originalTeachers,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error(`การแก้ไขล้มเหลว: ${res.statusText}`);
-      }
-
-      const result = await res.json();
-      alert('✅ แก้ไขตารางสำเร็จ');
-
-
-
-      onEditEventAction({
+     try {
+    const res = await fetch('/api/Timetable/edit', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         ...formData,
         teacher: allTeachers,
-      });
+        originalTeachers,
+      }),
+    });
 
-      resetForm();
-      router.replace("/addTable");
-
-    } catch (err) {
-      console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
-      alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+    if (!res.ok) {
+      throw new Error(`การแก้ไขล้มเหลว: ${res.statusText}`);
     }
-  };
 
+    const result = await res.json();
+    alert('✅ แก้ไขตารางสำเร็จ');
+
+    onEditEventAction({
+      ...formData,
+      teacher: allTeachers,
+    });
+
+    resetForm();
+
+const handleBackToDropdown = () => {
+  if (isTeacherDropdown) {
+    //router.push(`/teacherStudy?${query}`);
+    router.push(`/teacherStudy`);
+  } else {
+   // router.push(`/studentStudy?${query}`);
+   router.push(`/studentStudy`);
+  }
+};
+// เรียกใช้ตรงนี้หลังแก้ไขเสร็จ
+handleBackToDropdown();
+
+  } catch (err) {
+    console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
+    alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+  }
+};
 
   const handleOverwrite = () => {
     if (!conflictData) return;

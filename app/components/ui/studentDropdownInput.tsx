@@ -7,11 +7,17 @@ import { ClassItemGet } from "../ClassItem_getData"
 
 // StudentDropdownInput.tsx
 type Props = {
-  timetable_id?: number | undefined; // หรือชนิดอื่น ๆ ที่เหมาะสม เช่น string | undefined
-  data?: ClassItemGet | null; // ✅ เพิ่ม prop นี้
+  timetable_id?: number | undefined;
+  data?: ClassItemGet | null;
+  initialFilters?: {
+    yearLevel?: string;
+    semester?: string;
+    academicYear?: string;
+    degree?: string;
+  };
 };
 
-export default function StudentDropdown({ timetable_id,data }: Props) {
+export default function StudentDropdown({ timetable_id,data, initialFilters }: Props) {
     console.log("🔽 data ที่ส่งเข้ามาใน StudentDropdown:", data);
 
   const [yearlevel, setYearlevel] = useState<number | string | null>(null)
@@ -108,6 +114,15 @@ useEffect(() => {
   }
 }, [filters]);
 
+useEffect(() => {
+  if (initialFilters) {
+    if (initialFilters.yearLevel) setYearlevel(initialFilters.yearLevel);
+    if (initialFilters.semester) setSemester(initialFilters.semester);
+    if (initialFilters.academicYear) setYear(initialFilters.academicYear);
+    if (initialFilters.degree) setDegree(initialFilters.degree);
+    setHasError(false);
+  }
+}, [initialFilters]);
 
 
   return (

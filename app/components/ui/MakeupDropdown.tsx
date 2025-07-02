@@ -6,6 +6,7 @@ import DropdownTeacher from "./dropdownTeacher";
 import { useMakeupFilter } from "@/context/MakeupFilterContext/page";
 import { ClassItem } from "../ClassItem";
 import DatePicker from "react-datepicker";
+
 import "react-datepicker/dist/react-datepicker.css";
 
 const CustomDateInput = React.forwardRef<HTMLInputElement, any>(
@@ -118,8 +119,10 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
     if (!teacher || !semester || !academicYear || !weekday || !date) {
       alert("กรุณาเลือกให้ครบ อาจารย์, ภาคการศึกษา, ปีการศึกษา, วันม วันที่");
       return;
-    }
+    } 
+    
     console.log("กดปุ่มค้นหา, ส่งค่าไป parent:", { teacher, semester, academicYear, weekday, date });
+  // const date2 = addDays(date, 1);
     onSearch({
       teacher: String(teacher),
       semester: String(semester),
@@ -127,6 +130,7 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
       weekday: String(weekday),
       date: String(date),
     });
+
   }
 
   return (
@@ -161,20 +165,27 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
             <DatePicker
               selected={selectedDate}
               onChange={(date: Date | null) => {
-                setSelectedDate(date);
-                setIsDatePickerOpen(false);
-
                 if (date) {
+                  // ตั้งเวลาเป็นเที่ยงวัน ป้องกันเวลาเร็วไป 1 วันจาก timezone
+                  date.setHours(12, 0, 0, 0);
+
+                  setSelectedDate(date);
+                  setIsDatePickerOpen(false);
+
                   const weekdayEn = date.toLocaleDateString("en-US", { weekday: "long" });
                   const weekdayTh = convertWeekdayToThai(weekdayEn);  // แปลงเป็นภาษาไทย
                   setWeekday(weekdayTh);
+
                   const formatted = date.toISOString().split("T")[0];
                   setDate(formatted);
                 } else {
+                  setSelectedDate(null);
                   setWeekday("");
                   setDate("");
+                  setIsDatePickerOpen(false);
                 }
               }}
+
 
               open={isDatePickerOpen}
               onClickOutside={() => setIsDatePickerOpen(false)}

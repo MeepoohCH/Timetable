@@ -1,5 +1,6 @@
 export type ClassItemGet = {
   id: string;
+  date: string;
   timetable_id: number;
   subject_id: string;
   subjectType: string;

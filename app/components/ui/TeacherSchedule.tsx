@@ -1,34 +1,20 @@
 import { ClassItemGet } from "../ClassItem_getData";
-import { useEffect, useState } from "react"
 
 type Props = {
-   filters: {
-   teacher: string;
-  semester: string;
-  academicYear: string;
-  } | null;
+  data: ClassItemGet[];
   selectedEvent: ClassItemGet | null;
   setSelectedEvent: (event: ClassItemGet) => void;
 };
 
-
-
-
-export default function TeacherScheduleTable({ 
-  selectedEvent, 
+export default function TeacherScheduleTable({
+  selectedEvent,
   setSelectedEvent,
-  filters 
+  data,
 }: Props) {
-
-
-  const [classes, setClasses] = useState<ClassItemGet[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const weekdays = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
   const startHour = 8;
   const endHour = 22;
   const totalSlots = (endHour - startHour) * 4;
-  
 
   const parseTimeToFloat = (t: string) => {
     const [h, m] = t.split(':').map(Number);
@@ -36,36 +22,6 @@ export default function TeacherScheduleTable({
   };
 
   const timeToSlot = (time: number) => Math.round((time - startHour) * 4);
-
-    // 🌀 Fetch จาก filters ที่ส่งเข้ามา
-    useEffect(() => {
-        if (!filters) return;
-
-        const { teacher, semester, academicYear } = filters;
-
-        setLoading(true);
-        setError(null);
-        if (!teacher || !semester || !academicYear) {
-            console.warn("ข้อมูล filter ไม่ครบ");
-            return;
-        }
-
-
-        fetch(
-            `/api/Timetable/teacherGet?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}`
-        )
-            .then((res) => {
-                if (!res.ok) throw new Error("Failed to fetch");
-                return res.json();
-            })
-            .then((data) => {
-                setClasses(data);
-                console.log("📦 Fetched from DetailPanel:", data);
-            })
-            .catch((err) => setError(err.message))
-            .finally(() => setLoading(false));
-    }, [filters]);
-
 
   return (
     <div className="w-full max-w-[1152px] mx-auto">
@@ -109,7 +65,7 @@ export default function TeacherScheduleTable({
                   />
                 ))}
 
-                {classes
+                {data
                   .filter((c) => c.weekday === weekday)
                   .map((c, i) => {
                     const start = parseTimeToFloat(c.startTime);
@@ -124,15 +80,16 @@ export default function TeacherScheduleTable({
                       <div
                         key={i}
                         onClick={() => setSelectedEvent(c)}
-                        
                         className={`absolute top-1 bottom-1 ml-3 rounded p-1 shadow text-xs overflow-hidden text-center z-10 cursor-pointer
-+                         ${isSelected ? "bg-orange-300 ring-2 ring-orange-500" : "bg-[#FEDDC1]"}
+                          ${isSelected ? "bg-orange-300 ring-2 ring-orange-500" : "bg-[#FEDDC1]"}
                         `}
                         style={{ left, width }}
                         title={`${c.subjectName} (${c.subject_id})`}
                       >
                         <span className="font-medium">{c.subjectName}</span>
-                        <div style={{ fontSize: '10px' }}>{c.subject_id} ({c.subjectType}) กลุ่ม {c.sec}</div>
+                        <div style={{ fontSize: '10px' }}>
+                          {c.subject_id} ({c.subjectType}) กลุ่ม {c.sec}
+                        </div>
                       </div>
                     );
                   })}
