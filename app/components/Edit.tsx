@@ -425,6 +425,8 @@ const handleAddTeacher = () => {
       formData.exam.final.endTime,
     ];
 
+    
+
     const isStudyValid = requiredFieldsStudy.every(
       (field) => typeof field === "string" && field.trim() !== ""
     );
@@ -479,22 +481,28 @@ const handleAddTeacher = () => {
       }
     }
 
-     try {
-    const res = await fetch('/api/Timetable/edit', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...formData,
-        teacher: allTeachers,
-        originalTeachers,
-      }),
-    });
+    try {
+  const res = await fetch('/api/Timetable/edit', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ...formData,
+      teacher: allTeachers,
+      originalTeachers,
+    }),
+  });
 
-    if (!res.ok) {
-      throw new Error(`การแก้ไขล้มเหลว: ${res.statusText}`);
+  const result = await res.json();
+
+  if (!res.ok) {
+    if (res.status === 409 && result.error) {
+      alert(result.error); // ✅ แสดงข้อความจาก backend
+    } else {
+      alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
     }
+    return;
+  }
 
-    const result = await res.json();
     alert('✅ แก้ไขตารางสำเร็จ');
 
     onEditEventAction({

@@ -29,23 +29,47 @@ export async function POST(req: NextRequest) {
 
     conn = await pool.getConnection();
 
- /*   const subjectName = await getSubjectNameById(conn, subject_id);
-    if (!subjectName) {
-      const url = new URL('/SubjectData', req.url);  // สร้าง absolute URL
-      url.searchParams.set('error', 'Subject not found'); // ส่งข้อความผ่าน query string
-
-      return NextResponse.redirect(url.toString(), 302);
-    }
-
-    */
-    // เช็คว่ามี timetable ที่ข้อมูลซ้ำกันหรือยัง
-    
-   
+    // ดึง teacher ID
     const teacherIds = await getTeacherIdsByNames(conn, teacher || []);
     console.log('Teacher IDs:', teacherIds);
     const teacher_id_csv = teacherIds.join(',');
 
-    // ตัวอย่าง query เช็ค timetable ซ้ำ (สมมติเรียง field ตาม create)
+    // 🔍 ตรวจสอบว่าเวลาทับกับคาบอื่นของอาจารย์หรือไม่
+    if (teacherIds.length > 0) {
+      const placeholders = teacherIds.map(() => `FIND_IN_SET(?, REPLACE(t.teacher_id, ' ', '')) > 0`).join(' OR ');
+
+      const [conflicts] = await conn.query<RowDataPacket[]>(
+        `
+        SELECT t.timetable_id, t.startTime, t.endTime, t.weekday
+        FROM Timetable t
+        WHERE t.semester = ? AND t.academicYear = ? AND t.weekday = ?
+          AND (${placeholders})
+          AND (
+            (t.startTime < ? AND t.endTime > ?)
+            OR (t.startTime < ? AND t.endTime > ?)
+            OR (t.startTime >= ? AND t.endTime <= ?)
+          )
+        `,
+        [
+          semester,
+          academicYear,
+          weekday,
+          ...teacherIds,
+          study.endTime, study.startTime,
+          study.endTime, study.startTime,
+          study.startTime, study.endTime
+        ]
+      );
+
+      if (conflicts.length > 0) {
+        return NextResponse.json(
+          { error: "อาจารย์มีคาบเรียนทับซ้อนในวันและเวลาดังกล่าว", conflict: conflicts },
+          { status: 409 }
+        );
+      }
+    }
+
+    // 🔁 เช็คข้อมูลซ้ำก่อน insert
     const [existing] = await conn.query<RowDataPacket[]>(
       `SELECT timetable_id FROM Timetable WHERE
         subject_id = ? AND subjectType = ? AND yearLevel = ? AND degree = ? AND sec = ? AND
@@ -68,25 +92,21 @@ export async function POST(req: NextRequest) {
     );
 
     if (existing.length > 0) {
-      console.log('Duplicate timetable found, skipping insert:', existing[0].timetable_id);
       return NextResponse.json({ message: 'Timetable already exists', timetable_id: existing[0].timetable_id }, { status: 200 });
     }
 
-
-    
-
+    // ⏰ บันทึกข้อมูลสอบกลาง/ปลายภาค
     const midterm_id = await getOrCreateExamId(conn, {
       examType: 'midterm',
       ...exam.midterm,
     });
-    console.log('Midterm exam ID:', midterm_id);
 
     const final_id = await getOrCreateExamId(conn, {
       examType: 'final',
       ...exam.final,
     });
-    console.log('Final exam ID:', final_id);
 
+    // ✅ สร้าง timetable ใหม่
     await createTimetable(conn, {
       subject_id,
       subjectType,
@@ -101,7 +121,6 @@ export async function POST(req: NextRequest) {
       midterm_id,
       final_id,
     });
-    console.log('Timetable created.');
 
     return NextResponse.json({ message: 'Timetable created successfully' }, { status: 201 });
 
@@ -112,4 +131,3 @@ export async function POST(req: NextRequest) {
     if (conn) conn.release();
   }
 }
-

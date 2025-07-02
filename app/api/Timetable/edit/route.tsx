@@ -102,6 +102,42 @@ console.log('🔤 Sorted teacher IDs:', sortedTeacherIds);
       endTime: exam.final.endTime,
       location: exam.final.location,
     });
+// 🔍 ตรวจสอบว่าอาจารย์มีคาบทับกันไหม (ยกเว้นตารางที่กำลังอัปเดตอยู่)
+if (sortedTeacherIds.length > 0) {
+  const placeholders = sortedTeacherIds.map(() => `FIND_IN_SET(?, REPLACE(t.teacher_id, ' ', '')) > 0`).join(' OR ');
+
+  const [conflicts] = await conn.query<RowDataPacket[]>(
+    `
+    SELECT t.timetable_id, t.startTime, t.endTime, t.weekday
+    FROM Timetable t
+    WHERE t.semester = ? AND t.academicYear = ? AND t.weekday = ?
+      AND (${placeholders})
+      AND t.timetable_id != ?  -- ยกเว้นตัวที่กำลังแก้ไข
+      AND (
+        (t.startTime < ? AND t.endTime > ?)
+        OR (t.startTime < ? AND t.endTime > ?)
+        OR (t.startTime >= ? AND t.endTime <= ?)
+      )
+    `,
+    [
+      semester,
+      academicYear,
+      weekday,
+      ...sortedTeacherIds,
+      timetable_id,  // เว้นตัวที่อัปเดตอยู่
+      study.endTime, study.startTime,
+      study.endTime, study.startTime,
+      study.startTime, study.endTime,
+    ]
+  );
+
+  if (conflicts.length > 0) {
+    return NextResponse.json(
+      { error: "อาจารย์มีคาบเรียนทับซ้อนในวันและเวลาดังกล่าว", conflict: conflicts },
+      { status: 409 }
+    );
+  }
+}
 
     // ✅ อัปเดต timetable
     await updateTimetable(conn, {

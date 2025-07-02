@@ -10,11 +10,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const CustomDateInput = React.forwardRef<HTMLInputElement, any>(
-  ({ value, onClick }, ref) => (
+  ({ value, onClick, setIsDatePickerOpen }, ref) => (
     <input
       className="boxT border border-gray-300 rounded-[10px] px-2 py-1 text-sm w-40"
       style={{ height: "29px" }}
-      onClick={onClick}
+      onClick={() => {
+        setIsDatePickerOpen(true);
+        onClick(); // สำคัญมาก เพื่อให้ DatePicker เปิดจริง
+      }}
       ref={ref}
       value={value}
       placeholder="เลือก..."
@@ -22,6 +25,7 @@ const CustomDateInput = React.forwardRef<HTMLInputElement, any>(
     />
   )
 );
+
 
 type TeacherDropdownProps = {
   selectedEvent: ClassItem | null;
@@ -110,19 +114,14 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
 
 
   async function handleSearch() {
-    console.log("🔍 ค่าที่จะใช้ค้นหา:");
-    console.log("👨‍🏫 teacher:", teacher);
-    console.log("📘 semester:", semester);
-    console.log("📅 academicYear:", academicYear);
-    console.log("🗓️ weekday:", weekday);
-    console.log("📆 date:", date);
-    if (!teacher || !semester || !academicYear || !weekday || !date) {
+
+    if (  !semester || !academicYear ) {
       alert("กรุณาเลือกให้ครบ อาจารย์, ภาคการศึกษา, ปีการศึกษา, วันม วันที่");
       return;
-    } 
-    
+    }
+
     console.log("กดปุ่มค้นหา, ส่งค่าไป parent:", { teacher, semester, academicYear, weekday, date });
-  // const date2 = addDays(date, 1);
+    // const date2 = addDays(date, 1);
     onSearch({
       teacher: String(teacher),
       semester: String(semester),
@@ -132,36 +131,105 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
     });
 
   }
+  function handleRemoveTeacher() {
+  setTeacher("");
+  console.log("🧹 ลบค่าอาจารย์:", "");
+}
+
+function handleRemoveDate() {
+  setSelectedDate(null);
+  setDate("");
+  setWeekday("");
+  setIsDatePickerOpen(false);
+  console.log("🧹 ลบวันที่และวันในสัปดาห์");
+}
+
 
   return (
     <div className="relative">
-      <div className="flex flex-wrap gap-6 items-end">
-        <DropdownTeacher
-          label="อาจารย์"
-          selected={teacher ?? ""}
-          setSelected={setTeacher}
-        />
-        <Dropdown
-          label="ภาคการศึกษา"
-          items={semesterItems}
-          selected={semester ?? ""}
-          setSelected={setSemester}
-        />
-        <Dropdown
-          label="ปีการศึกษา"
-          items={yearItems}
-          selected={academicYear ?? ""}
-          setSelected={setacademicYear}
-        />
-        <Dropdown
-          label="วัน"
-          items={weekdayItems}
-          selected={weekday}
-          setSelected={(val) => setWeekday(String(val))}
-        />
-        <div>
+      <div className="flex flex-wrap gap-2 items-end">
+        <span>
+          <DropdownTeacher
+            label="อาจารย์"
+            selected={teacher ?? ""}
+            setSelected={setTeacher} />
+        </span>
+        <div className="pr-2 mt-6">
+          <button
+            type="button"
+            className=" text-gray-700 hover:text-red-500"
+            onClick={handleRemoveTeacher}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-gray-500 hover:text-gray-800 cursor-pointer"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="flex gap-4">
+          <Dropdown
+            label="ภาคการศึกษา"
+            items={semesterItems}
+            selected={semester ?? ""}
+            setSelected={setSemester}
+          />
+          <Dropdown
+            label="ปีการศึกษา"
+            items={yearItems}
+            selected={academicYear ?? ""}
+            setSelected={setacademicYear}
+          />
+        </div>
+
+        <span className="ml-2">
+          <Dropdown
+            label="วัน"
+            items={weekdayItems}
+            selected={weekday}
+            setSelected={(val) => setWeekday(String(val))}
+          />
+        </span>
+        <div className="pr-2 mt-6">
+          <button
+            type="button"
+            className=" text-gray-700 hover:text-red-500"
+            onClick={handleRemoveDate}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-gray-500 hover:text-gray-800 cursor-pointer"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+            </svg>
+          </button>
+        </div>
+
+
+
+        <div className="">
           <label className="block mb-1 text-sm">วันที่</label>
-          <div className="flex items-center">
+          <div className="flex items-center" >
             <DatePicker
               selected={selectedDate}
               onChange={(date: Date | null) => {
@@ -185,35 +253,33 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
                   setIsDatePickerOpen(false);
                 }
               }}
-
-
               open={isDatePickerOpen}
               onClickOutside={() => setIsDatePickerOpen(false)}
               dateFormat="dd/MM/yyyy"
-              customInput={<CustomDateInput />}
+              customInput={
+                <CustomDateInput setIsDatePickerOpen={setIsDatePickerOpen} />
+              }
             />
-
 
             <button
               type="button"
-              onClick={() => setIsDatePickerOpen(true)}
+              onClick={handleRemoveDate}
               className="ml-2 text-gray-500 hover:text-gray-700"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                viewBox="0 0 24 24"
+                className="text-gray-500 hover:text-gray-800 cursor-pointer"
               >
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
+                <circle cx="12" cy="12" r="10" />
+                <line x1="8" y1="12" x2="16" y2="12" />
               </svg>
             </button>
 
@@ -221,12 +287,12 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
         </div>
 
         <button
-          className="mt-auto bg-[#F96D00] h-7 w-28 text-xs px-3 text-white sm:h-7 sm:text-sm sm:px-4 rounded-15px transition hover:bg-white hover:text-[#F96D00]"
+          className="mt-auto ml-2 bg-[#F96D00] h-7 w-28 text-xs px-3 text-white sm:h-7 sm:text-sm sm:px-4 rounded-15px transition hover:bg-white hover:text-[#F96D00]"
           onClick={handleSearch}
         >
           ค้นหา
         </button>
       </div>
-    </div>
+    </div >
   );
 }

@@ -59,7 +59,7 @@ export default function Add({
   const [midtermDate, setMidtermDate] = useState<Date | null>(null);
   const [finalDate, setFinalDate] = useState<Date | null>(null);
   const [subjectType, setSubjectType] = useState<string>("");
-    const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
 
 
   // เพิ่ม ref ให้ DatePicker รู้
@@ -171,30 +171,30 @@ export default function Add({
   const [conflictData, setConflictData] = useState<ClassItem | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
 
-const handleAddTeacher = () => {
-  if (selectedTeachers.length > 0) {
-    // กรองเฉพาะชื่อที่ยังไม่มีใน teachers
-    const newTeachers = selectedTeachers.filter(
-      (t) => !teachers.includes(t)
-    );
+  const handleAddTeacher = () => {
+    if (selectedTeachers.length > 0) {
+      // กรองเฉพาะชื่อที่ยังไม่มีใน teachers
+      const newTeachers = selectedTeachers.filter(
+        (t) => !teachers.includes(t)
+      );
 
-    // ถ้าไม่มีชื่อใหม่เลย ไม่ต้องทำอะไร
-    if (newTeachers.length === 0) {
+      // ถ้าไม่มีชื่อใหม่เลย ไม่ต้องทำอะไร
+      if (newTeachers.length === 0) {
+        setSelectedTeachers([]);
+        return;
+      }
+
+      const updatedTeachers = [...teachers, ...newTeachers];
+
+      setTeachers(updatedTeachers);
       setSelectedTeachers([]);
-      return;
+
+      setFormData({
+        ...formData,
+        teacher: updatedTeachers,
+      });
     }
-
-    const updatedTeachers = [...teachers, ...newTeachers];
-
-    setTeachers(updatedTeachers);
-    setSelectedTeachers([]);
-
-    setFormData({
-      ...formData,
-      teacher: updatedTeachers,
-    });
-  }
-};
+  };
 
 
 
@@ -343,6 +343,10 @@ const handleAddTeacher = () => {
     if (!formData.exam.final.startTime.trim()) errors.push("เวลาเริ่มสอบปลายภาค");
     if (!formData.exam.final.endTime.trim()) errors.push("เวลาสิ้นสุดสอบปลายภาค");
 
+    if (!filters.yearLevel) errors.push("ชั้นปี");
+    if (!filters.semester) errors.push("ภาคการศึกษา");
+    if (!filters.academicYear) errors.push("ปีการศึกษา");
+
     if (errors.length > 0) {
       alert("กรุณากรอกข้อมูลให้ครบถ้วนในช่องต่อไปนี้:\n- " + errors.join("\n- "));
       return;
@@ -435,12 +439,18 @@ const handleAddTeacher = () => {
         body: JSON.stringify(dataToSend),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-
-      }
 
       const result = await response.json();
+
+       if (!response.ok) {
+    // ตรวจสอบว่ามี error 409 และมีข้อความซ้ำเวลา
+    if (response.status === 409 && result.error) {
+      alert(result.error); // 👈 แสดง "อาจารย์มีคาบเรียนทับซ้อนในวันและเวลาดังกล่าว"
+    } else {
+      alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
+    }
+    return;
+  }
       alert("✅ เพิ่มตารางสำเร็จ");
 
       resetForm(filters);
@@ -615,7 +625,7 @@ const handleAddTeacher = () => {
                     selectedTeachers={selectedTeachers}
                     setSelectedTeachers={setSelectedTeachers}
                   />
-                  
+
                   <button type="button" onClick={handleAddTeacher} className="px-2 rounded hover:bg-gray-100">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
