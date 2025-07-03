@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   nextjs:
     container_name: nextjs-app
@@ -48,6 +46,20 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - mysql
+
+  cleaner:
+    container_name: cleaner
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./logs:/var/log
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    command: ["./start.sh"]
+    # หรือ entrypoint ก็ได้:
+    # entrypoint: ["./start.sh"]
 
 volumes:
   db_data:

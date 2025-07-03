@@ -3,10 +3,8 @@ import { pool } from '@/lib/db';
 import { getOrCreateExamId } from '@/lib/exam';
 import { getTeacherIdsByNames } from '@/lib/teacher';
 import { updateTimetable, findTimetableIdByFields } from '@/lib/timetable';
-import { RowDataPacket } from 'mysql2/promise';
+import { RowDataPacket, PoolConnection } from 'mysql2/promise';
 
-
-    // ✅ ดึงข้อมูลอาจารย์ทั้งหมดเพื่อเรียงตามชื่อจริง
 interface TeacherRow extends RowDataPacket {
   teacher_id: string;
   role: string;
@@ -14,9 +12,8 @@ interface TeacherRow extends RowDataPacket {
   teacherSurname: string;
 }
 
-
 export async function PUT(req: NextRequest) {
-  let conn = null;
+  let conn: PoolConnection | null = null;
 
   try {
     const body = await req.json();
@@ -34,14 +31,14 @@ export async function PUT(req: NextRequest) {
       weekday,
       study,
       teacher,
-      exam
+      exam,
     } = body;
 
     conn = await pool.getConnection();
+    await conn.beginTransaction(); // ✅ เริ่ม transaction
 
-    // ✅ ถ้าไม่มี timetable_id → ค้นหาจาก field อื่น ๆ
+    // หา timetable_id ถ้ายังไม่มี
     if (!timetable_id) {
-      console.log('No timetable_id provided, searching by other fields...');
       timetable_id = await findTimetableIdByFields(conn, {
         subject_id,
         subjectType,
@@ -51,42 +48,70 @@ export async function PUT(req: NextRequest) {
         semester,
         academicYear,
         weekday,
-        study
+        study,
       });
 
       if (!timetable_id) {
-        console.log('Timetable ID not found for update.');
+        await conn.rollback(); // ❌ ยกเลิก
         return NextResponse.json({ error: 'Timetable ID not found for update' }, { status: 404 });
       }
-
-      console.log('Found timetable_id:', timetable_id);
     }
 
-    // ✅ แปลงรายชื่ออาจารย์เป็น teacherIds
     const teacherIds = await getTeacherIdsByNames(conn, teacher || []);
-    console.log('Teacher IDs:', teacherIds);
+    const [allTeachers] = await conn.query<TeacherRow[]>(
+      'SELECT teacher_id, role, teacherName, teacherSurname FROM Teacher'
+    );
 
+    const sortedTeacherIds = teacherIds
+      .map((id) => {
+        const t = allTeachers.find((x) => x.teacher_id === id);
+        return {
+          id,
+          fullName: t ? `${t.teacherName} ${t.teacherSurname}` : id,
+        };
+      })
+      .sort((a, b) => a.fullName.localeCompare(b.fullName))
+      .map((t) => t.id);
 
-const [allTeachers] = await conn.query<TeacherRow[]>(
-  'SELECT teacher_id, role, teacherName, teacherSurname FROM Teacher'
-);
+    // ตรวจสอบว่ามีคาบซ้อนหรือไม่
+    if (sortedTeacherIds.length > 0) {
+      const placeholders = sortedTeacherIds.map(() => `FIND_IN_SET(?, REPLACE(t.teacher_id, ' ', '')) > 0`).join(' OR ');
 
-// ✅ จับคู่และเรียง
-const sortedTeacherIds = teacherIds
-  .map((id) => {
-    const t = allTeachers.find((x) => x.teacher_id === id);
-    return {
-      id,
-      fullName: t ? `${t.teacherName} ${t.teacherSurname}` : id,
-    };
-  })
-  .sort((a, b) => a.fullName.localeCompare(b.fullName))
-  .map((t) => t.id);
+      const [conflicts] = await conn.query<RowDataPacket[]>(
+        `
+        SELECT t.timetable_id, t.startTime, t.endTime, t.weekday
+        FROM Timetable t
+        WHERE t.semester = ? AND t.academicYear = ? AND t.weekday = ?
+          AND (${placeholders})
+          AND t.timetable_id != ?  -- เว้นตัวเดิม
+          AND (
+            (t.startTime < ? AND t.endTime > ?)
+            OR (t.startTime < ? AND t.endTime > ?)
+            OR (t.startTime >= ? AND t.endTime <= ?)
+          )
+        `,
+        [
+          semester,
+          academicYear,
+          weekday,
+          ...sortedTeacherIds,
+          timetable_id,
+          study.endTime,
+          study.startTime,
+          study.endTime,
+          study.startTime,
+          study.startTime,
+          study.endTime,
+        ]
+      );
 
-console.log('🔤 Sorted teacher IDs:', sortedTeacherIds);
+      if (conflicts.length > 0) {
+        await conn.rollback(); // ❌ ยกเลิก
+        return NextResponse.json({ error: 'อาจารย์มีคาบเรียนทับซ้อน', conflict: conflicts }, { status: 409 });
+      }
+    }
 
-
-    // ✅ ดึง/สร้าง midterm/final exam id
+    // ดึง/สร้าง midterm/final exam id
     const midterm_id = await getOrCreateExamId(conn, {
       examType: 'midterm',
       date: exam.midterm.date,
@@ -102,44 +127,7 @@ console.log('🔤 Sorted teacher IDs:', sortedTeacherIds);
       endTime: exam.final.endTime,
       location: exam.final.location,
     });
-// 🔍 ตรวจสอบว่าอาจารย์มีคาบทับกันไหม (ยกเว้นตารางที่กำลังอัปเดตอยู่)
-if (sortedTeacherIds.length > 0) {
-  const placeholders = sortedTeacherIds.map(() => `FIND_IN_SET(?, REPLACE(t.teacher_id, ' ', '')) > 0`).join(' OR ');
 
-  const [conflicts] = await conn.query<RowDataPacket[]>(
-    `
-    SELECT t.timetable_id, t.startTime, t.endTime, t.weekday
-    FROM Timetable t
-    WHERE t.semester = ? AND t.academicYear = ? AND t.weekday = ?
-      AND (${placeholders})
-      AND t.timetable_id != ?  -- ยกเว้นตัวที่กำลังแก้ไข
-      AND (
-        (t.startTime < ? AND t.endTime > ?)
-        OR (t.startTime < ? AND t.endTime > ?)
-        OR (t.startTime >= ? AND t.endTime <= ?)
-      )
-    `,
-    [
-      semester,
-      academicYear,
-      weekday,
-      ...sortedTeacherIds,
-      timetable_id,  // เว้นตัวที่อัปเดตอยู่
-      study.endTime, study.startTime,
-      study.endTime, study.startTime,
-      study.startTime, study.endTime,
-    ]
-  );
-
-  if (conflicts.length > 0) {
-    return NextResponse.json(
-      { error: "อาจารย์มีคาบเรียนทับซ้อนในวันและเวลาดังกล่าว", conflict: conflicts },
-      { status: 409 }
-    );
-  }
-}
-
-    // ✅ อัปเดต timetable
     await updateTimetable(conn, {
       timetable_id,
       subject_id,
@@ -156,13 +144,15 @@ if (sortedTeacherIds.length > 0) {
       final_id,
     });
 
+    await conn.commit(); // ✅ ยืนยันการเปลี่ยนแปลง
     console.log('Timetable updated.');
     return NextResponse.json({ message: 'Timetable updated successfully' }, { status: 200 });
 
   } catch (error: any) {
+    if (conn) await conn.rollback(); // ❌ ถ้า error → ยกเลิก
     console.error('PUT error:', error);
     return NextResponse.json({ error: error.message || 'Failed to update timetable' }, { status: 500 });
   } finally {
-    if (conn) conn.release();
+    if (conn) conn.release(); // ✅ ปล่อย connection กลับ pool
   }
 }

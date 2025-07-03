@@ -906,35 +906,34 @@ handleBackToDropdown();
 
               <div>
                 <label className="block mb-1">เวลาเริ่ม</label>
-                <DatePicker
-                  selected={
-                    formData.exam.midterm.startTime
-                      ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
-                      : null
-                  }
-                  value={formData.exam.midterm.startTime}
-                  onChange={(date: Date | null) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      exam: {
-                        ...prev.exam,
-                        midterm: {
-                          ...prev.exam.midterm,
-                          startTime: date ? formatDateToTimeString(date) : "",
-                          endTime: prev.exam.midterm.endTime, // รักษาค่าเดิมไว้
-                          location: prev.exam.midterm.location,
-                        },
-                      },
-                    }));
+               <DatePicker
+  selected={
+    formData.exam.midterm.startTime
+      ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
+      : null
+  }
+  onChange={(date: Date | null) => {
+    setFormData((prev) => ({
+      ...prev,
+      exam: {
+        ...prev.exam,
+        midterm: {
+          ...prev.exam.midterm,
+          startTime: date ? formatDateToTimeString(date) : "",
+          endTime: prev.exam.midterm.endTime,
+          location: prev.exam.midterm.location,
+        },
+      },
+    }));
+  }}
+  showTimeSelect
+  showTimeSelectOnly
+  timeIntervals={15}
+  timeCaption="เวลา"
+  dateFormat="HH:mm"
+  customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
+/>
 
-                  }}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeIntervals={15}
-                  timeCaption="เวลา"
-                  dateFormat="HH:mm"
-                  customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
-                />
               </div>
 
               <div>
@@ -945,7 +944,6 @@ handleBackToDropdown();
                       ? new Date(`1970-01-01T${formData.exam.midterm.endTime}`)
                       : null
                   }
-                  value={formData.exam.midterm.endTime}
                   onChange={(date: Date | null) => {
                     setFormData((prev) => ({
                       ...prev,
@@ -1045,7 +1043,6 @@ handleBackToDropdown();
                       ? new Date(`1970-01-01T${formData.exam.final.startTime}`)
                       : null
                   }
-                  value={formData.exam.final.startTime}
                   onChange={(date: Date | null) => {
                     setFormData((prev) => ({
                       ...prev,
@@ -1077,7 +1074,6 @@ handleBackToDropdown();
                       ? new Date(`1970-01-01T${formData.exam.final.endTime}`)
                       : null
                   }
-                  value={formData.exam.final.endTime}
                   onChange={(date: Date | null) => {
                     setFormData((prev) => ({
                       ...prev,
