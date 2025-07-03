@@ -25,10 +25,10 @@ export default function TeacherScheduleTable({
 
   return (
     <div className="w-full max-w-[1152px] mx-auto">
-      <div className="inline-block w-full max-w-full rounded-2xl p-1 shadow bg-[#F3F4F6] border-4 border-white">
+      <div className="inline-block rounded-2xl p-1 shadow bg-[#F3F4F6] border-4 border-white">
         <div className="grid grid-rows-[40px_repeat(7,1fr)]">
           <div className="grid grid-cols-[75px_repeat(56,19px)]">
-            <div className="flex items-center text-sm justify-center sticky left-0 border-r bg-[#F3F4F6]">
+            <div className="flex items-center text-sm justify-center left-0 border-r bg-[#F3F4F6]">
               วัน / เวลา
             </div>
             {Array.from({ length: totalSlots }).map((_, i) => {
@@ -53,7 +53,7 @@ export default function TeacherScheduleTable({
               key={weekday}
               className="grid grid-cols-[75px_repeat(56,19px)] border-t relative bg-[#F3F4F6]"
             >
-              <div className="flex items-center text-sm justify-center sticky left-0 border-r bg-[#F3F4F6]">
+              <div className="flex items-center text-sm justify-center left-0 border-r bg-[#F3F4F6]">
                 {weekday}
               </div>
               <div className="relative col-span-[56] flex">
