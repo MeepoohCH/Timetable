@@ -15,7 +15,6 @@ type Props = {
 
 
 export default function StudentForm({ timetable_id, data }: Props) {
-  console.log("🔽 data ที่ส่งเข้ามาในStudentForm:", data);
   const [existingClasses, setExistingClasses] = useState<ClassItem[]>([]);
   const [currentComponent, setCurrentComponent] = useState<"add" | "edit" | "delete">("add");
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null

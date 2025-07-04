@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {
+      overwriteId,
       subject_id,
       subjectType,
       yearLevel,
@@ -30,13 +31,36 @@ export async function POST(req: NextRequest) {
     const teacherIds = await getTeacherIdsByNames(conn, teacher || []);
     const teacher_id_csv = teacherIds.join(',');
 
-    // ตรวจสอบว่าอาจารย์มีคาบซ้อน
+    // ดึงข้อมูลอาจารย์ทั้งหมดก่อนใช้งาน
+    const [allTeachers] = await conn.query<RowDataPacket[]>(
+      'SELECT teacher_id, role, teacherName, teacherSurname FROM Teacher'
+    );
+
+    // เรียงอาจารย์
+    const sortedTeacherIds = teacherIds
+      .map((id) => {
+        const t = allTeachers.find((x) => x.teacher_id === id);
+        return {
+          id,
+          fullName: t ? `${t.teacherName} ${t.teacherSurname}` : id,
+        };
+      })
+      .sort((a, b) => a.fullName.localeCompare(b.fullName))
+      .map((t) => t.id);
+
+    // ลบ timetable ที่จะ overwrite (ถ้ามี)
+    const overwriteIdNum = Number(overwriteId);
+    if (!isNaN(overwriteIdNum)) {
+      console.log('🗑 ลบ timetable_id ที่ overwrite:', overwriteIdNum);
+      await conn.query(`DELETE FROM Timetable WHERE timetable_id = ?`, [overwriteIdNum]);
+    }
+
+    // ตรวจสอบคาบซ้อน
     if (teacherIds.length > 0) {
       const placeholders = teacherIds.map(() => `FIND_IN_SET(?, REPLACE(t.teacher_id, ' ', '')) > 0`).join(' OR ');
-
       const [conflicts] = await conn.query<RowDataPacket[]>(
         `
-        SELECT t.timetable_id, t.startTime, t.endTime, t.weekday
+        SELECT t.timetable_id, t.startTime, t.endTime, t.weekday, t.subject_id, t.teacher_id, t.location
         FROM Timetable t
         WHERE t.semester = ? AND t.academicYear = ? AND t.weekday = ?
           AND (${placeholders})
@@ -58,62 +82,95 @@ export async function POST(req: NextRequest) {
       );
 
       if (conflicts.length > 0) {
+        const conflictRow = conflicts[0];
+        const conflictSubjectId = conflictRow.subject_id;
+        let conflictSubjectName = conflictSubjectId;
+
+        if (conflictSubjectId) {
+          const [subjectRows] = await conn.query<RowDataPacket[]>(
+            `SELECT subjectName FROM Subject WHERE subject_id = ?`,
+            [conflictSubjectId]
+          );
+          conflictSubjectName = subjectRows[0]?.subjectName || conflictSubjectId;
+        }
+
+        const conflictingTeacherIdsSet = new Set<string>();
+        conflicts.forEach((row) => {
+          if (row.teacher_id) {
+            row.teacher_id.split(',').forEach((id: string) => {
+              if (teacherIds.includes(id.trim())) {
+                conflictingTeacherIdsSet.add(id.trim());
+              }
+            });
+          }
+        });
+
+        const conflictTeachers = Array.from(conflictingTeacherIdsSet).map((id) => {
+          const t = allTeachers.find((x) => x.teacher_id === id);
+          return t ? `${t.role}${t.teacherName} ${t.teacherSurname}` : id;
+        });
+
         await conn.rollback();
         return NextResponse.json({
           error: 'อาจารย์มีคาบเรียนทับซ้อนในวันและเวลาดังกล่าว',
-          conflict: conflicts,
+          conflictData: {
+            timetable_id: conflictRow.timetable_id,
+            subject_id: conflictRow.subject_id,
+            subjectName: conflictSubjectName,
+            weekday: conflictRow.weekday,
+            study: {
+              startTime: conflictRow.startTime,
+              endTime: conflictRow.endTime,
+              location: conflictRow.location ?? '',
+            },
+            teacher: conflictTeachers,
+          },
         }, { status: 409 });
       }
     }
 
-    // ตรวจสอบตารางเรียนซ้ำ
-    const [existing] = await conn.query<RowDataPacket[]>(
-      `SELECT timetable_id FROM Timetable WHERE
-        subject_id = ? AND subjectType = ? AND yearLevel = ? AND degree = ? AND sec = ? AND
-        semester = ? AND academicYear = ? AND weekday = ? AND startTime = ? AND endTime = ? AND
-        location = ? AND teacher_id = ?`,
-      [
-        subject_id,
-        subjectType,
-        yearLevel,
-        degree,
-        sec,
-        semester,
-        academicYear,
-        weekday,
-        study.startTime,
-        study.endTime,
-        study.location,
-        teacher_id_csv,
-      ]
-    );
+    // ตรวจสอบตารางเรียนซ้ำ (กรณีไม่มี overwrite)
+    if (!overwriteIdNum || isNaN(overwriteIdNum)) {
+      const [existing] = await conn.query<RowDataPacket[]>(
+        `SELECT timetable_id FROM Timetable WHERE
+          subject_id = ? AND subjectType = ? AND yearLevel = ? AND degree = ? AND sec = ? AND
+          semester = ? AND academicYear = ? AND weekday = ? AND startTime = ? AND endTime = ? AND
+          location = ? AND teacher_id = ?`,
+        [
+          subject_id,
+          subjectType,
+          yearLevel,
+          degree,
+          sec,
+          semester,
+          academicYear,
+          weekday,
+          study.startTime,
+          study.endTime,
+          study.location,
+          teacher_id_csv,
+        ]
+      );
 
-    if (existing.length > 0) {
-      await conn.rollback();
-      return NextResponse.json({
-        message: 'Timetable already exists',
-        timetable_id: existing[0].timetable_id,
-      }, { status: 200 });
+      if (existing.length > 0) {
+        await conn.rollback();
+        return NextResponse.json({
+          message: 'Timetable already exists',
+          timetable_id: existing[0].timetable_id,
+        }, { status: 200 });
+      }
     }
 
-    // สร้าง midterm/final ถ้ามีวันสอบ
-    let midterm_id: number;
-    if (exam?.midterm?.date) {
-      midterm_id = await getOrCreateExamId(conn, { examType: 'midterm', ...exam.midterm });
-    } else {
-      const [result] = await conn.query(`INSERT INTO Exam (examType) VALUES ('midterm')`);
-      midterm_id = (result as any).insertId;
-    }
+    // สร้าง midterm/final
+    const midterm_id = exam?.midterm?.date
+      ? await getOrCreateExamId(conn, { examType: 'midterm', ...exam.midterm })
+      : (await conn.query(`INSERT INTO Exam (examType) VALUES ('midterm')`) as any)[0].insertId;
 
-    let final_id: number;
-    if (exam?.final?.date) {
-      final_id = await getOrCreateExamId(conn, { examType: 'final', ...exam.final });
-    } else {
-      const [result] = await conn.query(`INSERT INTO Exam (examType) VALUES ('final')`);
-      final_id = (result as any).insertId;
-    }
+    const final_id = exam?.final?.date
+      ? await getOrCreateExamId(conn, { examType: 'final', ...exam.final })
+      : (await conn.query(`INSERT INTO Exam (examType) VALUES ('final')`) as any)[0].insertId;
 
-    // สร้าง timetable
+    // สร้างตารางเรียนใหม่
     await createTimetable(conn, {
       subject_id,
       subjectType,
@@ -124,7 +181,7 @@ export async function POST(req: NextRequest) {
       academicYear,
       weekday,
       study,
-      teacherIds,
+      teacherIds: sortedTeacherIds,
       midterm_id,
       final_id,
     });

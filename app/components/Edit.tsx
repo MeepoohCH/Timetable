@@ -49,7 +49,7 @@ export default function Edit({
   const searchParams = useSearchParams();
   const router = useRouter();
   const type = searchParams.get("type");
-  const isTeacherDropdown = type === "teacher"; 
+  const isTeacherDropdown = type === "teacher";
   const [day, setDay] = useState<Date | null>(null);
   const [teachers, setTeachers] = useState<string[]>([]);
   const [newTeacher, setNewTeacher] = useState<string>("");
@@ -76,6 +76,8 @@ export default function Edit({
   const [conflictData, setConflictData] = useState<ClassItem | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
   const [originalTeachers, setOriginalTeachers] = useState<string[]>([]);
+  const [overwriteId, setOverwriteId] = useState<string | undefined>(undefined);
+
 
   const [formData, setFormData] = useState<ClassItem>({
     id: "",
@@ -115,6 +117,7 @@ export default function Edit({
     subjectName: "",
     credit: 0,
     creditType: "",
+    overwriteId: undefined,
   });
 
   useEffect(() => {
@@ -267,30 +270,30 @@ export default function Edit({
 
   const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
 
-const handleAddTeacher = () => {
-  if (selectedTeachers.length > 0) {
-    // กรอง selectedTeachers ที่ยังไม่มีใน teachers เพื่อไม่ให้ซ้ำ
-    const newTeachers = selectedTeachers.filter(
-      (teacher) => !teachers.includes(teacher)
-    );
+  const handleAddTeacher = () => {
+    if (selectedTeachers.length > 0) {
+      // กรอง selectedTeachers ที่ยังไม่มีใน teachers เพื่อไม่ให้ซ้ำ
+      const newTeachers = selectedTeachers.filter(
+        (teacher) => !teachers.includes(teacher)
+      );
 
-    if (newTeachers.length === 0) {
-      // ไม่มีชื่อใหม่เพิ่ม
+      if (newTeachers.length === 0) {
+        // ไม่มีชื่อใหม่เพิ่ม
+        setSelectedTeachers([]);
+        return;
+      }
+
+      const updatedTeachers = [...teachers, ...newTeachers];
+
+      setTeachers(updatedTeachers);
       setSelectedTeachers([]);
-      return;
+
+      setFormData({
+        ...formData,
+        teacher: updatedTeachers,
+      });
     }
-
-    const updatedTeachers = [...teachers, ...newTeachers];
-
-    setTeachers(updatedTeachers);
-    setSelectedTeachers([]);
-
-    setFormData({
-      ...formData,
-      teacher: updatedTeachers,
-    });
-  }
-};
+  };
 
 
 
@@ -393,14 +396,58 @@ const handleAddTeacher = () => {
     setFinalDate(null);
   }
 
+  const handleBackToDropdown = () => {
+    if (isTeacherDropdown) {
+      //router.push(`/teacherStudy?${query}`);
+      router.push(`/teacherStudy`);
+    } else {
+      // router.push(`/studentStudy?${query}`);
+      router.push(`/studentStudy`);
+    }
+  };
+
   const getAllTeachers = () => {
     return teachers;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+// ฟังก์ชันส่งข้อมูลไป API จริง ๆ
+const submitData = async (dataToSend: ClassItem) => {
 
-    const allTeachers = getAllTeachers();
+  try {
+    const res = await fetch('/api/Timetable/edit', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dataToSend),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 409 && result.error) {
+        console.log('Conflict data from server:', result.conflictData);
+        setConflictData(result.conflictData);
+        setShowConflictWarning(true);
+      } else {
+        alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
+      }
+      return false;
+    }
+    setShowConflictWarning(false);
+    setConflictData(null);
+    resetForm();
+    handleBackToDropdown();
+    return true; // ส่งข้อมูลสำเร็จ
+  } catch (err) {
+    console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
+    alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+    return false;
+  }
+};
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const allTeachers = getAllTeachers();
 
     const requiredFieldsStudy = [
       formData.subject_id,
@@ -425,7 +472,7 @@ const handleAddTeacher = () => {
       formData.exam.final.endTime,
     ];
 
-    
+
 
     const isStudyValid = requiredFieldsStudy.every(
       (field) => typeof field === "string" && field.trim() !== ""
@@ -454,97 +501,79 @@ const handleAddTeacher = () => {
        return;
      }*/
 
-    for (const cls of existingClasses || []) {
-      if (selectedEvent && cls.subject_id === selectedEvent.subject_id) continue;
 
-      const hasSameTeacher = cls.teacher.some((t) =>
-        // เปรียบเทียบกับอาจารย์ใหม่ที่เปลี่ยนจากเดิม
-        allTeachers.includes(t) && !originalTeachers.includes(t)
-      );
+     for (const cls of existingClasses || []) {
+    if (selectedEvent && cls.subject_id === selectedEvent.subject_id) continue;
 
-      const sameDay = cls.weekday === formData.weekday;
+    const hasSameTeacher = cls.teacher.some((t) =>
+      allTeachers.includes(t) && !originalTeachers.includes(t)
+    );
 
-      if (hasSameTeacher && sameDay) {
-        if (
-          isTimeOverlap(
-            cls.study.startTime,
-            cls.study.endTime,
-            formData.study.startTime,
-            formData.study.endTime
-          )
-        ) {
-          console.log("Conflict detected with:", cls);
-          setConflictData(cls);
-          setShowConflictWarning(true);
-          return;
-        }
+    const sameDay = cls.weekday === formData.weekday;
+
+    if (hasSameTeacher && sameDay) {
+      if (
+        isTimeOverlap(
+          cls.study.startTime,
+          cls.study.endTime,
+          formData.study.startTime,
+          formData.study.endTime
+        )
+      ) {
+        console.log("Conflict detected with:", cls);
+        setConflictData(cls);
+        setShowConflictWarning(true);
+        return;
       }
     }
-
-    try {
-  const res = await fetch('/api/Timetable/edit', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ...formData,
-      teacher: allTeachers,
-      originalTeachers,
-    }),
-  });
-
-  const result = await res.json();
-
-  if (!res.ok) {
-    if (res.status === 409 && result.error) {
-      alert(result.error); // ✅ แสดงข้อความจาก backend
-    } else {
-      alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
-    }
-    return;
   }
 
-    alert('✅ แก้ไขตารางสำเร็จ');
+  // เตรียมข้อมูลส่ง
+  const dataToSend: ClassItem = {
+    ...formData,
+    teacher: allTeachers,
+   overwriteId: overwriteId ? String(overwriteId) : undefined, 
+  };
 
+  // ส่งข้อมูล
+  const success = await submitData(dataToSend);
+
+  if (success) {
     onEditEventAction({
       ...formData,
       teacher: allTeachers,
     });
-
     resetForm();
-
-const handleBackToDropdown = () => {
-  if (isTeacherDropdown) {
-    //router.push(`/teacherStudy?${query}`);
-    router.push(`/teacherStudy`);
-  } else {
-   // router.push(`/studentStudy?${query}`);
-   router.push(`/studentStudy`);
-  }
-};
-// เรียกใช้ตรงนี้หลังแก้ไขเสร็จ
-handleBackToDropdown();
-
-  } catch (err) {
-    console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
-    alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+    handleBackToDropdown();
   }
 };
 
-  const handleOverwrite = () => {
-    if (!conflictData) return;
+const handleOverwrite = async () => {
+  if (!conflictData) return;
 
-    const allTeachers = getAllTeachers();
+  const allTeachers = getAllTeachers();
+  const id = String(conflictData.timetable_id);
 
-    onEditEventAction({
-      ...formData,
-      teacher: allTeachers,
-      overwriteId: conflictData.subject_id,
-    } as ClassItem & { overwriteId?: string });
+  console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
 
-    setShowConflictWarning(false);
-    setConflictData(null);
-    resetForm()
+  const dataToSend: ClassItem = {
+    ...formData,
+    teacher: allTeachers,
+    overwriteId: id,  // ✅ ใส่ id ตรงนี้โดยตรง
   };
+
+  const success = await submitData(dataToSend); // ฟังก์ชันที่คุณใช้ POST/PUT
+
+  if (success) {
+    onEditEventAction(dataToSend);
+    setShowConflictWarning(false);
+  
+  }
+};
+
+
+
+
 
   const handleAddTeachers = (names: string[]) => {
     const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
@@ -624,6 +653,7 @@ handleBackToDropdown();
             endTime: data.final_endTime || "",
           },
         },
+         overwriteId: data.overwriteId ?? undefined,  
       });
 
       const knownRoles = ["ผศ.ดร.", "รศ.ดร.", "รศ.", "ผศ.", "ดร.", "ศ.", "นาย", "นางสาว"];
@@ -648,7 +678,8 @@ handleBackToDropdown();
       handleAddTeachers(namesArray);
       setOriginalTeachers(namesArray);
     }
-  }, [data, selectedEvent]);
+  },
+   [data, selectedEvent]);
 
 
 
@@ -906,33 +937,33 @@ handleBackToDropdown();
 
               <div>
                 <label className="block mb-1">เวลาเริ่ม</label>
-               <DatePicker
-  selected={
-    formData.exam.midterm.startTime
-      ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
-      : null
-  }
-  onChange={(date: Date | null) => {
-    setFormData((prev) => ({
-      ...prev,
-      exam: {
-        ...prev.exam,
-        midterm: {
-          ...prev.exam.midterm,
-          startTime: date ? formatDateToTimeString(date) : "",
-          endTime: prev.exam.midterm.endTime,
-          location: prev.exam.midterm.location,
-        },
-      },
-    }));
-  }}
-  showTimeSelect
-  showTimeSelectOnly
-  timeIntervals={15}
-  timeCaption="เวลา"
-  dateFormat="HH:mm"
-  customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
-/>
+                <DatePicker
+                  selected={
+                    formData.exam.midterm.startTime
+                      ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
+                      : null
+                  }
+                  onChange={(date: Date | null) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      exam: {
+                        ...prev.exam,
+                        midterm: {
+                          ...prev.exam.midterm,
+                          startTime: date ? formatDateToTimeString(date) : "",
+                          endTime: prev.exam.midterm.endTime,
+                          location: prev.exam.midterm.location,
+                        },
+                      },
+                    }));
+                  }}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="เวลา"
+                  dateFormat="HH:mm"
+                  customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
+                />
 
               </div>
 
@@ -1128,7 +1159,9 @@ handleBackToDropdown();
               <strong>
                 {conflictData.study.startTime} - {conflictData.study.endTime}
               </strong>{" "}
-              อยู่แล้ว
+              อยู่แล้วในวิชา{" "}<strong>รหัส {" "}
+                {conflictData.subject_id} {" "}
+                {conflictData.subjectName} </strong> {" "}
             </p>
             <p>คุณต้องการจะเขียนทับข้อมูลเดิม หรือ ยกเลิก?</p>
 
@@ -1149,7 +1182,6 @@ handleBackToDropdown();
           </div>
         </div>
       )}
-
     </>
   );
 }

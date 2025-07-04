@@ -75,6 +75,7 @@ export default function Add({
   const studyEndTimeRef = useRef<HTMLInputElement>(null);
   const midtermEndTimeRef = useRef<HTMLInputElement>(null);
   const finalEndTimeRef = useRef<HTMLInputElement>(null);
+    const [overwriteId, setOverwriteId] = useState<string | undefined>(undefined);
 
 
   const { filters } = useStudentFilter()
@@ -110,6 +111,7 @@ export default function Add({
     semester: number | string | null;
     academicYear: number | string | null;
     degree: number | string | null;
+    overwriteId?: string | undefined;
     study: {
       location: string;
       startTime: string;
@@ -142,6 +144,7 @@ export default function Add({
     semester: filters.semester || null,
     academicYear: filters.academicYear || null,
     degree: filters.degree || null,
+    overwriteId: undefined,
     study: {
       location: "",
       startTime: "",
@@ -274,6 +277,7 @@ export default function Add({
       semester: filters.semester || null,
       academicYear: filters.academicYear || null,
       degree: filters.degree || null,
+      overwriteId: undefined,
       study: {
         location: "",
         startTime: "",
@@ -319,10 +323,42 @@ export default function Add({
   }
 
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+ const submitData = async (dataToSend: FormData) => {
+  try {
+    const res = await fetch('/api/Timetable/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dataToSend),
+    });
 
-    const allTeachers = getAllTeachers();
+    const result = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 409 && result.error) {
+        console.log('Conflict data from server:', result.conflictData);
+        setConflictData(result.conflictData);
+        setShowConflictWarning(true);
+      } else {
+        alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
+      }
+      return false;
+    }
+
+    setShowConflictWarning(false);
+    setConflictData(null);
+    resetForm();
+    return true; // ส่งข้อมูลสำเร็จ
+  } catch (err) {
+    console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
+    alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+    return false;
+  }
+};
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const allTeachers = getAllTeachers();
 
     // ตรวจสอบทีละช่อง
     const errors: string[] = [];
@@ -424,61 +460,41 @@ export default function Add({
       }
     }
 
-    // เตรียมข้อมูลสำหรับส่ง
-    const dataToSend = {
-      ...formData,
-      teacher: allTeachers,
-    };
+   const dataToSend: FormData = {
+    ...formData,
+    teacher: allTeachers,
+    overwriteId: overwriteId ? String(overwriteId) : undefined, 
+  };
 
-    try {
-      const response = await fetch("/api/Timetable/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-      });
+  const success = await submitData(dataToSend);
 
-
-      const result = await response.json();
-
-       if (!response.ok) {
-    // ตรวจสอบว่ามี error 409 และมีข้อความซ้ำเวลา
-    if (response.status === 409 && result.error) {
-      alert(result.error); // 👈 แสดง "อาจารย์มีคาบเรียนทับซ้อนในวันและเวลาดังกล่าว"
-    } else {
-      alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
-    }
-    return;
+  if (success) {
+    onAddEventAction(dataToSend);
+    resetForm();
   }
-      alert("✅ เพิ่มตารางสำเร็จ");
+};
 
-      resetForm(filters);
-      onSwitchAction("add");      // ✅ กลับไปโหมดเพิ่ม
-      onAddEventAction(dataToSend); // ✅ เพิ่มเข้า state ภายนอก
+const handleOverwrite = async () => {
+  if (!conflictData) return;
 
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
+  const allTeachers = getAllTeachers();
+  const id = String(conflictData.timetable_id);
+
+  console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
+
+  const dataToSend: FormData = {
+    ...formData,
+    teacher: allTeachers,
+    overwriteId: id,  // ให้ backend ลบของเก่าก่อน insert ใหม่
   };
 
-  const handleOverwrite = () => {
-    if (!conflictData) return;
+  const success = await submitData(dataToSend);
 
-    const allTeachers = getAllTeachers();
-
-    onAddEventAction({
-      ...formData,
-      teacher: allTeachers,
-      subjectName: formData.subjectName || "Subjectname",
-      overwriteId: conflictData.subject_id,
-    });
-
-    setShowConflictWarning(false); // ปิด popup เตือน
-    setConflictData(null);
-    resetForm(filters);
-  };
-
+  if (success) {
+    onAddEventAction(dataToSend);
+    setShowConflictWarning(false);
+  }
+};
 
 
 
@@ -953,7 +969,9 @@ export default function Add({
               <strong>
                 {conflictData.study.startTime} - {conflictData.study.endTime}
               </strong>{" "}
-              อยู่แล้ว
+              อยู่แล้วในวิชา{" "}<strong>รหัส {" "}
+                {conflictData.subject_id} {" "}
+                {conflictData.subjectName} </strong> {" "} 
             </p>
             <p>คุณต้องการจะเขียนทับข้อมูลเดิม หรือ ยกเลิก?</p>
 

@@ -21,6 +21,7 @@ teacher?: string[];
   subjectName: string;
   credit: number;
   creditType: string;
+   overwriteId?: string;
 
   // ✅ เพิ่มพวกนี้เข้าไปด้วย
   midterm_exam_id?: number;

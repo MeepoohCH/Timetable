@@ -17,6 +17,7 @@ export type ClassItem = {
   teacherSurname: string,
   credit: number | null,
   creditType: string,
+   overwriteId?: string;
 
   study: {
     location: string,
