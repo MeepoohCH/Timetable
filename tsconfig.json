@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2020", // ✔ ใช้ ES2020 ขึ้นไปดีที่สุดกับ ESM
+    "module": "ESNext", // ✔ ใช้ ESM
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
+    "allowImportingTsExtensions": true, // ✔ ป้องกันปัญหา extension เวลา import .ts
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
     "types": ["node", "estree"],
-    
+
     "plugins": [
       {
         "name": "next"
@@ -24,6 +25,13 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/components/TeacherMidtermCalendar.tsx", "app/components/DetailPanel.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/components/TeacherMidtermCalendar.tsx",
+    "app/components/DetailPanel.js"
+  ],
   "exclude": ["node_modules"]
 }

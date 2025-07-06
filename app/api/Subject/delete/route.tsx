@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { pool } from "@/lib/db"; // เป็น mysql.createPool()
+import { pool } from '../../../../lib/db';
 
 export async function DELETE(req: NextRequest) {
   try {

@@ -1,6 +1,6 @@
 // /app/api/teacher/delete.ts
 import { NextRequest, NextResponse } from "next/server";
-import { pool } from "@/lib/db"; // สมมุติว่าคุณมี pool เชื่อม MySQL ไว้แล้ว
+import { pool } from '../../../../lib/db';
 
 export async function DELETE(req: NextRequest) {
   const conn = await pool.getConnection();

@@ -1,0 +1,1926 @@
+Need to install the following packages:
+ts-node@10.9.2
+Ok to proceed? (y) 
+(node:43) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+(Use `node --trace-warnings ...` to show where the warning was created)
+/app/scripts/cleanOrphanExams.ts:1
+import { pool } from '@/lib/db';
+^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at internalCompileFunction (node:internal/vm:76:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1283:20)
+    at Module._compile (node:internal/modules/cjs/loader:1328:27)
+    at Module.m._compile (/root/.npm/_npx/1bf7c3c15bf47d04/node_modules/ts-node/src/index.ts:1618:23)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Object.require.extensions.<computed> [as .ts] (/root/.npm/_npx/1bf7c3c15bf47d04/node_modules/ts-node/src/index.ts:1621:12)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+    at phase4 (/root/.npm/_npx/1bf7c3c15bf47d04/node_modules/ts-node/src/bin.ts:649:14)
+/bin/sh: 1: /bin/sh: 1: node: not foundroot: not found
+
+/bin/sh: 1: /bin/sh: 1: node: not foundroot: not found
+
+/bin/sh: 1: /bin/sh: 1: root: not foundnode: not found
+
+/bin/sh: 1: /bin/sh: 1: node: not foundroot: not found
+
+/bin/sh: 1: /bin/sh: 1: root: not foundnode: not found
+
+/bin/sh: 1: node: not found
+/bin/sh: 1: root: not found
+/bin/sh: 1: node: not found
+/bin/sh: 1: root: not found
+/bin/sh: 1: /bin/sh: 1: root: not foundnode: not found
+
+/bin/sh: 1: /bin/sh: 1: root: not foundnode: not found
+
+/bin/sh: 1: root: not found
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+/bin/sh: 1: root: not found
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+/bin/sh: 1: root: not found
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+/bin/sh: 1: root: not found
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+/bin/sh: 1: root: not found
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+/bin/sh: 1: root: not found
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+/bin/sh: 1: root: not found
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+node:internal/process/esm_loader:40
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from /root/
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:302:30)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:366:35)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at Hooks.register (node:internal/modules/esm/hooks:163:51) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8

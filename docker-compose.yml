@@ -3,7 +3,7 @@ services:
     container_name: nextjs-app
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.next
     ports:
       - "3000:3000"
     volumes:
@@ -32,7 +32,7 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql 
+    #  - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql 
     restart: unless-stopped
 
   phpmyadmin:
@@ -51,12 +51,20 @@ services:
     container_name: cleaner
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.cleaner
     volumes:
       - ./logs:/var/log
+      - ./lib:/app/lib        
+      - ./scripts:/app/scripts 
+      - ./node_modules:/app/node_modules 
     depends_on:
       - mysql
     restart: unless-stopped
+    environment:
+      MYSQL_HOST: mysql-db
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     command: ["./start.sh"]
     # หรือ entrypoint ก็ได้:
     # entrypoint: ["./start.sh"]

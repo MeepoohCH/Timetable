@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { pool } from '@/lib/db';
+import { pool } from '../../../../lib/db';
 import { getOrCreateExamId } from '@/lib/exam';
 import { getTeacherIdsByNames } from '@/lib/teacher';
 import { updateTimetable, findTimetableIdByFields } from '@/lib/timetable';

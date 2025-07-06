@@ -1,0 +1,26 @@
+FROM node:18
+
+WORKDIR /app
+
+# ติดตั้ง cron ก่อน
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends cron
+
+# คัดลอกไฟล์โปรเจกต์
+COPY package*.json ./
+RUN npm install
+
+# เพิ่มบรรทัดนี้ให้แน่ใจว่า ts-node และ typescript ติดตั้งใน image
+RUN npm install ts-node typescript
+
+COPY . .
+
+# คัดลอกไฟล์ cron และสคริปต์เข้ามา **ก่อน** chmod
+COPY crontab.txt /etc/cron.d/cleanjob
+COPY start.sh .
+
+# ตั้งสิทธิ์
+RUN chmod 0644 /etc/cron.d/cleanjob && \
+    chmod +x ./start.sh
+
+CMD ["./start.sh"]
