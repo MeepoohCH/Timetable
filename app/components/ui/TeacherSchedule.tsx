@@ -74,8 +74,10 @@ export default function TeacherScheduleTable({
                     const width = (end - start) * 4 * 19;
                     const isSelected =
                       selectedEvent?.subject_id === c.subject_id &&
-                      selectedEvent?.sec === c.sec;
-
+                      selectedEvent?.sec === c.sec &&
+                      selectedEvent?.startTime === c.startTime &&
+                      selectedEvent?.endTime === c.endTime &&
+                      selectedEvent?.weekday === c.weekday
                     return (
                       <div
                         key={i}
