@@ -124,6 +124,7 @@ const triggerRefresh = () => {
             selectedEvent={selectedEvent}
             existingClasses={existingClasses}
             triggerRefresh={triggerRefresh}
+            allSubjects={events}
           />
 
         )}
@@ -135,6 +136,7 @@ const triggerRefresh = () => {
             events={events}
             selectedEvent={selectedEvent}
             triggerRefresh={triggerRefresh}
+            allSubjects={events}
           />
         )}
       </div>

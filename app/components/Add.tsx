@@ -7,7 +7,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
-import DropdownTeacher from "./ui/dropdownTeacher";
 import Teacherbox from "./Teacherbox";
 
 type AddProps = {
@@ -175,6 +174,16 @@ export default function Add({
   const [showConflictWarning, setShowConflictWarning] = useState(false);
   const [showFilterWarning, setShowFilterWarning] = useState(false);
   const [filterErrors, setFilterErrors] = useState<string[]>([]);
+const [toastMessage, setToastMessage] = useState("");
+const [toastType, setToastType] = useState<"success" | "error">("success");
+const [showToast, setShowToast] = useState(false);
+
+const showPopup = (message: string, type: "success" | "error" = "success") => {
+  setToastMessage(message);
+  setToastType(type);
+  setShowToast(true);
+  setTimeout(() => setShowToast(false), 3000);
+};
 
 
   const handleAddTeacher = () => {
@@ -326,7 +335,10 @@ export default function Add({
   }
 
 
-  const submitData = async (dataToSend: FormData) => {
+const submitData = async (
+  dataToSend: FormData,
+  showPopup: (msg: string, type?: "success" | "error") => void
+) => {
     try {
       const res = await fetch('/api/Timetable/add', {
         method: 'POST',
@@ -342,18 +354,19 @@ export default function Add({
           setConflictData(result.conflictData);
           setShowConflictWarning(true);
         } else {
-          alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
+           showPopup("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"), "error");
         }
         return false;
       }
 
       setShowConflictWarning(false);
       setConflictData(null);
+       showPopup("เพิ่มตารางเรียนสำเร็จ", "success");
       resetForm();
       return true; // ส่งข้อมูลสำเร็จ
     } catch (err) {
       console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
-      alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+      showPopup("เกิดข้อผิดพลาดในการส่งข้อมูล", "error");
       return false;
     }
   };
@@ -393,55 +406,6 @@ export default function Add({
       return;
     }
 
-    /*const requiredFieldsStudy = [
-      formData.subject_id,
-      formData.sec,
-      formData.study.location,
-      formData.weekday,
-      formData.study.startTime,
-      formData.study.endTime,
-    ];
-  
-    const requiredFieldsExamMid = [
-      formData.exam.midterm.date,
-      formData.exam.midterm.location,
-      formData.exam.midterm.startTime,
-      formData.exam.midterm.endTime,
-    ];
-  
-    const requiredFieldsExamFinal = [
-      formData.exam.final.date,
-      formData.exam.final.location,
-      formData.exam.final.startTime,
-      formData.exam.final.endTime,
-    ];
-  
-    const isStudyValid = requiredFieldsStudy.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
-  
-    const isMidtermValid = requiredFieldsExamMid.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
-  
-    const isFinalValid = requiredFieldsExamFinal.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
-  
-    if (!isStudyValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของตารางเรียนให้ครบถ้วน");
-      return;
-    }
-  
-    if (!isMidtermValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของสอบกลางภาคให้ครบถ้วน");
-      return;
-    }
-  
-    if (!isFinalValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของสอบปลายภาคให้ครบถ้วน");
-      return;
-    }*/
 
     // ตรวจสอบเวลาเรียนซ้อน
     for (const cls of existingClasses || []) {
@@ -471,35 +435,35 @@ export default function Add({
       overwriteId: overwriteId ? String(overwriteId) : undefined,
     };
 
-    const success = await submitData(dataToSend);
-
-    if (success) {
-      onAddEventAction(dataToSend);
-      resetForm();
-    }
+    const success = await submitData(dataToSend, showPopup);
+if (success) {
+  onAddEventAction(dataToSend);
+  resetForm();
+}
   };
 
-  const handleOverwrite = async () => {
-    if (!conflictData) return;
+const handleOverwrite = async () => {
+  if (!conflictData) return;
 
-    const allTeachers = getAllTeachers();
-    const id = String(conflictData.timetable_id);
+  const allTeachers = getAllTeachers();
+  const id = String(conflictData.timetable_id);
 
-    console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
+  console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
 
-    const dataToSend: FormData = {
-      ...formData,
-      teacher: allTeachers,
-      overwriteId: id,  // ให้ backend ลบของเก่าก่อน insert ใหม่
-    };
-
-    const success = await submitData(dataToSend);
-
-    if (success) {
-      onAddEventAction(dataToSend);
-      setShowConflictWarning(false);
-    }
+  const dataToSend: FormData = {
+    ...formData,
+    teacher: allTeachers,
+    overwriteId: id,  // ให้ backend ลบของเก่าก่อน insert ใหม่
   };
+
+  const success = await submitData(dataToSend, showPopup); // ✅ ต้องเรียก submitData
+
+  if (success) {
+    onAddEventAction(dataToSend);
+    setShowConflictWarning(false);
+  }
+};
+
 
 
 
@@ -1028,6 +992,14 @@ export default function Add({
         </button>
       </div>
     </div>
+  </div>
+)}
+{showToast && (
+  <div
+    className={`fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300
+    ${toastType === "success" ? "bg-green-500" : "bg-red-500"} text-white`}
+  >
+    {toastMessage}
   </div>
 )}
 

@@ -17,6 +17,7 @@ type DeleteProps = {
   events: ClassItem[];
   existingClasses: ClassItem[];
   data?: ClassItemGet | null;
+    showPopup: (message: string, type?: "success" | "error") => void; 
 };
 
 // แปลงวันที่แบบ local
@@ -38,6 +39,7 @@ export default function Delete({
   selectedEvent,
   existingClasses,
   data,
+  showPopup,
 }: DeleteProps) {
 
 
@@ -103,6 +105,9 @@ export default function Delete({
   const [finalStartTime, setFinalStartTime] = useState<Date | null>(null);
   const [finalEndTime, setFinalEndTime] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+const [showErrorModal, setShowErrorModal] = useState(false);
+
 
   const handleAddTeachers = (names: string[]) => {
     const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
@@ -237,15 +242,18 @@ export default function Delete({
         throw new Error(errorData.message || "ลบข้อมูลไม่สำเร็จ");
       }
 
-      console.log("ลบข้อมูลสำเร็จ");
+     showPopup("Successfully deleted data", "success");
       setShowModal(false);
       onDeleteEventAction(selectedEvent); // เรียก callback เพื่อลบข้อมูลในหน้าจอ
       router.replace("/addTable");
 
     } catch (error: any) {
-      alert("เกิดข้อผิดพลาดในการลบ: " + error.message);
-      console.error(error);
-    }
+  const message = error.message || "เกิดข้อผิดพลาดในการลบข้อมูล";
+  setErrorMessage(message);
+  setShowErrorModal(true);
+  console.error(error);
+}
+
   };
 
 
@@ -501,6 +509,24 @@ export default function Delete({
           </div>
         </form>
       </div>
+      
+      {showErrorModal && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+    <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
+      <h2 className="text-lg font-semibold text-red-600 mb-4">เกิดข้อผิดพลาด</h2>
+      <p className="text-sm text-gray-800">{errorMessage}</p>
+      <div className="mt-6 text-right">
+        <button
+          onClick={() => setShowErrorModal(false)}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
+          ปิด
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">

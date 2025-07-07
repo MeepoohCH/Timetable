@@ -22,7 +22,7 @@ export async function DELETE(req: NextRequest) {
     await pool.query('DELETE FROM Subject WHERE subject_id = ?', [subject_id]);
 
     console.log("✅ ลบสำเร็จ:", subject_id);
-    return NextResponse.json({ message: "ลบวิชาเรียบร้อยแล้ว" }, { status: 200 });
+    return NextResponse.json({ message: "Subject deleted successfully" }, { status: 200 });
   } catch (err) {
     console.error("❌ ลบวิชาผิดพลาด:", err);
     return NextResponse.json({ error: "เกิดข้อผิดพลาดภายใน" }, { status: 500 });

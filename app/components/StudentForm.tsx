@@ -20,6 +20,17 @@ export default function StudentForm({ timetable_id, data }: Props) {
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);   // <-- เปลี่ยน type เป็น ClassItem | null
     const [selectedEventGet, setSelectedEventGet] = useState<ClassItemGet | null>(null); 
   const [events, setEvents] = useState<ClassItem[]>([]);
+  const [toastMessage, setToastMessage] = useState("");
+const [toastType, setToastType] = useState<"success" | "error">("success");
+const [showToast, setShowToast] = useState(false);
+
+const showPopup = (message: string, type: "success" | "error" = "success") => {
+  setToastMessage(message);
+  setToastType(type);
+  setShowToast(true);
+  setTimeout(() => setShowToast(false), 3000);
+};
+
 
    const handleAddEvent = (newClass: ClassItem) => {
     setExistingClasses(prev => [...prev, newClass]);
@@ -110,9 +121,21 @@ const handleDeleteEvent = () => {
           selectedEvent={selectedEventGet} // เพิ่มตรงนี้✅ 
           data={data}
           existingClasses={existingClasses}
+          showPopup={showPopup} 
         />
         )}
       </div>
+      {showToast && (
+  <div
+    className={`fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300
+    ${toastType === "success" ? "bg-green-500" : "bg-red-500"} text-white`}
+  >
+    {toastMessage}
+  </div>
+)}
+
     </div>
+    
+    
   );
 }
