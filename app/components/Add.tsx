@@ -75,7 +75,7 @@ export default function Add({
   const studyEndTimeRef = useRef<HTMLInputElement>(null);
   const midtermEndTimeRef = useRef<HTMLInputElement>(null);
   const finalEndTimeRef = useRef<HTMLInputElement>(null);
-    const [overwriteId, setOverwriteId] = useState<string | undefined>(undefined);
+  const [overwriteId, setOverwriteId] = useState<string | undefined>(undefined);
 
 
   const { filters } = useStudentFilter()
@@ -173,6 +173,9 @@ export default function Add({
   const [newTeacher, setNewTeacher] = useState<string>("");
   const [conflictData, setConflictData] = useState<ClassItem | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
+  const [showFilterWarning, setShowFilterWarning] = useState(false);
+  const [filterErrors, setFilterErrors] = useState<string[]>([]);
+
 
   const handleAddTeacher = () => {
     if (selectedTeachers.length > 0) {
@@ -323,45 +326,46 @@ export default function Add({
   }
 
 
- const submitData = async (dataToSend: FormData) => {
-  try {
-    const res = await fetch('/api/Timetable/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dataToSend),
-    });
+  const submitData = async (dataToSend: FormData) => {
+    try {
+      const res = await fetch('/api/Timetable/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend),
+      });
 
-    const result = await res.json();
+      const result = await res.json();
 
-    if (!res.ok) {
-      if (res.status === 409 && result.error) {
-        console.log('Conflict data from server:', result.conflictData);
-        setConflictData(result.conflictData);
-        setShowConflictWarning(true);
-      } else {
-        alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
+      if (!res.ok) {
+        if (res.status === 409 && result.error) {
+          console.log('Conflict data from server:', result.conflictData);
+          setConflictData(result.conflictData);
+          setShowConflictWarning(true);
+        } else {
+          alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
+        }
+        return false;
       }
+
+      setShowConflictWarning(false);
+      setConflictData(null);
+      resetForm();
+      return true; // ส่งข้อมูลสำเร็จ
+    } catch (err) {
+      console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
+      alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
       return false;
     }
+  };
 
-    setShowConflictWarning(false);
-    setConflictData(null);
-    resetForm();
-    return true; // ส่งข้อมูลสำเร็จ
-  } catch (err) {
-    console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
-    alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
-    return false;
-  }
-};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  const allTeachers = getAllTeachers();
+    const allTeachers = getAllTeachers();
 
     // ตรวจสอบทีละช่อง
     const errors: string[] = [];
+    
 
     if (!formData.subject_id.trim()) errors.push("รหัสวิชา");
     if (!formData.sec) errors.push("กลุ่มเรียน (Sec)");
@@ -384,7 +388,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     if (!filters.academicYear) errors.push("ปีการศึกษา");
 
     if (errors.length > 0) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วนในช่องต่อไปนี้:\n- " + errors.join("\n- "));
+      setFilterErrors(errors);
+      setShowFilterWarning(true);
       return;
     }
 
@@ -460,41 +465,41 @@ const handleSubmit = async (e: React.FormEvent) => {
       }
     }
 
-   const dataToSend: FormData = {
-    ...formData,
-    teacher: allTeachers,
-    overwriteId: overwriteId ? String(overwriteId) : undefined, 
+    const dataToSend: FormData = {
+      ...formData,
+      teacher: allTeachers,
+      overwriteId: overwriteId ? String(overwriteId) : undefined,
+    };
+
+    const success = await submitData(dataToSend);
+
+    if (success) {
+      onAddEventAction(dataToSend);
+      resetForm();
+    }
   };
 
-  const success = await submitData(dataToSend);
+  const handleOverwrite = async () => {
+    if (!conflictData) return;
 
-  if (success) {
-    onAddEventAction(dataToSend);
-    resetForm();
-  }
-};
+    const allTeachers = getAllTeachers();
+    const id = String(conflictData.timetable_id);
 
-const handleOverwrite = async () => {
-  if (!conflictData) return;
+    console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
 
-  const allTeachers = getAllTeachers();
-  const id = String(conflictData.timetable_id);
+    const dataToSend: FormData = {
+      ...formData,
+      teacher: allTeachers,
+      overwriteId: id,  // ให้ backend ลบของเก่าก่อน insert ใหม่
+    };
 
-  console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
+    const success = await submitData(dataToSend);
 
-  const dataToSend: FormData = {
-    ...formData,
-    teacher: allTeachers,
-    overwriteId: id,  // ให้ backend ลบของเก่าก่อน insert ใหม่
+    if (success) {
+      onAddEventAction(dataToSend);
+      setShowConflictWarning(false);
+    }
   };
-
-  const success = await submitData(dataToSend);
-
-  if (success) {
-    onAddEventAction(dataToSend);
-    setShowConflictWarning(false);
-  }
-};
 
 
 
@@ -959,39 +964,74 @@ const handleOverwrite = async () => {
         </form>
       </div>
 
-      {showConflictWarning && conflictData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">พบข้อมูลวิชาเรียนซ้ำ</h2>
-            <p>
-              อาจารย์ <strong>{conflictData.teacher.join(", ")}</strong> มีวิชาเรียนในวัน{" "}
-              <strong>{conflictData.weekday}</strong> เวลา{" "}
-              <strong>
-                {conflictData.study.startTime} - {conflictData.study.endTime}
-              </strong>{" "}
-              อยู่แล้วในวิชา{" "}<strong>รหัส {" "}
-                {conflictData.subject_id} {" "}
-                {conflictData.subjectName} </strong> {" "} 
-            </p>
-            <p>คุณต้องการจะเขียนทับข้อมูลเดิม หรือ ยกเลิก?</p>
+     {showConflictWarning && conflictData && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white px-8 py-6 rounded-2xl shadow-2xl max-w-md w-full space-y-5">
+      <h2 className="text-2xl font-semibold text-orange-600 flex items-center gap-2">
+        🛈 พบข้อมูลวิชาเรียนซ้ำ
+      </h2>
 
-            <div className="mt-6 flex justify-end gap-4">
-              <button
-                className="px-4 py-2 border rounded"
-                onClick={() => setShowConflictWarning(false)}
-              >
-                ยกเลิก
-              </button>
-              <button
-                className="px-4 py-2 bg-orange-600 text-white rounded"
-                onClick={handleOverwrite}
-              >
-                เขียนทับ
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="text-gray-700 text-md space-y-2 leading-relaxed">
+        <p>
+          อาจารย์ {" "} <strong className="text-gray-900">{conflictData.teacher.join(", ")}</strong> 
+          {" "}มีวิชาเรียนในวัน <strong className="text-gray-900">{conflictData.weekday}{" "}</strong> 
+          เวลา{" "} <strong className="text-gray-900">
+            {conflictData.study.startTime} - {conflictData.study.endTime}{" "} น.{" "}
+          </strong>
+    
+          ในวิชา <strong className="text-gray-900">
+            รหัส {conflictData.subject_id} {conflictData.subjectName}
+          </strong></p>
+       
+        <p className="text-red-600 font-medium">
+          คุณต้องการจะเขียนทับข้อมูลเดิม หรือยกเลิก?
+        </p>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-2">
+        <button
+          className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+          onClick={() => setShowConflictWarning(false)}
+        >
+          ยกเลิก
+        </button>
+        <button
+          className="px-5 py-2 rounded-lg bg-orange-600 text-white hover:bg-orange-700 transition shadow"
+          onClick={handleOverwrite}
+        >
+          เขียนทับ
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+    {showFilterWarning && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white px-8 py-6 rounded-2xl shadow-2xl max-w-md w-full space-y-5">
+      <h2 className="text-2xl font-semibold text-red-600 flex items-center gap-2">
+        ⚠️ กรอกข้อมูลไม่ครบ
+      </h2>
+
+      <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+        {filterErrors.map((err, i) => (
+          <li key={i}> {err}</li>
+        ))}
+      </ul>
+
+      <div className="flex justify-end">
+        <button
+          className="px-5 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition duration-200 shadow"
+          onClick={() => setShowFilterWarning(false)}
+        >
+          ปิด
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
     </>
   );
 }
