@@ -161,14 +161,15 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // สร้าง midterm/final
-    const midterm_id = exam?.midterm?.date
-      ? await getOrCreateExamId(conn, { examType: 'midterm', ...exam.midterm })
-      : (await conn.query(`INSERT INTO Exam (examType) VALUES ('midterm')`) as any)[0].insertId;
+   // สร้าง midterm_id หรือให้เป็น null ถ้าไม่มีข้อมูล
+const midterm_id = exam?.midterm?.date
+  ? await getOrCreateExamId(conn, { examType: 'midterm', ...exam.midterm })
+  : null;
 
-    const final_id = exam?.final?.date
-      ? await getOrCreateExamId(conn, { examType: 'final', ...exam.final })
-      : (await conn.query(`INSERT INTO Exam (examType) VALUES ('final')`) as any)[0].insertId;
+// สร้าง final_id หรือให้เป็น null ถ้าไม่มีข้อมูล
+const final_id = exam?.final?.date
+  ? await getOrCreateExamId(conn, { examType: 'final', ...exam.final })
+  : null;
 
     // สร้างตารางเรียนใหม่
     await createTimetable(conn, {

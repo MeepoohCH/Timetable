@@ -24,19 +24,19 @@ teacher?: string[];
    overwriteId?: string;
 
   // ✅ เพิ่มพวกนี้เข้าไปด้วย
-  midterm_exam_id?: number;
-  midterm_examType?: string;
-  midterm_date?: string;
-  midterm_startTime?: string;
-  midterm_endTime?: string;
-  midterm_location?: string;
+  midterm_exam_id?: number| null;
+  midterm_examType?: string| null;
+  midterm_date?: string| null;
+  midterm_startTime?: string| null;
+  midterm_endTime?: string| null;
+  midterm_location?: string| null;
 
-  final_exam_id?: number;
-  final_examType?: string;
-  final_date?: string;
-  final_startTime?: string;
-  final_endTime?: string;
-  final_location?: string;
+  final_exam_id?: number| null;
+  final_examType?: string| null;
+  final_date?: string| null;
+  final_startTime?: string| null;
+  final_endTime?: string| null;
+  final_location?: string| null;
 
   
     parsedTeachers?: {

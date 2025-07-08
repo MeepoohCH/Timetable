@@ -315,12 +315,21 @@ export default function Edit({
         exam: {
           ...prev.exam,
           final: {
-            ...prev.exam.final,
+            date: prev.exam?.final?.date ?? null,
+            startTime: prev.exam?.final?.startTime ?? null,
+            endTime: prev.exam?.final?.endTime ?? null,
             location: value,
+          },
+          midterm: prev.exam?.midterm ?? {
+            date: null,
+            startTime: null,
+            endTime: null,
+            location: null,
           },
         },
       }));
-    } else {
+    }
+    else {
       console.warn("handleFinalExamChange: ไม่รองรับฟิลด์นี้:", name);
     }
   };
@@ -335,12 +344,21 @@ export default function Edit({
         exam: {
           ...prev.exam,
           midterm: {
-            ...prev.exam.midterm,
+            date: prev.exam?.midterm?.date ?? null,
+            startTime: prev.exam?.midterm?.startTime ?? null,
+            endTime: prev.exam?.midterm?.endTime ?? null,
             location: value,
+          },
+          final: prev.exam?.final ?? {
+            date: null,
+            startTime: null,
+            endTime: null,
+            location: null,
           },
         },
       }));
-    } else {
+    }
+    else {
       console.warn("handleMidtermExamChange: ไม่รองรับฟิลด์นี้:", name);
     }
   };
@@ -410,44 +428,44 @@ export default function Edit({
     return teachers;
   };
 
-// ฟังก์ชันส่งข้อมูลไป API จริง ๆ
-const submitData = async (dataToSend: ClassItem) => {
+  // ฟังก์ชันส่งข้อมูลไป API จริง ๆ
+  const submitData = async (dataToSend: ClassItem) => {
 
-  try {
-    const res = await fetch('/api/Timetable/edit', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dataToSend),
-    });
+    try {
+      const res = await fetch('/api/Timetable/edit', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend),
+      });
 
-    const result = await res.json();
+      const result = await res.json();
 
-    if (!res.ok) {
-      if (res.status === 409 && result.error) {
-        console.log('Conflict data from server:', result.conflictData);
-        setConflictData(result.conflictData);
-        setShowConflictWarning(true);
-      } else {
-        alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
+      if (!res.ok) {
+        if (res.status === 409 && result.error) {
+          console.log('Conflict data from server:', result.conflictData);
+          setConflictData(result.conflictData);
+          setShowConflictWarning(true);
+        } else {
+          alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
+        }
+        return false;
       }
+      setShowConflictWarning(false);
+      setConflictData(null);
+      resetForm();
+      handleBackToDropdown();
+      return true; // ส่งข้อมูลสำเร็จ
+    } catch (err) {
+      console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
+      alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
       return false;
     }
-    setShowConflictWarning(false);
-    setConflictData(null);
-    resetForm();
-    handleBackToDropdown();
-    return true; // ส่งข้อมูลสำเร็จ
-  } catch (err) {
-    console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
-    alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
-    return false;
-  }
-};
+  };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const allTeachers = getAllTeachers();
+    const allTeachers = getAllTeachers();
 
     const requiredFieldsStudy = [
       formData.subject_id,
@@ -458,19 +476,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       formData.study.endTime,
     ];
 
-    const requiredFieldsExamMid = [
-      formData.exam.midterm.date,
-      formData.exam.midterm.location,
-      formData.exam.midterm.startTime,
-      formData.exam.midterm.endTime,
-    ];
 
-    const requiredFieldsExamFinal = [
-      formData.exam.final.date,
-      formData.exam.final.location,
-      formData.exam.final.startTime,
-      formData.exam.final.endTime,
-    ];
 
 
 
@@ -478,13 +484,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       (field) => typeof field === "string" && field.trim() !== ""
     );
 
-    const isMidtermValid = requiredFieldsExamMid.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
 
-    const isFinalValid = requiredFieldsExamFinal.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
 
     /* if (!isStudyValid) {
        alert("กรุณากรอกข้อมูลในส่วนของตารางเรียนให้ครบถ้วน");
@@ -502,74 +502,74 @@ const handleSubmit = async (e: React.FormEvent) => {
      }*/
 
 
-     for (const cls of existingClasses || []) {
-    if (selectedEvent && cls.subject_id === selectedEvent.subject_id) continue;
+    for (const cls of existingClasses || []) {
+      if (selectedEvent && cls.subject_id === selectedEvent.subject_id) continue;
 
-    const hasSameTeacher = cls.teacher.some((t) =>
-      allTeachers.includes(t) && !originalTeachers.includes(t)
-    );
+      const hasSameTeacher = cls.teacher.some((t) =>
+        allTeachers.includes(t) && !originalTeachers.includes(t)
+      );
 
-    const sameDay = cls.weekday === formData.weekday;
+      const sameDay = cls.weekday === formData.weekday;
 
-    if (hasSameTeacher && sameDay) {
-      if (
-        isTimeOverlap(
-          cls.study.startTime,
-          cls.study.endTime,
-          formData.study.startTime,
-          formData.study.endTime
-        )
-      ) {
-        console.log("Conflict detected with:", cls);
-        setConflictData(cls);
-        setShowConflictWarning(true);
-        return;
+      if (hasSameTeacher && sameDay) {
+        if (
+          isTimeOverlap(
+            cls.study.startTime,
+            cls.study.endTime,
+            formData.study.startTime,
+            formData.study.endTime
+          )
+        ) {
+          console.log("Conflict detected with:", cls);
+          setConflictData(cls);
+          setShowConflictWarning(true);
+          return;
+        }
       }
     }
-  }
 
-  // เตรียมข้อมูลส่ง
-  const dataToSend: ClassItem = {
-    ...formData,
-    teacher: allTeachers,
-   overwriteId: overwriteId ? String(overwriteId) : undefined, 
-  };
-
-  // ส่งข้อมูล
-  const success = await submitData(dataToSend);
-
-  if (success) {
-    onEditEventAction({
+    // เตรียมข้อมูลส่ง
+    const dataToSend: ClassItem = {
       ...formData,
       teacher: allTeachers,
-    });
-    resetForm();
-    handleBackToDropdown();
-  }
-};
+      overwriteId: overwriteId ? String(overwriteId) : undefined,
+    };
 
-const handleOverwrite = async () => {
-  if (!conflictData) return;
+    // ส่งข้อมูล
+    const success = await submitData(dataToSend);
 
-  const allTeachers = getAllTeachers();
-  const id = String(conflictData.timetable_id);
-
-  console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
-
-  const dataToSend: ClassItem = {
-    ...formData,
-    teacher: allTeachers,
-    overwriteId: id,  // ✅ ใส่ id ตรงนี้โดยตรง
+    if (success) {
+      onEditEventAction({
+        ...formData,
+        teacher: allTeachers,
+      });
+      resetForm();
+      handleBackToDropdown();
+    }
   };
 
-  const success = await submitData(dataToSend); // ฟังก์ชันที่คุณใช้ POST/PUT
+  const handleOverwrite = async () => {
+    if (!conflictData) return;
 
-  if (success) {
-    onEditEventAction(dataToSend);
-    setShowConflictWarning(false);
-  
-  }
-};
+    const allTeachers = getAllTeachers();
+    const id = String(conflictData.timetable_id);
+
+    console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
+
+    const dataToSend: ClassItem = {
+      ...formData,
+      teacher: allTeachers,
+      overwriteId: id,  // ✅ ใส่ id ตรงนี้โดยตรง
+    };
+
+    const success = await submitData(dataToSend); // ฟังก์ชันที่คุณใช้ POST/PUT
+
+    if (success) {
+      onEditEventAction(dataToSend);
+      setShowConflictWarning(false);
+
+    }
+  };
 
 
 
@@ -653,7 +653,7 @@ const handleOverwrite = async () => {
             endTime: data.final_endTime || "",
           },
         },
-         overwriteId: data.overwriteId ?? undefined,  
+        overwriteId: data.overwriteId ?? undefined,
       });
 
       const knownRoles = ["ผศ.ดร.", "รศ.ดร.", "รศ.", "ผศ.", "ดร.", "ศ.", "นาย", "นางสาว"];
@@ -679,7 +679,7 @@ const handleOverwrite = async () => {
       setOriginalTeachers(namesArray);
     }
   },
-   [data, selectedEvent]);
+    [data, selectedEvent]);
 
 
 
@@ -889,19 +889,23 @@ const handleOverwrite = async () => {
                 <div className="flex items-center">
                   <DatePicker
                     selected={midtermDate}
-                    value={formData.exam.midterm.date}
+                    value={formData.exam?.midterm?.date ?? ""}
                     onChange={(date: Date | null) => {
                       setMidtermDate(date);
                       setFormData((prev) => ({
                         ...prev,
                         exam: {
                           ...prev.exam,
-                          midterm: {
-                            ...prev.exam.midterm,
-                            date: date ? date.toISOString().split("T")[0] : "",
-                          },
+                          midterm: prev.exam.midterm ? {
+                            date: prev.exam.midterm.date ?? null,
+                            location: prev.exam.midterm.location ?? null,
+                            startTime: prev.exam.midterm.startTime ?? null,
+                            endTime: prev.exam.midterm.endTime ?? null,
+                            // ถ้ามี field อื่น ๆ ก็ใส่แบบนี้
+                          } : null,
                         },
                       }));
+
                       setIsMidtermOpen(false);
                     }}
                     open={isMidtermOpen}
@@ -938,32 +942,33 @@ const handleOverwrite = async () => {
               <div>
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
-                  selected={
-                    formData.exam.midterm.startTime
-                      ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
-                      : null
-                  }
+                  selected={midtermDate}
+                  value={formData.exam?.midterm?.date ?? ""}
                   onChange={(date: Date | null) => {
+                    setMidtermDate(date);
                     setFormData((prev) => ({
                       ...prev,
                       exam: {
                         ...prev.exam,
-                        midterm: {
-                          ...prev.exam.midterm,
-                          startTime: date ? formatDateToTimeString(date) : "",
-                          endTime: prev.exam.midterm.endTime,
-                          location: prev.exam.midterm.location,
-                        },
+                        midterm: prev.exam.midterm
+                          ? {
+                            date: date ? date.toISOString().split("T")[0] : null,
+                            location: prev.exam.midterm.location ?? null,
+                            startTime: prev.exam.midterm.startTime ?? null,
+                            endTime: prev.exam.midterm.endTime ?? null,
+                          }
+                          : null,
                       },
                     }));
+
+                    setIsMidtermOpen(false);
                   }}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeIntervals={15}
-                  timeCaption="เวลา"
-                  dateFormat="HH:mm"
-                  customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
+                  open={isMidtermOpen}
+                  onClickOutside={() => setIsMidtermOpen(false)}
+                  dateFormat="dd/MM/yyyy"
+                  customInput={<input ref={midtermDateRef} className="boxT" />}
                 />
+
 
               </div>
 
@@ -971,7 +976,7 @@ const handleOverwrite = async () => {
                 <label className="block mb-1">เวลาจบ</label>
                 <DatePicker
                   selected={
-                    formData.exam.midterm.endTime
+                    formData.exam?.midterm?.endTime
                       ? new Date(`1970-01-01T${formData.exam.midterm.endTime}`)
                       : null
                   }
@@ -980,14 +985,18 @@ const handleOverwrite = async () => {
                       ...prev,
                       exam: {
                         ...prev.exam,
-                        midterm: {
-                          ...prev.exam.midterm,
-                          endTime: date ? formatDateToTimeString(date) : "",
-                          startTime: prev.exam.midterm.startTime,
-                          location: prev.exam.midterm.location,
-                        },
+                        midterm: prev.exam.midterm
+                          ? {
+                            date: date ? date.toISOString().split("T")[0] : null,
+                            location: prev.exam.midterm.location ?? null,
+                            startTime: prev.exam.midterm.startTime ?? null,
+                            endTime: prev.exam.midterm.endTime ?? null,
+                          }
+                          : null,  // ถ้า null ก็เก็บเป็น null ตาม type
                       },
                     }));
+
+
                   }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -1003,7 +1012,7 @@ const handleOverwrite = async () => {
                 <input
                   type="text"
                   name="midterm_location"
-                  value={formData.exam.midterm.location ?? ""}
+                  value={formData.exam?.midterm?.location ?? ""}
                   onChange={handleMidtermExamChange}
                   className="box"
                 />
@@ -1021,19 +1030,25 @@ const handleOverwrite = async () => {
                 <div className="flex items-center">
                   <DatePicker
                     selected={finalDate}
-                    value={formData.exam.final.date}
+                    value={formData.exam?.final?.date??""}
                     onChange={(date: Date | null) => {
                       setFinalDate(date);
                       setFormData((prev) => ({
-                        ...prev,
-                        exam: {
-                          ...prev.exam,
-                          final: {
-                            ...prev.exam.final,
-                            date: date ? date.toISOString().split("T")[0] : "",
-                          },
-                        },
-                      }));
+  ...prev,
+  exam: {
+    ...prev.exam,
+    final: prev.exam.final
+      ? {
+          date: prev.exam.final.date ?? null,
+          location: prev.exam.final.location ?? null,
+          startTime: prev.exam.final.startTime ?? null,
+          endTime: prev.exam.final.endTime ?? null,
+        }
+      : null,
+  },
+}));
+
+
                       setIsFinalOpen(false);
                     }}
                     open={isFinalOpen}
@@ -1070,7 +1085,7 @@ const handleOverwrite = async () => {
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
                   selected={
-                    formData.exam.final.startTime
+                    formData.exam.final?.startTime
                       ? new Date(`1970-01-01T${formData.exam.final.startTime}`)
                       : null
                   }
@@ -1078,15 +1093,19 @@ const handleOverwrite = async () => {
                     setFormData((prev) => ({
                       ...prev,
                       exam: {
-                        ...prev.exam,
+                        ...(prev.exam || {}),
                         final: {
-                          ...prev.exam.final,
+                          ...(prev.exam?.final || {}),
                           startTime: date ? formatDateToTimeString(date) : "",
-                          endTime: prev.exam.final.endTime,
-                          location: prev.exam.final.location,
+                          endTime: prev.exam?.final?.endTime || "",
+                          location: prev.exam?.final?.location || "",
+                          date: prev.exam?.final?.date || "", // <-- กำหนดให้ไม่ undefined
                         },
+                        midterm: prev.exam?.midterm || null,
                       },
                     }));
+
+
                   }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -1101,7 +1120,7 @@ const handleOverwrite = async () => {
                 <label className="block mb-1">เวลาจบ</label>
                 <DatePicker
                   selected={
-                    formData.exam.final.endTime
+                    formData.exam.final?.endTime
                       ? new Date(`1970-01-01T${formData.exam.final.endTime}`)
                       : null
                   }
@@ -1110,14 +1129,17 @@ const handleOverwrite = async () => {
                       ...prev,
                       exam: {
                         ...prev.exam,
-                        final: {
-                          ...prev.exam.final,
-                          endTime: date ? formatDateToTimeString(date) : "",
-                          startTime: prev.exam.final.startTime,
-                          location: prev.exam.final.location,
-                        },
+                        final: prev.exam?.final
+                          ? {
+                            ...prev.exam.final,
+                            endTime: date ? formatDateToTimeString(date) : "",
+                            startTime: prev.exam.final.startTime,
+                            location: prev.exam.final.location,
+                          }
+                          : null, // หรือ {} หรือค่า default ที่ต้องการ
                       },
                     }));
+
                   }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -1133,7 +1155,7 @@ const handleOverwrite = async () => {
                 <input
                   type="text"
                   name="final_location"
-                  value={formData.exam.final.location ?? ""}
+                  value={formData.exam.final?.location ?? ""}
                   onChange={handleFinalExamChange}
                   className="box"
                 />

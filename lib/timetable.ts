@@ -24,8 +24,8 @@ type TimetableInput = {
   weekday: string;
   study: StudySession;
   teacherIds: string[];
-  midterm_id: number;
-  final_id: number;
+  midterm_id: number|null;
+  final_id: number|null;
 };
 
 type TimetableUpdateInput = Partial<{ timetable_id: number }> & TimetableInput;
