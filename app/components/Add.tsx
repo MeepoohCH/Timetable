@@ -362,7 +362,7 @@ const submitData = async (
       setShowConflictWarning(false);
       setConflictData(null);
        showPopup("เพิ่มตารางเรียนสำเร็จ", "success");
-      resetForm();
+      resetForm(filters);
       return true; // ส่งข้อมูลสำเร็จ
     } catch (err) {
       console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
