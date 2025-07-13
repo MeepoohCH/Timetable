@@ -8,6 +8,7 @@ import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
 import Teacherbox from "./Teacherbox";
+import { forwardRef } from "react";
 
 type AddProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
@@ -383,7 +384,6 @@ export default function Add({
 
     if (!formData.subject_id.trim()) errors.push("รหัสวิชา");
     if (!formData.sec) errors.push("กลุ่มเรียน (Sec)");
-    if (!formData.study.location.trim()) errors.push("สถานที่เรียน");
     if (!formData.weekday.trim()) errors.push("วันเรียน");
     if (!formData.study.startTime.trim()) errors.push("เวลาเริ่มเรียน");
     if (!formData.study.endTime.trim()) errors.push("เวลาสิ้นสุดเรียน");
@@ -432,7 +432,7 @@ export default function Add({
     const success = await submitData(dataToSend, showPopup);
     if (success) {
       onAddEventAction(dataToSend);
-      resetForm();
+      resetForm(filters);
     }
   };
 
@@ -458,7 +458,29 @@ export default function Add({
     }
   };
 
+const formatDateDisplay = (date: Date) => {
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  };
 
+  const formatDateForSave = (date: Date) => {
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  const CustomDateInput = forwardRef<HTMLInputElement, any>(({ value, onClick }, ref) => (
+    <input
+      className="boxT"
+      ref={ref}
+      onClick={onClick}
+      value={value}
+      readOnly
+    />
+  ));
 
 
 
@@ -675,10 +697,10 @@ export default function Add({
                           midterm: prev.exam.midterm
                             ? {
                               ...prev.exam.midterm,
-                              date: date ? date.toISOString().split("T")[0] : "",
+                              date: date ? formatDateForSave(date) : "",
                             }
                             : {
-                              date: date ? date.toISOString().split("T")[0] : "",
+                              date: date ? formatDateForSave(date) : "",
                               startTime: "",
                               endTime: "",
                               location: "",
@@ -722,8 +744,8 @@ export default function Add({
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
                   selected={
-                    formData.exam?.midterm?.endTime
-                      ? new Date(`1970-01-01T${formData.exam.midterm.endTime}`)
+                    formData.exam?.midterm?.startTime
+                      ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
                       : null
                   }
                   onChange={(date: Date | null) => {
@@ -738,7 +760,7 @@ export default function Add({
                             date: "",
                             location: "",
                           }),
-                          endTime: date ? formatDateToTimeString(date) : "",
+                          startTime: date ? formatDateToTimeString(date) : "",
                         },
                       },
                     }));
@@ -748,7 +770,7 @@ export default function Add({
                   timeIntervals={15}
                   timeCaption="เวลา"
                   dateFormat="HH:mm"
-                  customInput={<input ref={midtermEndTimeRef} className="boxT pl-4" />}
+                  customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
                 />
 
               </div>
@@ -827,7 +849,7 @@ export default function Add({
                               endTime: "",
                               location: "",
                             }),
-                            date: date ? date.toISOString().split("T")[0] : "",
+                            date: date ?formatDateForSave(date) : "",
                           },
                         },
                       }));

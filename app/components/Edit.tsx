@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { ClassItemGet } from "./ClassItem_getData";
 import { useRouter } from "next/navigation";
 import Teacherbox from "./Teacherbox";
+import { forwardRef } from "react";
 
 
 
@@ -120,25 +121,31 @@ export default function Edit({
     overwriteId: undefined,
   });
 
+  const parseDDMMYYYY = (dateStr: string): Date => {
+  const [dd, mm, yyyy] = dateStr.split("/");
+  return new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+};
+
+
   useEffect(() => {
     console.log("📝 formDataEdit updated:", formData);
   }, [formData]);
 
   useEffect(() => {
+    
     if (selectedEvent) {
+      console.log("selectedEvent.midterm_date =", selectedEvent.midterm_date);
+
       // แปลงวันที่ midterm_date หรือ final_date เป็น Date object สำหรับ setDay
       const dateStr = selectedEvent.midterm_date || selectedEvent.final_date;
-      if (dateStr) {
-        const parts = dateStr.split("-");
-        if (parts.length === 3) {
-          const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-          setDay(d);
-        } else {
-          setDay(null);
-        }
-      } else {
-        setDay(null);
-      }
+
+if (dateStr) {
+  const d = parseDDMMYYYY(dateStr); // ✅ ใช้ฟังก์ชันใหม่
+  setDay(d);
+} else {
+  setDay(null);
+}
+
 
       // แปลงเวลาเริ่มต้น
       const startTimeStr =
@@ -584,6 +591,33 @@ export default function Edit({
     }
   };
 
+  const formatDateDisplay = (date: Date) => {
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  };
+
+ const formatDateForSave = (date: Date): string => {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+};
+
+  const parseISODateToLocal = (isoStr: string) => {
+  if (!isoStr) return null;
+  const d = new Date(isoStr);
+  // แก้ timezone (เพราะ ISO string เป็น UTC)
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+};
+
+  const CustomDateInput = forwardRef<HTMLInputElement, any>(({ value, onClick }, ref) => (
+    <input
+      className="boxT"
+      ref={ref}
+      onClick={onClick}
+      value={value}
+      readOnly
+    />
+  ));
 
   useEffect(() => {
     if (data && !selectedEvent) {
@@ -647,7 +681,7 @@ export default function Edit({
             endTime: data.midterm_endTime || "",
           },
           final: {
-            date: data.final_date ? data.final_date.split('T')[0] : "",
+          date: data.final_date ? data.final_date.split('T')[0] : "",    
             location: data.final_location || "",
             startTime: data.final_startTime || "",
             endTime: data.final_endTime || "",
@@ -655,6 +689,17 @@ export default function Edit({
         },
         overwriteId: data.overwriteId ?? undefined,
       });
+if (data.midterm_date) {
+  setMidtermDate(parseISODateToLocal(data.midterm_date));
+} else {
+  setMidtermDate(null);
+}
+if (data.final_date) {
+  setFinalDate(parseISODateToLocal(data.final_date));
+} else {
+  setFinalDate(null);
+}
+
 
       const knownRoles = ["ผศ.ดร.", "รศ.ดร.", "รศ.", "ผศ.", "ดร.", "ศ.", "นาย", "นางสาว"];
 
@@ -889,20 +934,24 @@ export default function Edit({
                 <div className="flex items-center">
                   <DatePicker
                     selected={midtermDate}
-                    value={formData.exam?.midterm?.date ?? ""}
                     onChange={(date: Date | null) => {
                       setMidtermDate(date);
+
                       setFormData((prev) => ({
                         ...prev,
                         exam: {
                           ...prev.exam,
-                          midterm: prev.exam.midterm ? {
-                            date: prev.exam.midterm.date ?? null,
-                            location: prev.exam.midterm.location ?? null,
-                            startTime: prev.exam.midterm.startTime ?? null,
-                            endTime: prev.exam.midterm.endTime ?? null,
-                            // ถ้ามี field อื่น ๆ ก็ใส่แบบนี้
-                          } : null,
+                          midterm: prev.exam.midterm
+                            ? {
+                              ...prev.exam.midterm,
+                              date: date ? formatDateForSave(date) : "",
+                            }
+                            : {
+                              date: date ? formatDateForSave(date) : "",
+                              startTime: "",
+                              endTime: "",
+                              location: "",
+                            },
                         },
                       }));
 
@@ -911,8 +960,11 @@ export default function Edit({
                     open={isMidtermOpen}
                     onClickOutside={() => setIsMidtermOpen(false)}
                     dateFormat="dd/MM/yyyy"
-                    customInput={<input ref={midtermDateRef} className="boxT" />}
+                    customInput={
+                      <CustomDateInput value={midtermDate ? formatDateDisplay(midtermDate) : ""} />
+                    }
                   />
+
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
@@ -942,59 +994,63 @@ export default function Edit({
               <div>
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
-                  selected={midtermDate}
-                  value={formData.exam?.midterm?.date ?? ""}
-                  onChange={(date: Date | null) => {
-                    setMidtermDate(date);
-                    setFormData((prev) => ({
-                      ...prev,
-                      exam: {
-                        ...prev.exam,
-                        midterm: prev.exam.midterm
-                          ? {
-                            date: date ? date.toISOString().split("T")[0] : null,
-                            location: prev.exam.midterm.location ?? null,
-                            startTime: prev.exam.midterm.startTime ?? null,
-                            endTime: prev.exam.midterm.endTime ?? null,
-                          }
-                          : null,
-                      },
-                    }));
-
-                    setIsMidtermOpen(false);
-                  }}
-                  open={isMidtermOpen}
-                  onClickOutside={() => setIsMidtermOpen(false)}
-                  dateFormat="dd/MM/yyyy"
-                  customInput={<input ref={midtermDateRef} className="boxT" />}
-                />
+                                 selected={
+                                   formData.exam?.midterm?.startTime
+                                     ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
+                                     : null
+                                 }
+                                 onChange={(date: Date | null) => {
+                                   setFormData((prev) => ({
+                                     ...prev,
+                                     exam: {
+                                       ...prev.exam,
+                                       midterm: {
+                                         ...(prev.exam?.midterm ?? {
+                                           startTime: "",
+                                           endTime: "",
+                                           date: "",
+                                           location: "",
+                                         }),
+                                         startTime: date ? formatDateToTimeString(date) : "",
+                                       },
+                                     },
+                                   }));
+                                 }}
+                                 showTimeSelect
+                                 showTimeSelectOnly
+                                 timeIntervals={15}
+                                 timeCaption="เวลา"
+                                 dateFormat="HH:mm"
+                                 customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
+                               />
 
 
               </div>
 
               <div>
                 <label className="block mb-1">เวลาจบ</label>
-                <DatePicker
-                  selected={
-                    formData.exam?.midterm?.endTime
-                      ? new Date(`1970-01-01T${formData.exam.midterm.endTime}`)
-                      : null
-                  }
-                  onChange={(date: Date | null) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      exam: {
-                        ...prev.exam,
-                        midterm: prev.exam.midterm
-                          ? {
-                            date: date ? date.toISOString().split("T")[0] : null,
-                            location: prev.exam.midterm.location ?? null,
-                            startTime: prev.exam.midterm.startTime ?? null,
-                            endTime: prev.exam.midterm.endTime ?? null,
-                          }
-                          : null,  // ถ้า null ก็เก็บเป็น null ตาม type
-                      },
-                    }));
+                 <DatePicker
+                                  selected={
+                                    formData.exam.midterm?.endTime
+                                      ? new Date(`1970-01-01T${formData.exam.midterm.endTime}`)
+                                      : null
+                                  }
+                                  onChange={(date: Date | null) => {
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      exam: {
+                                        ...prev.exam,
+                                        midterm: {
+                                          ...(prev.exam.midterm ?? {
+                                            date: "",
+                                            startTime: "",
+                                            endTime: "",
+                                            location: "",
+                                          }),
+                                          endTime: date ? formatDateToTimeString(date) : "",
+                                        },
+                                      },
+                                    }));
 
 
                   }}
@@ -1030,23 +1086,25 @@ export default function Edit({
                 <div className="flex items-center">
                   <DatePicker
                     selected={finalDate}
-                    value={formData.exam?.final?.date??""}
                     onChange={(date: Date | null) => {
                       setFinalDate(date);
-                      setFormData((prev) => ({
-  ...prev,
-  exam: {
-    ...prev.exam,
-    final: prev.exam.final
-      ? {
-          date: prev.exam.final.date ?? null,
-          location: prev.exam.final.location ?? null,
-          startTime: prev.exam.final.startTime ?? null,
-          endTime: prev.exam.final.endTime ?? null,
-        }
-      : null,
-  },
-}));
+                     setFormData((prev) => ({
+                        ...prev,
+                        exam: {
+                          ...prev.exam,
+                          final: prev.exam.final
+                            ? {
+                              ...prev.exam.final,
+                              date: date ? formatDateForSave(date) : "",
+                            }
+                            : {
+                              date: date ? formatDateForSave(date) : "",
+                              startTime: "",
+                              endTime: "",
+                              location: "",
+                            },
+                        },
+                      }));
 
 
                       setIsFinalOpen(false);
@@ -1054,8 +1112,9 @@ export default function Edit({
                     open={isFinalOpen}
                     onClickOutside={() => setIsFinalOpen(false)}
                     dateFormat="dd/MM/yyyy"
-                    customInput={<input ref={finalDateRef} className="boxT" />}
-                  />
+                     customInput={
+                      <CustomDateInput value={finalDate ? formatDateDisplay(finalDate) : ""} />
+                    }/>
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
@@ -1083,27 +1142,28 @@ export default function Edit({
 
               <div>
                 <label className="block mb-1">เวลาเริ่ม</label>
-                <DatePicker
-                  selected={
-                    formData.exam.final?.startTime
-                      ? new Date(`1970-01-01T${formData.exam.final.startTime}`)
-                      : null
-                  }
-                  onChange={(date: Date | null) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      exam: {
-                        ...(prev.exam || {}),
-                        final: {
-                          ...(prev.exam?.final || {}),
-                          startTime: date ? formatDateToTimeString(date) : "",
-                          endTime: prev.exam?.final?.endTime || "",
-                          location: prev.exam?.final?.location || "",
-                          date: prev.exam?.final?.date || "", // <-- กำหนดให้ไม่ undefined
-                        },
-                        midterm: prev.exam?.midterm || null,
-                      },
-                    }));
+               <DatePicker
+                                 selected={
+                                   formData.exam.final?.startTime
+                                     ? new Date(`1970-01-01T${formData.exam.final.startTime}`)
+                                     : null
+                                 }
+                                 onChange={(date: Date | null) => {
+                                   setFormData((prev) => ({
+                                     ...prev,
+                                     exam: {
+                                       ...prev.exam,
+                                       final: {
+                                         ...(prev.exam.final ?? {
+                                           date: "",
+                                           startTime: "",
+                                           endTime: "",
+                                           location: "",
+                                         }),
+                                         startTime: date ? formatDateToTimeString(date) : "",
+                                       },
+                                     },
+                                   }));
 
 
                   }}
@@ -1118,27 +1178,22 @@ export default function Edit({
 
               <div>
                 <label className="block mb-1">เวลาจบ</label>
-                <DatePicker
-                  selected={
-                    formData.exam.final?.endTime
-                      ? new Date(`1970-01-01T${formData.exam.final.endTime}`)
-                      : null
-                  }
-                  onChange={(date: Date | null) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      exam: {
-                        ...prev.exam,
-                        final: prev.exam?.final
-                          ? {
-                            ...prev.exam.final,
-                            endTime: date ? formatDateToTimeString(date) : "",
-                            startTime: prev.exam.final.startTime,
-                            location: prev.exam.final.location,
-                          }
-                          : null, // หรือ {} หรือค่า default ที่ต้องการ
-                      },
-                    }));
+                 <DatePicker
+                                 selected={
+                                   formData.exam.final?.endTime
+                                     ? new Date(`1970-01-01T${formData.exam.final.endTime}`)
+                                     : null
+                                 }
+                                 onChange={(date: Date | null) => {
+                                   setFormData((prev) => ({
+                                     ...prev,
+                                     exam: {
+                                       ...prev.exam,
+                                       final: prev.exam.final
+                                         ? { ...prev.exam.final, endTime: date ? formatDateToTimeString(date) : "" }
+                                         : { date: "", startTime: "", endTime: date ? formatDateToTimeString(date) : "", location: "" },
+                                     },
+                                   }));
 
                   }}
                   showTimeSelect
