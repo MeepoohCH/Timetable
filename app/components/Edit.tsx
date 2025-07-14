@@ -933,37 +933,34 @@ if (data.final_date) {
                 <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
                   <DatePicker
-                    selected={midtermDate}
-                    onChange={(date: Date | null) => {
-                      setMidtermDate(date);
-
-                      setFormData((prev) => ({
-                        ...prev,
-                        exam: {
-                          ...prev.exam,
-                          midterm: prev.exam.midterm
-                            ? {
-                              ...prev.exam.midterm,
-                              date: date ? formatDateForSave(date) : "",
-                            }
-                            : {
-                              date: date ? formatDateForSave(date) : "",
-                              startTime: "",
-                              endTime: "",
-                              location: "",
-                            },
-                        },
-                      }));
-
-                      setIsMidtermOpen(false);
-                    }}
-                    open={isMidtermOpen}
-                    onClickOutside={() => setIsMidtermOpen(false)}
-                    dateFormat="dd/MM/yyyy"
-                    customInput={
-                      <CustomDateInput value={midtermDate ? formatDateDisplay(midtermDate) : ""} />
-                    }
-                  />
+                                     selected={midtermDate}
+                                     onChange={(date: Date | null) => {
+                                       setMidtermDate(date);
+                                       setFormData((prev) => ({
+                                         ...prev,
+                                         exam: {
+                                           ...prev.exam,
+                                           midterm: prev.exam.midterm
+                                             ? {
+                                               ...prev.exam.midterm,
+                                               date: date ? formatDateForSave(date) : "",
+                                             }
+                                             : {
+                                               date: date ? formatDateForSave(date) : "",
+                                               startTime: "",
+                                               endTime: "",
+                                               location: "",
+                                             },
+                                         },
+                                       }));
+                 
+                                       setIsMidtermOpen(false);
+                                     }}
+                                     open={isMidtermOpen}
+                                     onClickOutside={() => setIsMidtermOpen(false)}
+                                     dateFormat="dd/MM/yyyy"
+                                     customInput={<input ref={midtermDateRef} className="boxT" />}
+                                   />
 
                   <button
                     type="button"
@@ -1084,37 +1081,36 @@ if (data.final_date) {
               <div className="">
                 <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
-                  <DatePicker
-                    selected={finalDate}
-                    onChange={(date: Date | null) => {
-                      setFinalDate(date);
-                     setFormData((prev) => ({
-                        ...prev,
-                        exam: {
-                          ...prev.exam,
-                          final: prev.exam.final
-                            ? {
-                              ...prev.exam.final,
-                              date: date ? formatDateForSave(date) : "",
-                            }
-                            : {
-                              date: date ? formatDateForSave(date) : "",
-                              startTime: "",
-                              endTime: "",
-                              location: "",
-                            },
-                        },
-                      }));
-
-
-                      setIsFinalOpen(false);
-                    }}
-                    open={isFinalOpen}
-                    onClickOutside={() => setIsFinalOpen(false)}
-                    dateFormat="dd/MM/yyyy"
-                     customInput={
-                      <CustomDateInput value={finalDate ? formatDateDisplay(finalDate) : ""} />
-                    }/>
+                    <DatePicker
+                                      selected={
+                                        formData.exam?.final?.date
+                                          ? new Date(formData.exam.final.date)
+                                          : null
+                                      }
+                                      onChange={(date: Date | null) => {
+                                        setFinalDate(date);
+                                        setFormData((prev) => ({
+                                          ...prev,
+                                          exam: {
+                                            ...prev.exam,
+                                            final: {
+                                              ...(prev.exam?.final ?? {
+                                                date: "",
+                                                startTime: "",
+                                                endTime: "",
+                                                location: "",
+                                              }),
+                                              date: date ?formatDateForSave(date) : "",
+                                            },
+                                          },
+                                        }));
+                                        setIsFinalOpen(false);
+                                      }}
+                                      open={isFinalOpen}
+                                      onClickOutside={() => setIsFinalOpen(false)}
+                                      dateFormat="dd/MM/yyyy"
+                                      customInput={<input ref={finalDateRef} className="boxT" />}
+                                    />
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
