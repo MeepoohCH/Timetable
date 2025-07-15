@@ -58,6 +58,8 @@ try {
     return NextResponse.json({ error: 'Missing required query parameters' }, { status: 400 });
   }
 
+  
+
   let sql = `
     SELECT 
       t.*, 

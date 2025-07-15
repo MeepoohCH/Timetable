@@ -68,7 +68,7 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
     { id: "จันทร์", label: "จันทร์" },
     { id: "อังคาร", label: "อังคาร" },
     { id: "พุธ", label: "พุธ" },
-    { id: "พฤหัสบดี", label: "พฤหัสบดี" },
+    { id: "พฤหัส", label: "พฤหัส" },
     { id: "ศุกร์", label: "ศุกร์" },
     { id: "เสาร์", label: "เสาร์" },
     { id: "อาทิตย์", label: "อาทิตย์" },
@@ -105,7 +105,7 @@ export default function MakeupDropdown({ selectedEvent, setSelectedEvent, onSear
       Monday: "จันทร์",
       Tuesday: "อังคาร",
       Wednesday: "พุธ",
-      Thursday: "พฤหัสบดี",
+      Thursday: "พฤหัส",
       Friday: "ศุกร์",
       Saturday: "เสาร์",
     };
