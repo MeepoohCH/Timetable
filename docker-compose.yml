@@ -10,7 +10,7 @@ services:
       - ./:/app
       - /app/node_modules
     environment:
-      DB_HOST: mysql-db
+      MYSQL_HOST: mysql-db
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_NAME: ${MYSQL_DATABASE}
@@ -32,6 +32,7 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./backup.sql:/docker-entrypoint-initdb.d/init.sql
     #  - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql 
     restart: unless-stopped
 
@@ -71,3 +72,5 @@ services:
 
 volumes:
   db_data:
+
+
