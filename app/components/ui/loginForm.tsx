@@ -12,24 +12,41 @@ export function LoginForm({ action }: { action?: (formData: FormData) => void })
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const uname = form.get("uname")?.toString() || "";
-    const password = form.get("password")?.toString() || "";
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setError("");
 
-    if (!uname || !password) {
-      setError("กรุณากรอกให้ครบทั้ง Username และ Password");
+  const form = new FormData(e.currentTarget);
+  const uname = form.get("uname")?.toString().trim() || "";
+  const password = form.get("password")?.toString() || "";
+
+  if (!uname || !password) {
+    setError("กรุณากรอกให้ครบทั้ง Username และ Password");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: uname, password }),
+    });
+
+    const data = await res.json().catch(() => ({} as any));
+
+    if (!res.ok) {
+      setError(data?.error || "Username หรือ Password ไม่ถูกต้อง");
       return;
     }
 
-    if (uname === "admin" && password === "1234") {
-      window.location.href = "/studentStudy";
-    } else {
-      setError("Username หรือ Password ไม่ถูกต้อง");
-    }
-  }; 
-
+    // login ผ่านแล้ว (server set cookie session แล้ว)
+    if (data?.role === "admin") router.replace("/addTable");
+    else if (data?.role === "teacher") router.replace("/teacherData");
+    else router.replace("/studentStudy");
+  } catch {
+    setError("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่");
+  }
+};
   return (
     <>
     <Card className="bg-white/70 backdrop-blur-md shadow-md rounded-xl p-8 w-355 h-512 max-w-sm">

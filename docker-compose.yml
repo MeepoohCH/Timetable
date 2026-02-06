@@ -10,12 +10,13 @@ services:
       - ./:/app
       - /app/node_modules
     environment:
+      JWT_SECRET: ${JWT_SECRET}
       MYSQL_HOST: mysql-db
-      DB_USER: ${MYSQL_USER}
-      DB_PASSWORD: ${MYSQL_PASSWORD}
-      DB_NAME: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       NODE_ENV: development
-      WATCHPACK_POLLING: true
+      WATCHPACK_POLLING: true 
     depends_on:
       - mysql
     restart: unless-stopped
