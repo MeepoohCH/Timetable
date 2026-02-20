@@ -15,6 +15,7 @@ export default function LogoutButton() {
       console.error("Logout error:", err);
     } finally {
       // กลับไปหน้า login และ refresh ให้ middleware ทำงาน
+      sessionStorage.removeItem("role");
       router.replace("/login");
       router.refresh();
     }

@@ -3,13 +3,18 @@ import { jwtVerify } from "jose";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-// จำกัดเฉพาะหน้าที่อยากบังคับ role จริง ๆ
-const ADMIN_ONLY = ["/addTable"];
-const TEACHER_ONLY = ["/teacherData", "/teacherStudy", "/teacherExam"];
-const STUDENT_ONLY = ["/studentStudy", "/studentExam"];
+const HOME_BY_ROLE: Record<string, string> = {
+  admin: "/addTable",
+  teacher: "/teacherData",
+  student: "/studentStudy",
+};
 
-const startsWithAny = (pathname: string, list: string[]) =>
-  list.some((p) => pathname.startsWith(p));
+// ✅ student เห็นแค่ 2 หน้าเท่านั้น
+const STUDENT_ALLOW = ["/studentStudy", "/teacherStudy"];
+
+function startsWithAny(pathname: string, list: string[]) {
+  return list.some((p) => pathname === p || pathname.startsWith(p + "/"));
+}
 
 function redirectToLogin(req: NextRequest) {
   const res = NextResponse.redirect(new URL("/login", req.url));
@@ -17,65 +22,66 @@ function redirectToLogin(req: NextRequest) {
   return res;
 }
 
-function redirectByRole(req: NextRequest, role: string) {
-  if (role === "admin") return NextResponse.redirect(new URL("/addTable", req.url));
-  if (role === "teacher") return NextResponse.redirect(new URL("/teacherData", req.url));
-  return NextResponse.redirect(new URL("/studentStudy", req.url));
+function redirectHome(req: NextRequest, role: string) {
+  const dest = HOME_BY_ROLE[role] || "/login";
+  return NextResponse.redirect(new URL(dest, req.url));
 }
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
-  //allow: next internals + assets + auth api
+  // ✅ ไม่ให้ middleware ยุ่งกับ API เลย
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
+
+  // next internals
   if (
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon") ||
-    pathname.startsWith("/api/auth")
+    pathname.startsWith("/favicon")
   ) {
     return NextResponse.next();
   }
 
   const token = req.cookies.get("session")?.value;
 
-  //กรณีพิเศษ: ถ้ามี session แล้วเข้าหน้า /login ให้เด้งออกไปหน้าตาม role
   if (pathname === "/login") {
-    if (!token) return NextResponse.next(); // ยังไม่ login ก็เห็นหน้า login ได้
+    if (!token) return NextResponse.next();
     try {
       const { payload } = await jwtVerify(token, secret);
-      const role = String(payload.role || "");
-      return redirectByRole(req, role);
+      return redirectHome(req, String(payload.role || ""));
     } catch {
-      // token เสีย/หมดอายุ → ให้เข้าหน้า login ได้ (และลบ session ทิ้ง)
       const res = NextResponse.next();
       res.cookies.delete("session");
       return res;
     }
   }
 
-  //หน้าอื่นต้องมี session
   if (!token) return redirectToLogin(req);
 
-  //verify token
   try {
     const { payload } = await jwtVerify(token, secret);
     const role = String(payload.role || "");
 
-    //role-based protection เฉพาะหน้าที่กำหนด
-    if (startsWithAny(pathname, ADMIN_ONLY) && role !== "admin") return redirectToLogin(req);
+    if (role === "admin") return NextResponse.next();
+    if (role === "teacher") return NextResponse.next();
 
-    if (startsWithAny(pathname, TEACHER_ONLY) && role !== "teacher" && role !== "admin")
-      return redirectToLogin(req);
+    if (role === "student") {
+      if (!startsWithAny(pathname, STUDENT_ALLOW)) {
+        return redirectHome(req, role);
+      }
+      return NextResponse.next();
+    }
 
-    if (startsWithAny(pathname, STUDENT_ONLY) && role !== "student" && role !== "admin")
-      return redirectToLogin(req);
-
-    // default allow หลัง verify ผ่าน
-    return NextResponse.next();
+    return redirectToLogin(req);
   } catch {
     return redirectToLogin(req);
   }
 }
 
 export const config = {
-  matcher: ["/:path*"],
+  matcher: [
+    "/((?!_next|favicon.ico|api|.*\\.(?:png|jpg|jpeg|gif|svg|css|js|map)$).*)",
+  ],
 };
+

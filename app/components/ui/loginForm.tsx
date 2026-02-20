@@ -39,6 +39,8 @@ export function LoginForm({ action }: { action?: (formData: FormData) => void })
       return;
     }
 
+    sessionStorage.setItem("role", data?.role || "student");
+
     // login ผ่านแล้ว (server set cookie session แล้ว)
     if (data?.role === "admin") router.replace("/addTable");
     else if (data?.role === "teacher") router.replace("/teacherData");
