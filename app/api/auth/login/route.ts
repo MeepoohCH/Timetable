@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Rate limit (5 ครั้ง/นาที ต่อ IP+username)
+    // Rate limit (5 ครั้ง/นาที ต่อ IP+username)
     const ip =
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       req.headers.get("x-real-ip") ||
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Connect DB
+    //  Connect DB
     conn = await mysql.createConnection({
       host: process.env.MYSQL_HOST,
       user: process.env.MYSQL_USER,
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ JWT อายุ 8 ชั่วโมง
+    //   JWT อายุ 8 ชั่วโมง
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET!,
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
 
     const res = NextResponse.json({ success: true, role: user.role });
 
-    // ✅ httpOnly cookie อายุ 8 ชั่วโมง
+    //   httpOnly cookie อายุ 8 ชั่วโมง
     res.cookies.set("session", token, {
       httpOnly: true,
       sameSite: "lax",

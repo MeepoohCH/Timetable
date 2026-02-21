@@ -16,7 +16,7 @@ export default function SubjectDataForm() {
   const [events, setEvents] = useState<ClassItem[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // ✅ role จาก localStorage
+  //   role จาก localStorage
   const [role, setRole] = useState<Role>("");
   useEffect(() => {
     const r = (localStorage.getItem("role") || "") as Role;
@@ -73,19 +73,19 @@ export default function SubjectDataForm() {
   };
 
   const switchComponent = (component: "add" | "edit" | "delete") => {
-    // ✅ teacher ห้ามสลับไปหน้าแก้ไข/เพิ่ม/ลบ
+    //   teacher ห้ามสลับไปหน้าแก้ไข/เพิ่ม/ลบ
     if (!canWrite) return;
     setCurrentComponent(component);
   };
 
-  // ✅ ถ้าไม่ใช่ admin แต่ currentComponent ดันเป็น add (default) ให้เปลี่ยนเป็น edit (หรืออะไรก็ได้) แต่เราจะไม่ render ฟอร์มอยู่ดี
+  //   ถ้าไม่ใช่ admin แต่ currentComponent ดันเป็น add (default) ให้เปลี่ยนเป็น edit (หรืออะไรก็ได้) แต่เราจะไม่ render ฟอร์มอยู่ดี
   useEffect(() => {
     if (!canWrite) setCurrentComponent("edit");
   }, [canWrite]);
 
   return (
     <div className="min-h-screen font-kanit">
-      {/* ✅ Tabs: แสดงเฉพาะ admin */}
+      {/*   Tabs: แสดงเฉพาะ admin */}
       {canWrite && (
         <div id="form-section" className="scroll-mt-20 pt-6">
           <div className="flex justify-start gap-2 px-6 pt-4font-kanit">
@@ -107,7 +107,7 @@ export default function SubjectDataForm() {
         </div>
       )}
 
-      {/* ✅ ฟอร์ม Add/Edit/Delete: render เฉพาะ admin */}
+      {/*   ฟอร์ม Add/Edit/Delete: render เฉพาะ admin */}
       {canWrite && (
         <div
           id="form-section"
@@ -150,12 +150,12 @@ export default function SubjectDataForm() {
         </div>
       )}
 
-      {/* ✅ ตาราง: ทุก role ดูได้ */}
+      {/*   ตาราง: ทุก role ดูได้ */}
       <div id="form-section" className="flex-1 mt-8 mx-2 w-full max-w-[1152px]">
         <SubjectTable
           selectedEvent={selectedEvent}
           setSelectedEvent={(event) => {
-            // ✅ teacher กดแถวแล้ว “อย่าเด้งไป edit”
+            //   teacher กดแถวแล้ว “อย่าเด้งไป edit”
             if (!canWrite) return;
 
             setSelectedEvent(event);

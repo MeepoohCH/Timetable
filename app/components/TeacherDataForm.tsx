@@ -15,7 +15,7 @@ export default function TeacherDataForm() {
   const [selectedEvent, setSelectedEvent] = useState<ClassItem | null>(null);
   const [events, setEvents] = useState<ClassItem[]>([]);
 
-  // ✅ role / permission
+  //   role / permission
   const [role, setRole] = useState<Role>("");
   const canWrite = role === "admin";
 
@@ -73,7 +73,7 @@ export default function TeacherDataForm() {
 
   return (
     <div className="min-h-screen font-kanit">
-      {/* ✅ Tabs: แสดงเฉพาะ admin */}
+      {/*   Tabs: แสดงเฉพาะ admin */}
       {canWrite && (
         <div id="form-section" className="scroll-mt-20 pt-6">
           <div className="flex justify-start gap-2 px-6 pt-4font-kanit">
@@ -96,7 +96,7 @@ export default function TeacherDataForm() {
         </div>
       )}
 
-      {/* ✅ Form: แสดงเฉพาะ admin */}
+      {/*   Form: แสดงเฉพาะ admin */}
       {canWrite && (
         <div
           id="form-section"
@@ -136,12 +136,12 @@ export default function TeacherDataForm() {
         </div>
       )}
 
-      {/* ✅ Table: ทุก role ที่เข้าหน้านี้ได้ "ดูได้" */}
+      {/*   Table: ทุก role ที่เข้าหน้านี้ได้ "ดูได้" */}
       <div className="flex-1 mt-8 mx-2 w-full max-w-[1152px]">
         <TeacherTable
           selectedEvent={selectedEvent}
           setSelectedEvent={(event) => {
-            // ✅ teacher ดูได้ แต่แก้ไขไม่ได้
+            //   teacher ดูได้ แต่แก้ไขไม่ได้
             if (!canWrite) return;
 
             setSelectedEvent(event);
