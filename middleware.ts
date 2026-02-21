@@ -9,7 +9,7 @@ const HOME_BY_ROLE: Record<string, string> = {
   student: "/studentStudy",
 };
 
-// ✅ student เห็นแค่ 2 หน้าเท่านั้น
+// student เห็นแค่ 2 หน้าเท่านั้น
 const STUDENT_ALLOW = ["/studentStudy", "/teacherStudy"];
 
 function startsWithAny(pathname: string, list: string[]) {
@@ -30,7 +30,7 @@ function redirectHome(req: NextRequest, role: string) {
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
-  // ✅ ไม่ให้ middleware ยุ่งกับ API เลย
+  // ไม่ให้ middleware ยุ่งกับ API เลย
   if (pathname.startsWith("/api")) {
     return NextResponse.next();
   }
