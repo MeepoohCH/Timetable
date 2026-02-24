@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ClassItem } from "./ClassItem";
 import SubjectTable from "./SubjectTable";
 import AddSubject from "./AddSubject";
@@ -16,26 +16,59 @@ export default function SubjectDataForm() {
   const [events, setEvents] = useState<ClassItem[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  //   role จาก localStorage
+  // ✅ role จาก server/session (JWT cookie)
   const [role, setRole] = useState<Role>("");
-  useEffect(() => {
-    const r = (localStorage.getItem("role") || "") as Role;
-    setRole(r);
-  }, []);
+  const [loadingRole, setLoadingRole] = useState(true);
+  const [roleError, setRoleError] = useState<string>("");
 
-  const canWrite = role === "admin";     // admin เท่านั้นที่เพิ่ม/แก้ไข/ลบได้
-  const canViewOnly = role === "teacher"; // teacher ดูอย่างเดียว
+  const canWrite = role === "admin"; // admin เท่านั้นที่เพิ่ม/แก้ไข/ลบได้
 
   const tabs = useMemo(() => {
     return canWrite ? (["add", "edit", "delete"] as const) : ([] as const);
   }, [canWrite]);
 
+  useEffect(() => {
+    let alive = true;
+
+    async function loadRole() {
+      try {
+        setLoadingRole(true);
+        setRoleError("");
+
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to load session");
+
+        const data = await res.json();
+        if (!alive) return;
+
+        if (!data?.loggedIn) {
+          setRole("");
+          return;
+        }
+
+        setRole((data.role || "") as Role);
+      } catch (err) {
+        if (!alive) return;
+        setRole("");
+        setRoleError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        if (!alive) return;
+        setLoadingRole(false);
+      }
+    }
+
+    loadRole();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   async function fetchEvents() {
     try {
-      const res = await fetch("/api/Subject/getData");
+      const res = await fetch("/api/Subject/getData", { cache: "no-store" });
       if (!res.ok) throw new Error("Failed to fetch data");
       const data = await res.json();
-      setEvents(data.subjects);
+      setEvents(data.subjects || []);
     } catch (error) {
       console.error("Error fetching subjects:", error);
     }
@@ -57,13 +90,16 @@ export default function SubjectDataForm() {
 
   const handleDeleteEvent = async (eventToDelete: ClassItem) => {
     if (!eventToDelete) return;
+
     setEvents((prev) => prev.filter((ev) => ev.subject_id !== eventToDelete.subject_id));
     setSelectedEvent(null);
     await refreshData();
   };
 
   const handleEditEvent = async (updatedEvent: ClassItem) => {
-    setEvents((prev) => prev.map((ev) => (ev.subject_id === updatedEvent.subject_id ? updatedEvent : ev)));
+    setEvents((prev) =>
+      prev.map((ev) => (ev.subject_id === updatedEvent.subject_id ? updatedEvent : ev))
+    );
     setSelectedEvent(null);
     await refreshData();
   };
@@ -73,25 +109,37 @@ export default function SubjectDataForm() {
   };
 
   const switchComponent = (component: "add" | "edit" | "delete") => {
-    //   teacher ห้ามสลับไปหน้าแก้ไข/เพิ่ม/ลบ
-    if (!canWrite) return;
+    if (!canWrite) return; // teacher/student ห้ามสลับไปหน้าเพิ่ม/แก้ไข/ลบ
     setCurrentComponent(component);
   };
 
-  //   ถ้าไม่ใช่ admin แต่ currentComponent ดันเป็น add (default) ให้เปลี่ยนเป็น edit (หรืออะไรก็ได้) แต่เราจะไม่ render ฟอร์มอยู่ดี
-  useEffect(() => {
-    if (!canWrite) setCurrentComponent("edit");
-  }, [canWrite]);
+  // ✅ กัน UI กระพริบตอนโหลด role
+  if (loadingRole) {
+    return (
+      <div className="min-h-screen font-kanit flex items-center justify-center">
+        <div className="text-gray-500">กำลังโหลดสิทธิ์ผู้ใช้...</div>
+      </div>
+    );
+  }
+
+  const showRoleWarning = roleError && role === "";
 
   return (
     <div className="min-h-screen font-kanit">
-      {/*   Tabs: แสดงเฉพาะ admin */}
+      {showRoleWarning && (
+        <div className="mx-2 mt-4 w-full max-w-[1152px] p-3 rounded-xl bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm">
+          โหลด session ไม่สำเร็จ: {roleError} (จะแสดงแบบดูอย่างเดียว)
+        </div>
+      )}
+
+      {/* ✅ Tabs: แสดงเฉพาะ admin */}
       {canWrite && (
-        <div id="form-section" className="scroll-mt-20 pt-6">
-          <div className="flex justify-start gap-2 px-6 pt-4font-kanit">
+        <div id="form-tabs" className="scroll-mt-20 pt-6">
+          <div className="flex justify-start gap-2 px-6 pt-4 font-kanit">
             {tabs.map((tab) => (
               <button
                 key={tab}
+                type="button"
                 onClick={() => switchComponent(tab)}
                 className={`px-6 py-2 text-sm font-medium rounded-t-lg transition-all duration-200 
                   ${
@@ -107,10 +155,10 @@ export default function SubjectDataForm() {
         </div>
       )}
 
-      {/*   ฟอร์ม Add/Edit/Delete: render เฉพาะ admin */}
+      {/* ✅ ฟอร์ม Add/Edit/Delete: render เฉพาะ admin */}
       {canWrite && (
         <div
-          id="form-section"
+          id="form-panel"
           className="flex-1 p-4 mx-2 shadow scroll-mt-20 bg-[#F3F4F6] border-4 border-white rounded-2xl w-full max-w-[1152px]"
         >
           {currentComponent === "add" && (
@@ -150,17 +198,18 @@ export default function SubjectDataForm() {
         </div>
       )}
 
-      {/*   ตาราง: ทุก role ดูได้ */}
-      <div id="form-section" className="flex-1 mt-8 mx-2 w-full max-w-[1152px]">
+      {/* ✅ ตาราง: ทุก role ดูได้ */}
+      <div id="table-section" className="flex-1 mt-8 mx-2 w-full max-w-[1152px]">
         <SubjectTable
           selectedEvent={selectedEvent}
           setSelectedEvent={(event) => {
-            //   teacher กดแถวแล้ว “อย่าเด้งไป edit”
+            // teacher/student กดแถวแล้ว “อย่าเด้งไป edit”
             if (!canWrite) return;
 
             setSelectedEvent(event);
             setCurrentComponent("edit");
-            const formSection = document.getElementById("form-section");
+
+            const formSection = document.getElementById("form-panel");
             formSection?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
           refreshKey={refreshKey}
