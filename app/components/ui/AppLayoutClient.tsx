@@ -1,16 +1,33 @@
 "use client";
 
+import React from "react";
 import { usePathname } from "next/navigation";
 import SideNavbar from "./SideNavbar";
 import Navbar from "./NavBar";
 
-export default function AppLayoutClient({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+function startsWithAny(pathname: string, list: string[]) {
+  return list.some((p) => pathname === p || pathname.startsWith(p + "/"));
+}
 
-  const hideNavbarPaths = ["/login","/"];
-  const hideTableNavbarPaths = ["/login","/","/addTable","/teacherData","/SubjectData", "/makeupclass" ];
-  const showNavbar = !hideNavbarPaths.includes(pathname || "");
-  const showTableNavbar = !hideTableNavbarPaths.includes(pathname || "");
+export default function AppLayoutClient({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname() || "";
+
+  // ✅ หน้า auth ไม่ต้องมี Sidebar/Top Navbar
+  const AUTH_HIDE_PATHS = ["/login", "/signup", "/"];
+
+  // หน้าไหนไม่ต้องมี Table Navbar (ของคุณเดิม)
+  const HIDE_TABLE_NAVBAR_PATHS = [
+    "/login",
+    "/signup",
+    "/",
+    "/addTable",
+    "/teacherData",
+    "/SubjectData",
+    "/makeupclass",
+  ];
+
+  const showNavbar = !startsWithAny(pathname, AUTH_HIDE_PATHS);
+  const showTableNavbar = !startsWithAny(pathname, HIDE_TABLE_NAVBAR_PATHS);
 
   return (
     <>
@@ -20,12 +37,13 @@ export default function AppLayoutClient({ children }: { children: React.ReactNod
         </aside>
       )}
 
-      <div className="flex flex-col w-full ">
+      <div className="flex flex-col w-full">
         {showTableNavbar && (
           <div className="sticky top-0 z-[50]">
-            <Navbar/>
+            <Navbar />
           </div>
         )}
+
         <main className="flex-1 min-w-0 overflow-auto">{children}</main>
       </div>
     </>

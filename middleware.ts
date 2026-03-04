@@ -9,8 +9,10 @@ const HOME_BY_ROLE: Record<string, string> = {
   student: "/studentStudy",
 };
 
-// student เห็นแค่ 2 หน้าเท่านั้น
 const STUDENT_ALLOW = ["/studentStudy", "/teacherStudy"];
+
+// ✅ เพิ่ม public routes
+const PUBLIC_ROUTES = ["/login", "/signup"];
 
 function startsWithAny(pathname: string, list: string[]) {
   return list.some((p) => pathname === p || pathname.startsWith(p + "/"));
@@ -30,10 +32,8 @@ function redirectHome(req: NextRequest, role: string) {
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
-  // ไม่ให้ middleware ยุ่งกับ API เลย
-  if (pathname.startsWith("/api")) {
-    return NextResponse.next();
-  }
+  // ไม่ให้ middleware ยุ่งกับ API
+  if (pathname.startsWith("/api")) return NextResponse.next();
 
   // next internals / static
   if (pathname.startsWith("/_next") || pathname.startsWith("/favicon")) {
@@ -42,9 +42,12 @@ export async function middleware(req: NextRequest) {
 
   const token = req.cookies.get("session")?.value;
 
-  // หน้า login: ถ้ามี token แล้วเด้งไป home ตาม role
-  if (pathname === "/login") {
+  // ✅ เปิด /login และ /signup ให้เข้าตอนยังไม่ login ได้
+  if (startsWithAny(pathname, PUBLIC_ROUTES)) {
+    // ถ้ายังไม่ login → เข้าได้
     if (!token) return NextResponse.next();
+
+    // ถ้า login อยู่แล้ว → เด้งไปหน้า home ตาม role
     try {
       const { payload } = await jwtVerify(token, secret);
       return redirectHome(req, String(payload.role || ""));
@@ -62,18 +65,15 @@ export async function middleware(req: NextRequest) {
     const { payload } = await jwtVerify(token, secret);
     const role = String(payload.role || "");
 
-    // ✅ admin เข้าได้ทุกหน้า
     if (role === "admin") return NextResponse.next();
 
-    // ✅ teacher เข้าได้ทุกหน้า ยกเว้น /addTable
     if (role === "teacher") {
       if (pathname === "/addTable" || pathname.startsWith("/addTable/")) {
-        return redirectHome(req, role); // เด้งกลับ /teacherData
+        return redirectHome(req, role);
       }
       return NextResponse.next();
     }
 
-    // ✅ student เข้าได้แค่ 2 หน้า
     if (role === "student") {
       if (!startsWithAny(pathname, STUDENT_ALLOW)) {
         return redirectHome(req, role);
@@ -81,7 +81,6 @@ export async function middleware(req: NextRequest) {
       return NextResponse.next();
     }
 
-    // role แปลก ๆ
     return redirectToLogin(req);
   } catch {
     return redirectToLogin(req);
