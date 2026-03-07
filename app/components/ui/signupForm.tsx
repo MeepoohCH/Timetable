@@ -27,10 +27,12 @@ export function SignupForm() {
       setError("กรุณากรอกให้ครบทุกช่อง");
       return;
     }
+
     if (password.length < 6) {
       setError("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");
       return;
     }
+
     if (password !== confirm) {
       setError("Password และ Confirm Password ไม่ตรงกัน");
       return;
@@ -46,7 +48,7 @@ export function SignupForm() {
       const data = await res.json().catch(() => ({} as any));
 
       if (!res.ok) {
-        setError(data?.message || "สมัครสมาชิกไม่สำเร็จ");
+        setError(data?.message || data?.error || "สมัครสมาชิกไม่สำเร็จ");
         return;
       }
 
@@ -59,63 +61,89 @@ export function SignupForm() {
 
   return (
     <>
-      {/* ✅ glow สีส้มตรงกลาง (เหมือนหน้า Login) */}
+      {/* glow สีส้มด้านหลัง เหมือนหน้า login */}
       <div
-        aria-hidden="true"
-        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-                   w-[140px] h-[140px] rounded-full
-                   bg-[rgba(248,125,66,0.85)]
-                   blur-[48px]
-                   shadow-[0_0_80px_40px_rgba(248,125,66,0.6)]
-                   pointer-events-none z-0"
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "100px",
+          height: "100px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(248, 125, 66, 0.8)",
+          filter: "blur(40px)",
+          boxShadow: "rgba(248, 125, 66, 0.7) 0px 0px 60px 30px",
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
       />
 
-      {/* ✅ การ์ดใหญ่ขึ้น + อยู่เหนือ glow */}
-      <Card className="relative z-10 bg-white/70 backdrop-blur-md shadow-md rounded-xl w-[460px] max-w-[92vw]">
-        {/* ✅ พื้นหลังใน card ให้มีโทนส้มอ่อนเหมือน login */}
-        <div className="w-full rounded-xl bg-gradient-to-b from-white via-[#FFE6D4] to-white px-10 py-10">
-          <div className="w-full flex justify-center mb-7">
-            <Image src="/logo1.png" alt="logo1" width={210} height={86} priority />
-          </div>
+      <Card className="bg-white/70 backdrop-blur-md shadow-md rounded-xl p-8 w-[400px] h-auto max-w-sm relative z-10">
+        <div className="w-full flex justify-center mb-6">
+          <Image
+            src="/logo1.png"
+            alt="logo1"
+            width={201}
+            height={82}
+            priority
+          />
+        </div>
 
+        <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[#616161] mb-1">
+              <label
+                htmlFor="uname"
+                className="block text-sm font-medium text-[#616161] mb-1"
+              >
                 Username (นักศึกษา)
               </label>
+
               <Input
                 name="uname"
                 type="text"
-                className="w-full h-[42px] bg-white placeholder:text-sm border border-gray-300 rounded-15px px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                autoFocus
+                autoComplete="username"
+                className="w-full h-[36px] bg-white placeholder:text-sm border border-gray-300 rounded-15px px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your username"
               />
 
-              <label className="block mt-6 text-sm font-medium text-[#616161] mb-1">
+              <label
+                htmlFor="password"
+                className="block mt-6 text-sm font-medium text-[#616161] mb-1"
+              >
                 Password
               </label>
+
               <PasswordInput
                 name="password"
-                className="w-full h-[42px] bg-white placeholder:text-sm border border-gray-300 rounded-15px px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                autoComplete="new-password"
+                className="w-full h-[36px] bg-white placeholder:text-sm border border-gray-300 rounded-15px px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
               />
 
-              <label className="block mt-6 text-sm font-medium text-[#616161] mb-1">
+              <label
+                htmlFor="confirm"
+                className="block mt-6 text-sm font-medium text-[#616161] mb-1"
+              >
                 Confirm Password
               </label>
+
               <PasswordInput
                 name="confirm"
-                className="w-full h-[42px] bg-white placeholder:text-sm border border-gray-300 rounded-15px px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                autoComplete="new-password"
+                className="w-full h-[36px] bg-white placeholder:text-sm border border-gray-300 rounded-15px px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Confirm your password"
               />
 
               <button
                 type="submit"
-                className="rounded-15px mt-8 w-full border border-solid border-transparent transition-colors flex items-center justify-center bg-[#F96D00] text-[#ffffff] gap-6 hover:bg-[#ffffff] hover:text-[#F96D00] dark:hover:bg-[#ccc] text-sm sm:text-base h-9 sm:h-11 px-4 sm:px-5"
+                className="rounded-15px mt-8 w-full border border-solid border-transparent transition-colors flex items-center justify-center bg-[#F96D00] text-[#ffffff] gap-6 hover:bg-[#ffffff] hover:text-[#F96D00] dark:hover:bg-[#ccc] text-sm sm:text-base h-8 sm:h-10 px-4 sm:px-5"
               >
                 SIGN UP
               </button>
 
-              {/* ✅ ลิงก์กลับไปหน้า login */}
               <div className="mt-4 flex justify-center">
                 <button
                   type="button"
@@ -134,7 +162,9 @@ export function SignupForm() {
       {error && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
           <div className="bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-md text-center">
-            <h2 className="text-lg font-semibold text-red-600 mb-4">เกิดข้อผิดพลาด</h2>
+            <h2 className="text-lg font-semibold text-red-600 mb-4">
+              เกิดข้อผิดพลาด
+            </h2>
             <p className="text-gray-700 mb-6">{error}</p>
             <div className="flex justify-center">
               <button
