@@ -87,14 +87,13 @@ export function LoginForm({ action }: { action?: (formData: FormData) => void })
                 LOG IN
               </button>
 
-              {/* ✅ ปุ่มสมัครสมาชิก */}
               <div className="mt-4 flex justify-center">
                 <button
                   type="button"
                   onClick={() => router.push("/signup")}
                   className="text-sm text-gray-600 hover:text-[#F96D00] underline underline-offset-4"
                 >
-                  สมัครสมาชิก
+                  REGISTER
                 </button>
               </div>
             </div>

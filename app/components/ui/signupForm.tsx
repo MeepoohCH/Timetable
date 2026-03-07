@@ -28,6 +28,11 @@ export function SignupForm() {
       return;
     }
 
+    if (!/^\d{8}$/.test(uname)) {
+      setError("Username ต้องเป็นรหัสนักศึกษา 8 หลัก");
+      return;
+    }
+
     if (password.length < 6) {
       setError("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");
       return;
@@ -61,7 +66,6 @@ export function SignupForm() {
 
   return (
     <>
-      {/* glow สีส้มด้านหลัง เหมือนหน้า login */}
       <div
         style={{
           position: "fixed",
@@ -97,7 +101,7 @@ export function SignupForm() {
                 htmlFor="uname"
                 className="block text-sm font-medium text-[#616161] mb-1"
               >
-                Username (นักศึกษา)
+                Username (รหัสนักศึกษา)
               </label>
 
               <Input
@@ -105,10 +109,20 @@ export function SignupForm() {
                 type="text"
                 autoFocus
                 autoComplete="username"
+                maxLength={8}
+                inputMode="numeric"
+                pattern="\d{8}"
+                onInvalid={(e) =>
+                  (e.currentTarget as HTMLInputElement).setCustomValidity(
+                    "กรุณากรอกรหัสนักศึกษา 8 หลัก"
+                  )
+                }
+                onInput={(e) =>
+                  (e.currentTarget as HTMLInputElement).setCustomValidity("")
+                }
                 className="w-full h-[36px] bg-white placeholder:text-sm border border-gray-300 rounded-15px px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter your username"
+                placeholder="Username"
               />
-
               <label
                 htmlFor="password"
                 className="block mt-6 text-sm font-medium text-[#616161] mb-1"
@@ -150,7 +164,7 @@ export function SignupForm() {
                   onClick={() => router.push("/login")}
                   className="text-sm text-gray-600 hover:text-[#F96D00] underline underline-offset-4"
                 >
-                  กลับไปหน้าเข้าสู่ระบบ
+                  LOGIN
                 </button>
               </div>
             </div>
@@ -158,7 +172,6 @@ export function SignupForm() {
         </div>
       </Card>
 
-      {/* modal error */}
       {error && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
           <div className="bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-md text-center">
@@ -178,7 +191,6 @@ export function SignupForm() {
         </div>
       )}
 
-      {/* modal success */}
       {success && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
           <div className="bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-md text-center">
