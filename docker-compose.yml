@@ -10,18 +10,11 @@ services:
       - ./:/app
       - /app/node_modules
     environment:
-<<<<<<< HEAD
       JWT_SECRET: ${JWT_SECRET}
       MYSQL_HOST: mysql-db
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-=======
-      DB_HOST: mysql-db
-      DB_USER: ${MYSQL_USER}
-      DB_PASSWORD: ${MYSQL_PASSWORD}
-      DB_NAME: ${MYSQL_DATABASE}
->>>>>>> parent of 93cd6e2 (Update docker-compose.yml)
       NODE_ENV: development
       WATCHPACK_POLLING: true 
     depends_on:
