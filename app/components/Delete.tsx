@@ -17,6 +17,7 @@ type DeleteProps = {
   events: ClassItem[];
   existingClasses: ClassItem[];
   data?: ClassItemGet | null;
+  showPopup: (message: string, type?: "success" | "error") => void;
 };
 
 // แปลงวันที่แบบ local
@@ -38,6 +39,7 @@ export default function Delete({
   selectedEvent,
   existingClasses,
   data,
+  showPopup,
 }: DeleteProps) {
 
 
@@ -103,6 +105,9 @@ export default function Delete({
   const [finalStartTime, setFinalStartTime] = useState<Date | null>(null);
   const [finalEndTime, setFinalEndTime] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
 
   const handleAddTeachers = (names: string[]) => {
     const newOnes = names.filter(n => n !== "" && !teachers.includes(n));
@@ -209,7 +214,7 @@ export default function Delete({
 
   const [showModal, setShowModal] = useState(false);
 
- const handleDelete = () => {
+  const handleDelete = () => {
     setShowModal(true);
   };
 
@@ -237,15 +242,18 @@ export default function Delete({
         throw new Error(errorData.message || "ลบข้อมูลไม่สำเร็จ");
       }
 
-      console.log("ลบข้อมูลสำเร็จ");
+      showPopup("Successfully deleted data", "success");
       setShowModal(false);
       onDeleteEventAction(selectedEvent); // เรียก callback เพื่อลบข้อมูลในหน้าจอ
       router.replace("/addTable");
 
     } catch (error: any) {
-      alert("เกิดข้อผิดพลาดในการลบ: " + error.message);
+      const message = error.message || "เกิดข้อผิดพลาดในการลบข้อมูล";
+      setErrorMessage(message);
+      setShowErrorModal(true);
       console.error(error);
     }
+
   };
 
 
@@ -355,19 +363,29 @@ export default function Delete({
                   <div className="boxT">
                     <DatePicker
                       selected={midtermDate}
-                      value={formData.exam.midterm.date}
+                      value={formData.exam?.midterm?.date ?? ""}
                       onChange={(date: Date | null) => {
                         setMidtermDate(date);
                         setFormData((prev) => ({
                           ...prev,
                           exam: {
                             ...prev.exam,
-                            midterm: {
-                              ...prev.exam.midterm,
-                              date: date ? date.toISOString().split("T")[0] : "",
-                            },
+                            midterm: prev.exam?.midterm
+                              ? {
+                                date: date ? date.toISOString().split("T")[0] : null,
+                                location: prev.exam.midterm.location ?? null,
+                                startTime: prev.exam.midterm.startTime ?? null,
+                                endTime: prev.exam.midterm.endTime ?? null,
+                              }
+                              : {
+                                date: date ? date.toISOString().split("T")[0] : null,
+                                location: null,
+                                startTime: null,
+                                endTime: null,
+                              },
                           },
                         }));
+
                       }}
                       dateFormat="dd/MM/yyyy"
                       className="outline-none w-full bg-transparent"
@@ -382,7 +400,7 @@ export default function Delete({
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
                   selected={midtermStartTime}
-                  value={formData.exam.midterm.startTime}
+                  value={formData.exam?.midterm?.startTime ?? ""}
                   onChange={() => { }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -399,7 +417,7 @@ export default function Delete({
                 <label className="block mb-1">เวลาจบ</label>
                 <DatePicker
                   selected={midtermEndTime}
-                  value={formData.exam.midterm.endTime}
+                  value={formData.exam?.midterm?.endTime ?? ""}
                   onChange={() => { }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -414,7 +432,7 @@ export default function Delete({
 
               <div className="">
                 <label className="block mb-1">สถานที่</label>
-                <input type="text" value={formData.exam.midterm.location} readOnly className="box" />
+                <input type="text" value={formData.exam?.midterm?.location ?? ""} readOnly className="box" />
               </div>
 
             </div>
@@ -429,7 +447,7 @@ export default function Delete({
                   <div className="boxT">
                     <DatePicker
                       selected={finalDate}
-                      value={formData.exam.final.date}
+                      value={formData.exam?.final?.date ?? ""}
                       onChange={(date: Date | null) => {
                         setMidtermDate(date);
                         setFormData((prev) => ({
@@ -437,11 +455,14 @@ export default function Delete({
                           exam: {
                             ...prev.exam,
                             final: {
-                              ...prev.exam.final,
-                              date: date ? date.toISOString().split("T")[0] : "",
+                              date: date ? date.toISOString().split("T")[0] : null,
+                              location: prev.exam.final?.location ?? null,
+                              startTime: prev.exam.final?.startTime ?? null,
+                              endTime: prev.exam.final?.endTime ?? null,
                             },
                           },
                         }));
+
                       }}
                       dateFormat="dd/MM/yyyy"
                       className="outline-none w-full bg-transparent"
@@ -456,7 +477,7 @@ export default function Delete({
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
                   selected={finalStartTime}
-                  value={formData.exam.final.startTime}
+                  value={formData.exam?.final?.startTime ?? ""}
                   onChange={() => { }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -473,7 +494,7 @@ export default function Delete({
                 <label className="block mb-1">เวลาจบ</label>
                 <DatePicker
                   selected={finalEndTime}
-                  value={formData.exam.final.endTime}
+                  value={formData.exam?.final?.endTime ?? ""}
                   onChange={() => { }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -488,7 +509,7 @@ export default function Delete({
 
               <div className="">
                 <label className="block mb-1">สถานที่</label>
-                <input type="text" value={formData.exam.final.location} readOnly className="box" />
+                <input type="text" value={formData.exam?.final?.location ?? ""} readOnly className="box" />
               </div>
 
             </div>
@@ -501,6 +522,24 @@ export default function Delete({
           </div>
         </form>
       </div>
+
+      {showErrorModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
+            <h2 className="text-lg font-semibold text-red-600 mb-4">เกิดข้อผิดพลาด</h2>
+            <p className="text-sm text-gray-800">{errorMessage}</p>
+            <div className="mt-6 text-right">
+              <button
+                onClick={() => setShowErrorModal(false)}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                ปิด
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
@@ -518,7 +557,7 @@ export default function Delete({
               >
                 ยกเลิก
               </button>
-             <button
+              <button
                 className="bg-orange-600 hover:bg-orange-700 px-4 py-2 rounded text-white"
                 onClick={confirmDelete}
                 disabled={loading}

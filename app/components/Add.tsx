@@ -7,8 +7,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../components/DesignForm.css";
 import { ClassItem } from "./ClassItem";
 import { useStudentFilter } from "@/context/StudentFilterContext/page"
-import DropdownTeacher from "./ui/dropdownTeacher";
 import Teacherbox from "./Teacherbox";
+import { forwardRef } from "react";
 
 type AddProps = {
   onSwitchAction: (view: "edit" | "delete" | "add") => void;
@@ -75,7 +75,7 @@ export default function Add({
   const studyEndTimeRef = useRef<HTMLInputElement>(null);
   const midtermEndTimeRef = useRef<HTMLInputElement>(null);
   const finalEndTimeRef = useRef<HTMLInputElement>(null);
-    const [overwriteId, setOverwriteId] = useState<string | undefined>(undefined);
+  const [overwriteId, setOverwriteId] = useState<string | undefined>(undefined);
 
 
   const { filters } = useStudentFilter()
@@ -123,13 +123,13 @@ export default function Add({
         location: string;
         startTime: string;
         endTime: string;
-      };
+      } | null;
       final: {
         date: string;
         location: string;
         startTime: string;
         endTime: string;
-      };
+      } | null;
     };
   };
 
@@ -173,6 +173,19 @@ export default function Add({
   const [newTeacher, setNewTeacher] = useState<string>("");
   const [conflictData, setConflictData] = useState<ClassItem | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
+  const [showFilterWarning, setShowFilterWarning] = useState(false);
+  const [filterErrors, setFilterErrors] = useState<string[]>([]);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+  const [showToast, setShowToast] = useState(false);
+
+  const showPopup = (message: string, type: "success" | "error" = "success") => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
+
 
   const handleAddTeacher = () => {
     if (selectedTeachers.length > 0) {
@@ -225,31 +238,32 @@ export default function Add({
 
   const handleFinalExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       exam: {
         ...prev.exam,
-        final: {
-          ...prev.exam.final,
-          [name]: value,
-        },
+        final: prev.exam.final
+          ? { ...prev.exam.final, [name]: value }
+          : { date: "", location: "", startTime: "", endTime: "", [name]: value }, // ถ้า null ให้สร้างใหม่
       },
     }));
   };
 
   const handleMidtermExamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       exam: {
         ...prev.exam,
-        midterm: {
-          ...prev.exam.midterm,
-          [name]: value,
-        },
+        midterm: prev.exam.midterm
+          ? { ...prev.exam.midterm, [name]: value }
+          : { date: "", location: "", startTime: "", endTime: "", [name]: value },
       },
     }));
   };
+
 
   const handleStudyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -323,120 +337,69 @@ export default function Add({
   }
 
 
- const submitData = async (dataToSend: FormData) => {
-  try {
-    const res = await fetch('/api/Timetable/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dataToSend),
-    });
+  const submitData = async (
+    dataToSend: FormData,
+    showPopup: (msg: string, type?: "success" | "error") => void
+  ) => {
+    try {
+      const res = await fetch('/api/Timetable/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend),
+      });
 
-    const result = await res.json();
+      const result = await res.json();
 
-    if (!res.ok) {
-      if (res.status === 409 && result.error) {
-        console.log('Conflict data from server:', result.conflictData);
-        setConflictData(result.conflictData);
-        setShowConflictWarning(true);
-      } else {
-        alert("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"));
+      if (!res.ok) {
+        if (res.status === 409 && result.error) {
+          console.log('Conflict data from server:', result.conflictData);
+          setConflictData(result.conflictData);
+          setShowConflictWarning(true);
+        } else {
+          showPopup("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"), "error");
+        }
+        return false;
       }
+
+      setShowConflictWarning(false);
+      setConflictData(null);
+      showPopup("เพิ่มตารางเรียนสำเร็จ", "success");
+      resetForm(filters);
+      return true; // ส่งข้อมูลสำเร็จ
+    } catch (err) {
+      console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
+      showPopup("เกิดข้อผิดพลาดในการส่งข้อมูล", "error");
       return false;
     }
+  };
 
-    setShowConflictWarning(false);
-    setConflictData(null);
-    resetForm();
-    return true; // ส่งข้อมูลสำเร็จ
-  } catch (err) {
-    console.error('❌ เกิดข้อผิดพลาดในการส่งข้อมูล:', err);
-    alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
-    return false;
-  }
-};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  const allTeachers = getAllTeachers();
+    const allTeachers = getAllTeachers();
 
     // ตรวจสอบทีละช่อง
     const errors: string[] = [];
 
+
     if (!formData.subject_id.trim()) errors.push("รหัสวิชา");
     if (!formData.sec) errors.push("กลุ่มเรียน (Sec)");
-    if (!formData.study.location.trim()) errors.push("สถานที่เรียน");
     if (!formData.weekday.trim()) errors.push("วันเรียน");
     if (!formData.study.startTime.trim()) errors.push("เวลาเริ่มเรียน");
     if (!formData.study.endTime.trim()) errors.push("เวลาสิ้นสุดเรียน");
 
-    if (!formData.exam.midterm.date.trim()) errors.push("วันที่สอบกลางภาค");
-    if (!formData.exam.midterm.startTime.trim()) errors.push("เวลาเริ่มสอบกลางภาค");
-    if (!formData.exam.midterm.endTime.trim()) errors.push("เวลาสิ้นสุดสอบกลางภาค");
 
-    if (!formData.exam.final.date.trim()) errors.push("วันที่สอบปลายภาค");
-
-    if (!formData.exam.final.startTime.trim()) errors.push("เวลาเริ่มสอบปลายภาค");
-    if (!formData.exam.final.endTime.trim()) errors.push("เวลาสิ้นสุดสอบปลายภาค");
 
     if (!filters.yearLevel) errors.push("ชั้นปี");
     if (!filters.semester) errors.push("ภาคการศึกษา");
     if (!filters.academicYear) errors.push("ปีการศึกษา");
 
     if (errors.length > 0) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วนในช่องต่อไปนี้:\n- " + errors.join("\n- "));
+      setFilterErrors(errors);
+      setShowFilterWarning(true);
       return;
     }
 
-    /*const requiredFieldsStudy = [
-      formData.subject_id,
-      formData.sec,
-      formData.study.location,
-      formData.weekday,
-      formData.study.startTime,
-      formData.study.endTime,
-    ];
-  
-    const requiredFieldsExamMid = [
-      formData.exam.midterm.date,
-      formData.exam.midterm.location,
-      formData.exam.midterm.startTime,
-      formData.exam.midterm.endTime,
-    ];
-  
-    const requiredFieldsExamFinal = [
-      formData.exam.final.date,
-      formData.exam.final.location,
-      formData.exam.final.startTime,
-      formData.exam.final.endTime,
-    ];
-  
-    const isStudyValid = requiredFieldsStudy.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
-  
-    const isMidtermValid = requiredFieldsExamMid.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
-  
-    const isFinalValid = requiredFieldsExamFinal.every(
-      (field) => typeof field === "string" && field.trim() !== ""
-    );
-  
-    if (!isStudyValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของตารางเรียนให้ครบถ้วน");
-      return;
-    }
-  
-    if (!isMidtermValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของสอบกลางภาคให้ครบถ้วน");
-      return;
-    }
-  
-    if (!isFinalValid) {
-      alert("กรุณากรอกข้อมูลในส่วนของสอบปลายภาคให้ครบถ้วน");
-      return;
-    }*/
 
     // ตรวจสอบเวลาเรียนซ้อน
     for (const cls of existingClasses || []) {
@@ -460,42 +423,64 @@ const handleSubmit = async (e: React.FormEvent) => {
       }
     }
 
-   const dataToSend: FormData = {
-    ...formData,
-    teacher: allTeachers,
-    overwriteId: overwriteId ? String(overwriteId) : undefined, 
+    const dataToSend: FormData = {
+      ...formData,
+      teacher: allTeachers,
+      overwriteId: overwriteId ? String(overwriteId) : undefined,
+    };
+
+    const success = await submitData(dataToSend, showPopup);
+    if (success) {
+      onAddEventAction(dataToSend);
+      resetForm(filters);
+    }
   };
 
-  const success = await submitData(dataToSend);
+  const handleOverwrite = async () => {
+    if (!conflictData) return;
 
-  if (success) {
-    onAddEventAction(dataToSend);
-    resetForm();
-  }
-};
+    const allTeachers = getAllTeachers();
+    const id = String(conflictData.timetable_id);
 
-const handleOverwrite = async () => {
-  if (!conflictData) return;
+    console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
 
-  const allTeachers = getAllTeachers();
-  const id = String(conflictData.timetable_id);
+    const dataToSend: FormData = {
+      ...formData,
+      teacher: allTeachers,
+      overwriteId: id,  // ให้ backend ลบของเก่าก่อน insert ใหม่
+    };
 
-  console.log("📤 handleOverwrite: ส่งข้อมูลพร้อม overwriteId =", id);
+    const success = await submitData(dataToSend, showPopup); // ✅ ต้องเรียก submitData
 
-  const dataToSend: FormData = {
-    ...formData,
-    teacher: allTeachers,
-    overwriteId: id,  // ให้ backend ลบของเก่าก่อน insert ใหม่
+    if (success) {
+      onAddEventAction(dataToSend);
+      setShowConflictWarning(false);
+    }
   };
 
-  const success = await submitData(dataToSend);
+const formatDateDisplay = (date: Date) => {
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  };
 
-  if (success) {
-    onAddEventAction(dataToSend);
-    setShowConflictWarning(false);
-  }
-};
+  const formatDateForSave = (date: Date) => {
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    return `${yyyy}-${mm}-${dd}`;
+  };
 
+  const CustomDateInput = forwardRef<HTMLInputElement, any>(({ value, onClick }, ref) => (
+    <input
+      className="boxT"
+      ref={ref}
+      onClick={onClick}
+      value={value}
+      readOnly
+    />
+  ));
 
 
 
@@ -709,12 +694,20 @@ const handleOverwrite = async () => {
                         ...prev,
                         exam: {
                           ...prev.exam,
-                          midterm: {
-                            ...prev.exam.midterm,
-                            date: date ? date.toISOString().split("T")[0] : "",
-                          },
+                          midterm: prev.exam.midterm
+                            ? {
+                              ...prev.exam.midterm,
+                              date: date ? formatDateForSave(date) : "",
+                            }
+                            : {
+                              date: date ? formatDateForSave(date) : "",
+                              startTime: "",
+                              endTime: "",
+                              location: "",
+                            },
                         },
                       }));
+
                       setIsMidtermOpen(false);
                     }}
                     open={isMidtermOpen}
@@ -751,7 +744,7 @@ const handleOverwrite = async () => {
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
                   selected={
-                    formData.exam.midterm.startTime
+                    formData.exam?.midterm?.startTime
                       ? new Date(`1970-01-01T${formData.exam.midterm.startTime}`)
                       : null
                   }
@@ -761,14 +754,16 @@ const handleOverwrite = async () => {
                       exam: {
                         ...prev.exam,
                         midterm: {
-                          ...prev.exam.midterm,
+                          ...(prev.exam?.midterm ?? {
+                            startTime: "",
+                            endTime: "",
+                            date: "",
+                            location: "",
+                          }),
                           startTime: date ? formatDateToTimeString(date) : "",
-                          endTime: prev.exam.midterm.endTime, // รักษาค่าเดิมไว้
-                          location: prev.exam.midterm.location,
                         },
                       },
                     }));
-
                   }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -777,13 +772,14 @@ const handleOverwrite = async () => {
                   dateFormat="HH:mm"
                   customInput={<input ref={midtermStartTimeRef} className="boxT pl-4" />}
                 />
+
               </div>
 
               <div>
                 <label className="block mb-1">เวลาจบ</label>
                 <DatePicker
                   selected={
-                    formData.exam.midterm.endTime
+                    formData.exam.midterm?.endTime
                       ? new Date(`1970-01-01T${formData.exam.midterm.endTime}`)
                       : null
                   }
@@ -793,13 +789,17 @@ const handleOverwrite = async () => {
                       exam: {
                         ...prev.exam,
                         midterm: {
-                          ...prev.exam.midterm,
+                          ...(prev.exam.midterm ?? {
+                            date: "",
+                            startTime: "",
+                            endTime: "",
+                            location: "",
+                          }),
                           endTime: date ? formatDateToTimeString(date) : "",
-                          startTime: prev.exam.midterm.startTime,
-                          location: prev.exam.midterm.location,
                         },
                       },
                     }));
+
                   }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -815,7 +815,7 @@ const handleOverwrite = async () => {
                 <input
                   type="text"
                   name="location"
-                  value={formData.exam.midterm.location}
+                  value={formData.exam.midterm?.location ?? ""}
                   onChange={handleMidtermExamChange}
                   className="box"
                 />
@@ -831,7 +831,11 @@ const handleOverwrite = async () => {
                 <label className="block mb-1">วันที่สอบ</label>
                 <div className="flex items-center">
                   <DatePicker
-                    selected={finalDate}
+                    selected={
+                      formData.exam?.final?.date
+                        ? new Date(formData.exam.final.date)
+                        : null
+                    }
                     onChange={(date: Date | null) => {
                       setFinalDate(date);
                       setFormData((prev) => ({
@@ -839,8 +843,13 @@ const handleOverwrite = async () => {
                         exam: {
                           ...prev.exam,
                           final: {
-                            ...prev.exam.final,
-                            date: date ? date.toISOString().split("T")[0] : "",
+                            ...(prev.exam?.final ?? {
+                              date: "",
+                              startTime: "",
+                              endTime: "",
+                              location: "",
+                            }),
+                            date: date ?formatDateForSave(date) : "",
                           },
                         },
                       }));
@@ -851,6 +860,7 @@ const handleOverwrite = async () => {
                     dateFormat="dd/MM/yyyy"
                     customInput={<input ref={finalDateRef} className="boxT" />}
                   />
+
                   <button
                     type="button"
                     className="ml-2 text-gray-500 hover:text-gray-700"
@@ -880,7 +890,7 @@ const handleOverwrite = async () => {
                 <label className="block mb-1">เวลาเริ่ม</label>
                 <DatePicker
                   selected={
-                    formData.exam.final.startTime
+                    formData.exam.final?.startTime
                       ? new Date(`1970-01-01T${formData.exam.final.startTime}`)
                       : null
                   }
@@ -890,13 +900,17 @@ const handleOverwrite = async () => {
                       exam: {
                         ...prev.exam,
                         final: {
-                          ...prev.exam.final,
+                          ...(prev.exam.final ?? {
+                            date: "",
+                            startTime: "",
+                            endTime: "",
+                            location: "",
+                          }),
                           startTime: date ? formatDateToTimeString(date) : "",
-                          endTime: prev.exam.final.endTime,
-                          location: prev.exam.final.location,
                         },
                       },
                     }));
+
                   }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -911,7 +925,7 @@ const handleOverwrite = async () => {
                 <label className="block mb-1">เวลาจบ</label>
                 <DatePicker
                   selected={
-                    formData.exam.final.endTime
+                    formData.exam.final?.endTime
                       ? new Date(`1970-01-01T${formData.exam.final.endTime}`)
                       : null
                   }
@@ -920,14 +934,13 @@ const handleOverwrite = async () => {
                       ...prev,
                       exam: {
                         ...prev.exam,
-                        final: {
-                          ...prev.exam.final,
-                          endTime: date ? formatDateToTimeString(date) : "",
-                          startTime: prev.exam.final.startTime,
-                          location: prev.exam.final.location,
-                        },
+                        final: prev.exam.final
+                          ? { ...prev.exam.final, endTime: date ? formatDateToTimeString(date) : "" }
+                          : { date: "", startTime: "", endTime: date ? formatDateToTimeString(date) : "", location: "" },
                       },
                     }));
+
+
                   }}
                   showTimeSelect
                   showTimeSelectOnly
@@ -943,7 +956,7 @@ const handleOverwrite = async () => {
                 <input
                   type="text"
                   name="location"
-                  value={formData.exam.final.location}
+                  value={formData.exam.final ? formData.exam.final.location : ""}
                   onChange={handleFinalExamChange}
                   className="box"
                 />
@@ -961,29 +974,37 @@ const handleOverwrite = async () => {
 
       {showConflictWarning && conflictData && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">พบข้อมูลวิชาเรียนซ้ำ</h2>
-            <p>
-              อาจารย์ <strong>{conflictData.teacher.join(", ")}</strong> มีวิชาเรียนในวัน{" "}
-              <strong>{conflictData.weekday}</strong> เวลา{" "}
-              <strong>
-                {conflictData.study.startTime} - {conflictData.study.endTime}
-              </strong>{" "}
-              อยู่แล้วในวิชา{" "}<strong>รหัส {" "}
-                {conflictData.subject_id} {" "}
-                {conflictData.subjectName} </strong> {" "} 
-            </p>
-            <p>คุณต้องการจะเขียนทับข้อมูลเดิม หรือ ยกเลิก?</p>
+          <div className="bg-white px-8 py-6 rounded-2xl shadow-2xl max-w-md w-full space-y-5">
+            <h2 className="text-2xl font-semibold text-orange-600 flex items-center gap-2">
+              🛈 พบข้อมูลวิชาเรียนซ้ำ
+            </h2>
 
-            <div className="mt-6 flex justify-end gap-4">
+            <div className="text-gray-700 text-md space-y-2 leading-relaxed">
+              <p>
+                อาจารย์ {" "} <strong className="text-gray-900">{conflictData.teacher.join(", ")}</strong>
+                {" "}มีวิชาเรียนในวัน <strong className="text-gray-900">{conflictData.weekday}{" "}</strong>
+                เวลา{" "} <strong className="text-gray-900">
+                  {conflictData.study.startTime} - {conflictData.study.endTime}{" "} น.{" "}
+                </strong>
+
+                ในวิชา <strong className="text-gray-900">
+                  รหัส {conflictData.subject_id} {conflictData.subjectName}
+                </strong></p>
+
+              <p className="text-red-600 font-medium">
+                คุณต้องการจะเขียนทับข้อมูลเดิม หรือยกเลิก?
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
               <button
-                className="px-4 py-2 border rounded"
+                className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
                 onClick={() => setShowConflictWarning(false)}
               >
                 ยกเลิก
               </button>
               <button
-                className="px-4 py-2 bg-orange-600 text-white rounded"
+                className="px-5 py-2 rounded-lg bg-orange-600 text-white hover:bg-orange-700 transition shadow"
                 onClick={handleOverwrite}
               >
                 เขียนทับ
@@ -992,6 +1013,41 @@ const handleOverwrite = async () => {
           </div>
         </div>
       )}
+
+      {showFilterWarning && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white px-8 py-6 rounded-2xl shadow-2xl max-w-md w-full space-y-5">
+            <h2 className="text-2xl font-semibold text-red-600 flex items-center gap-2">
+              ⚠️ กรอกข้อมูลไม่ครบ
+            </h2>
+
+            <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+              {filterErrors.map((err, i) => (
+                <li key={i}> {err}</li>
+              ))}
+            </ul>
+
+            <div className="flex justify-end">
+              <button
+                className="px-5 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition duration-200 shadow"
+                onClick={() => setShowFilterWarning(false)}
+              >
+                ปิด
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showToast && (
+        <div
+          className={`fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300
+    ${toastType === "success" ? "bg-green-500" : "bg-red-500"} text-white`}
+        >
+          {toastMessage}
+        </div>
+      )}
+
+
     </>
   );
 }

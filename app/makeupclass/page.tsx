@@ -59,19 +59,46 @@ export default function MakeupClassPage() {
   const [events, setEvents] = useState<ClassItemGet[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+const weekdayOrder: { [key: string]: number } = {
+  "จันทร์": 1,
+  "อังคาร": 2,
+  "พุธ": 3,
+  "พฤหัส": 4,
+  "พฤหัสบดี": 4,
+  "ศุกร์": 5,
+  "เสาร์": 6,
+  "อาทิตย์": 7,
+};
+
+const sortedEvents = [...events].sort((a, b) => {
+  const dayA = weekdayOrder[a.weekday] || 99;
+  const dayB = weekdayOrder[b.weekday] || 99;
+
+  if (dayA !== dayB) return dayA - dayB;
+  return a.startTime.localeCompare(b.startTime);
+});
 
   useEffect(() => {
     if (!filters) return;
 
-    const { teacher, semester, academicYear, weekday, date } = filters;
+   const queryParams = new URLSearchParams({
+  teacher: filters.teacher,
+  semester: filters.semester,
+  academicYear: filters.academicYear,
+});
+
+if (filters.weekday) {
+  queryParams.append("weekday", filters.weekday);
+}
 
     setLoading(true);
     setError(null);
 
-    fetch(`/api/Makeup?teacher=${teacher}&semester=${semester}&academicYear=${academicYear}&weekday=${weekday}`)
+    fetch(`/api/Makeup?${queryParams.toString()}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch data");
         return res.json();
+
       })
       .then((data) => {
         setEvents(data);
@@ -109,7 +136,7 @@ export default function MakeupClassPage() {
             setSelectedEvent={setSelectedEvent}
             onSearch={(filters) => {
               console.log("📌 Filters ที่ได้จาก Dropdown:", filters);
-              setFilters(filters);
+              setFilters({ ...filters });
             }}
           />
         </div>
@@ -124,7 +151,7 @@ export default function MakeupClassPage() {
           <div className="">
             <div className="mb-4">
               <ExportButton
-                data={events.map((e) => ({
+                data={sortedEvents.map((e) => ({
                   subject_id: e.subject_id,
                   subjectName: e.subjectName,
                   subjectType: e.subjectType,
@@ -145,7 +172,7 @@ export default function MakeupClassPage() {
 
 
 
-            {events.map((e, i) => (
+            {sortedEvents.map((e, i) => (
               <CourseCard
                 key={i}
                 course={{

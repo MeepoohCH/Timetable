@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { pool } from '@/lib/db';
+import { pool } from '../../../../lib/db';
 import { getOrCreateExamId } from '@/lib/exam';
 import { getTeacherIdsByNames } from '@/lib/teacher';
 import { updateTimetable, findTimetableIdByFields } from '@/lib/timetable';
@@ -154,22 +154,27 @@ export async function PUT(req: NextRequest) {
       }
     }
 
-    // ดึง/สร้าง midterm/final exam id
-    const midterm_id = await getOrCreateExamId(conn, {
+   // ดึง/สร้าง midterm/final exam id โดยเช็คว่ามีข้อมูลหรือไม่
+const midterm_id = exam?.midterm?.date
+  ? await getOrCreateExamId(conn, {
       examType: 'midterm',
       date: exam.midterm.date,
       startTime: exam.midterm.startTime,
       endTime: exam.midterm.endTime,
       location: exam.midterm.location,
-    });
+    })
+  : null;
 
-    const final_id = await getOrCreateExamId(conn, {
+const final_id = exam?.final?.date
+  ? await getOrCreateExamId(conn, {
       examType: 'final',
       date: exam.final.date,
       startTime: exam.final.startTime,
       endTime: exam.final.endTime,
       location: exam.final.location,
-    });
+    })
+  : null;
+
     
 
 

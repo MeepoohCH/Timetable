@@ -1,4 +1,4 @@
-import { pool } from '@/lib/db';
+import { pool } from '../lib/db.ts';
 import { ResultSetHeader } from 'mysql2/promise'; // ✅ เพิ่ม import นี้
 
 async function cleanOrphanExams() {

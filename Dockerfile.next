@@ -1,0 +1,27 @@
+# ใช้ Node เวอร์ชันที่เหมาะกับโปรเจกต์ Next.js
+FROM node:18
+
+# ตั้ง working directory
+WORKDIR /app
+
+# คัดลอกไฟล์ dependencies ก่อน (เพื่อใช้ cache)
+COPY package.json package-lock.json ./
+
+# ติดตั้ง dependencies
+RUN npm install
+
+
+# เพิ่มบรรทัดนี้ให้แน่ใจว่า ts-node และ typescript ติดตั้งใน image
+RUN npm install ts-node typescript
+
+# คัดลอกโค้ดทั้งหมด (หลังจาก install เพื่อไม่ทำลาย cache)
+COPY . .
+
+# เปิดพอร์ต 3000 สำหรับ Next.js dev server
+EXPOSE 3000
+
+# ตั้ง environment สำหรับ development (ถ้าต้องการ hardcode)
+# ENV NODE_ENV=development
+
+# คำสั่งเริ่มเซิร์ฟเวอร์ Next.js (dev mode)
+CMD ["npm", "run", "dev"]

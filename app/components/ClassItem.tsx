@@ -26,17 +26,17 @@ export type ClassItem = {
   },
   exam: {
     midterm: {
-      date: string,
-      location: string,
-      startTime: string,
-      endTime: string,
-    },
+      date: string| null,
+      location: string| null,
+      startTime: string| null,
+      endTime: string| null,
+    }| null,
     final: {
-      date: string,
-      location: string,
-      startTime: string,
-      endTime: string,
-    },
+      date: string| null,
+      location: string| null,
+      startTime: string| null,
+      endTime: string| null,
+    }| null,
   }
   parsedTeachers?: {
   teacherName: string;

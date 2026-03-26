@@ -1,6 +1,6 @@
 // app/api/Timetable/delete/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { pool } from "@/lib/db"; // ปรับตามที่ตั้ง connection ของคุณ
+import { pool } from '../../../../lib/db';
 
 import { ResultSetHeader } from "mysql2";
 

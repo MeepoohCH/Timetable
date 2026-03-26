@@ -25,6 +25,7 @@ export default function CourseCard({course} : {course:Course}) {
     <div>หน่วยกิต {course.credit}({course.creditType})</div>
     <div>เวลาจบ {course.endtime}</div>
     <div>อาจารย์ {course.teacher}</div>
+     <div>วันที่สอน {course.weekday}</div>
   </div>
 </div>
     )

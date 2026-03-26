@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { pool } from '@/lib/db';
+import { pool } from '../../../lib/db';
 import { RowDataPacket } from 'mysql2/promise';
 
 interface TimetableItem extends RowDataPacket {
@@ -57,6 +57,8 @@ try {
   if (!semester || !academicYear) {
     return NextResponse.json({ error: 'Missing required query parameters' }, { status: 400 });
   }
+
+  
 
   let sql = `
     SELECT 

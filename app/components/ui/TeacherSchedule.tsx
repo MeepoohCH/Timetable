@@ -74,19 +74,24 @@ export default function TeacherScheduleTable({
                     const width = (end - start) * 4 * 19;
                     const isSelected =
                       selectedEvent?.subject_id === c.subject_id &&
-                      selectedEvent?.sec === c.sec;
-
+                      selectedEvent?.sec === c.sec &&
+                      selectedEvent?.startTime === c.startTime &&
+                      selectedEvent?.endTime === c.endTime &&
+                      selectedEvent?.weekday === c.weekday
                     return (
                       <div
                         key={i}
                         onClick={() => setSelectedEvent(c)}
-                        className={`absolute top-1 bottom-1 ml-3 rounded p-1 shadow text-xs overflow-hidden text-center z-10 cursor-pointer
+                        className={`absolute top-1 bottom-1 ml-3 rounded p-1 shadow text-xs overflow-hidden text-center z-10 cursor-pointer  
                           ${isSelected ? "bg-orange-300 ring-2 ring-orange-500" : "bg-[#FEDDC1]"}
                         `}
                         style={{ left, width }}
                         title={`${c.subjectName} (${c.subject_id})`}
                       >
-                        <span className="font-medium">{c.subjectName}</span>
+                        <span className="font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+                          {c.subjectName}
+                        </span>
+
                         <div style={{ fontSize: '10px' }}>
                           {c.subject_id} ({c.subjectType}) กลุ่ม {c.sec}
                         </div>

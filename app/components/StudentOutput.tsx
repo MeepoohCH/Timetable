@@ -26,6 +26,7 @@ export default function StudentOutput({ filters }: Props) {
   const [finalCurrentMonth, setFinalCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<ClassItemGet[]>([]);
   const router = useRouter();
+  
   const handleClick = (event: ClassItemGet) => {
   setSelectedEvent(event);                 // 1. เก็บ event ไว้
   setCurrentComponent("edit");            // 2. เปลี่ยนโหมด

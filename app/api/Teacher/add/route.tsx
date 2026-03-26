@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { pool } from '@/lib/db';
+import { pool } from '../../../../lib/db';
 import { RowDataPacket } from 'mysql2/promise';
 
 interface TeacherRecord extends RowDataPacket {

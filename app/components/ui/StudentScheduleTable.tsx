@@ -112,14 +112,17 @@ export default function StudentScheduleTable({
                 {classes
                   .filter((c) => c.weekday === weekday)
                   .map((c, i) => {
-                    console.log(weekday);
                     const start = parseTimeToFloat(c.startTime);
                     const end = parseTimeToFloat(c.endTime);
                     const left = timeToSlot(start) * 19;
                     const width = (end - start) * 4 * 19;
                     const isSelected =
                       selectedEvent?.subject_id === c.subject_id &&
-                      selectedEvent?.sec === c.sec;
+                      selectedEvent?.sec === c.sec &&
+                      selectedEvent?.startTime === c.startTime &&
+                      selectedEvent?.endTime === c.endTime &&
+                      selectedEvent?.weekday === c.weekday
+
 
                     return (
                       <div
@@ -132,7 +135,9 @@ export default function StudentScheduleTable({
                         style={{ left, width }}
                         title={`${c.subjectName} (${c.subject_id})`}
                       >
-                        <span className="font-medium">{c.subjectName}</span>
+                         <span className="font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+                          {c.subjectName}
+                        </span>
                         <div style={{ fontSize: '10px' }}>{c.subject_id} ({c.subjectType}) กลุ่ม {c.sec}</div>
                       </div>
                     );
